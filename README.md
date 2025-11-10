@@ -1,6 +1,7 @@
-# bomberboi v 1.0
-bomberman kind of game as a result of vibe coding
+# bomberboi v 1.1
 
+version update:
+- sound feature added
 you can play it from here : https://tunasafa.github.io/bomberboi/
 
 or download the files and open the index file in your own pc browser
@@ -21,7 +22,9 @@ room for improvement for upcoming versions:
 
 - new levels , new maps, new enemies
 - powerups for the player
-- game sounds
 - smarter and more agressive enemies
 - graphics improvements
 - mobile version
+
+
++ game sounds

@@ -72,6 +72,7 @@ class Bomb {
     explode() {
         this.exploded = true;
         this.game.map.removeBomb(this.x, this.y);
+        this.game.sound.playSound('explosion');
         
         this.game.explosions.push(new Explosion(this.game, this.x, this.y, 0));
         

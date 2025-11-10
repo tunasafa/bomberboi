@@ -4,6 +4,7 @@ class Game {
         this.ctx = canvas.getContext('2d');
         this.setupCanvas();
         this.input = new InputHandler();
+        this.sound = new SoundManager();
         this.map = new Map();
         this.player = new Player(this);
         this.enemies = [];
@@ -15,9 +16,16 @@ class Game {
         this.lastTime = 0;
         
         this.createEnemies(4);
+        this.loadSounds();
         
         this.lastTime = performance.now();
         requestAnimationFrame(this.loop.bind(this));
+    }
+
+    loadSounds() {
+        this.sound.loadSound('explosion', 'sounds/explosion.wav');
+        this.sound.loadSound('bomb', 'sounds/bomb.wav');
+        this.sound.loadSound('death', 'sounds/death.wav');
     }
     
     setupCanvas() {
@@ -115,6 +123,7 @@ class Game {
     
     gameOver() {
         this.isGameOver = true;
+        this.sound.playSound('death');
         this.updateLeaderboard();
         document.getElementById('final-score').textContent = this.score;
         document.getElementById('game-over-screen').classList.remove('hidden');

@@ -225,6 +225,7 @@ class Player {
             
             if (!bombExists && isPositionValid && this.game.map.addBomb(bombX, bombY)) {
                 this.bombs.push(new Bomb(this.game, bombX, bombY, this.bombRange));
+                this.game.sound.playSound('bomb');
             }
         }
     }

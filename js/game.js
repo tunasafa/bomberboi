@@ -23,9 +23,9 @@ class Game {
     }
 
     loadSounds() {
-        this.sound.loadSound('explosion', 'sounds/explosion.wav');
-        this.sound.loadSound('bomb', 'sounds/bomb.wav');
-        this.sound.loadSound('death', 'sounds/death.wav');
+        this.sound.loadSound('explosion', 'sounds/explosion.mp3');
+        this.sound.loadSound('bomb', 'sounds/bomb.mp3');
+        this.sound.loadSound('death', 'sounds/death.mp3');
     }
     
     setupCanvas() {

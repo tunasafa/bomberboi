@@ -207,15 +207,15 @@ const SIDE_PROFILE_BODY = [
     '.....kkyxxbbbbbbbbbbbbbbbbbk....',
     '....kkkyybbbbbbkkrrrrkkbbbbbk...',
     '....kkbbbbbbbbkrrrrrrrrkbbbbk...',
-    '....kbbkksssskrrrrrrrrrrkbbbk...',
-    '...kbbbkkssssskrrrrrrrrrrkbbbk..',
-    '...kbbksssxxxskrrrrrrrrrrkbbbk..',
-    '...kbbksssxxwsskrrrrrrrrkbbbhhk.',
-    '...kbbksssssssskkrrrrkkbbbhhbk..',
-    '...kbbbkkssssssskkkkkbbbbbhhbk..',
-    '....kbbbkkssssskkbbbbbbbbbbbk...',
-    '.....kbbbkkkkkkkbbbbbbbbbbbk....',
-    '......kkkkkkkkkbbbbbbbbbbbkk....',
+    '....kkkssssssskrrrrrrrrrrkbbbk..',
+    '...kkssssssssskrrrrrrrrrrkbbbk..',
+    '...ksssxxxsssskrrrrrrrrrrkbbbk..',
+    '...ksssxxwsssskrrrrrrrrkbbbhhk..',
+    '...ksssssssssskkrrrrkkbbbhhbk...',
+    '...kkssssssssssskkkkkbbbbbhhbk..',
+    '....kkssssssssskkbbbbbbbbbbbk...',
+    '.....kksssxxssskkbbbbbbbbbbbk...',
+    '......kkkkkkkkkkkkkkkkkkkkkk....',
     '........kkbbbbbbbbbbbbbbkk......',
     '........kkbbbbkksskkkbbbkk......',
     '........kkbbbkssssskkbbbkk......',
@@ -229,10 +229,10 @@ const SIDE_PROFILE_LEGS_A = [
     '........kkbbbbkrrrkkbbbbkk......',
     '........kkbbbbkrrrkkbbbbkk......',
     '........kkkkkkkkkkkkkkkkkk......',
-    '.........kkbbbk...kkbbbk........',
-    '.......kkrwwwrk...krwwwrrkk.....',
-    '.......kkrhhhrk...krhhhrrkk.....',
-    '.......kkrrrrrk...krrrrrrkk.....'
+    '.........kkbbbk..kkbbbk.........',
+    '........kkrwwwrkkrwwwrkk........',
+    '........kkrhhhrkkrhhhrkk........',
+    '........kkrrrrrkkrrrrrkk........'
 ];
 
 const SIDE_PROFILE_LEGS_B = [
@@ -240,10 +240,10 @@ const SIDE_PROFILE_LEGS_B = [
     '........kkbbbbkrrrkkbbbbkk......',
     '........kkbbbbkrrrkkbbbbkk......',
     '........kkkkkkkkkkkkkkkkkk......',
-    '.........kkbbbk...kkbbbk........',
-    '........kwwwrrkk.kkrwwwrk.......',
-    '........khhhrrkk.kkrhhhrk.......',
-    '........krrrrrkk.kkrrrrrk.......'
+    '.........kkbbbk..kkbbbk.........',
+    '......kkrwwwrk....kwwwrrkk......',
+    '......kkrhhhrk....khhhrrkk......',
+    '......kkrrrrrk....krrrrrkk......'
 ];
 const PLAYER_SPRITES = {
     down: [

@@ -8,7 +8,7 @@ version update:
 
 <div align="center">
   <a href="https://tunasafa.github.io/bomberboi/">
-    <img src="img/cover.jpg" alt="PLAY BOMBERBOI" style="border: 4px solid #fff; max-width: 100%; height: auto;">
+    <img src="img/logo_banner.png" alt="PLAY BOMBERBOI" style="max-width: 100%; height: auto;">
   </a>
 </div>
 

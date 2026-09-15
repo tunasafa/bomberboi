@@ -53,9 +53,6 @@ class Powerup {
         
         ctx.save();
         
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.fillRect(this.x + 4, drawY + 4, 24, 24);
-        
         // Draw icon based on type
         if (this.type === 'bombUp') {
             ctx.fillStyle = '#000000';

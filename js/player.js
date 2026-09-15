@@ -323,18 +323,7 @@ class Player {
             ctx.fillText(bombText, textX, textY);
         }
         
-        if (this.lives > 0) {
-            for (let i = 0; i < this.lives; i++) {
-                ctx.fillStyle = '#ff0000';
-                const hx = this.x + (i * 10);
-                const hy = this.y - 10;
-                ctx.fillRect(hx+1, hy+1, 2, 2);
-                ctx.fillRect(hx+5, hy+1, 2, 2);
-                ctx.fillRect(hx, hy+2, 8, 3);
-                ctx.fillRect(hx+1, hy+5, 6, 2);
-                ctx.fillRect(hx+3, hy+7, 2, 2);
-            }
-        }
+
         
         ctx.restore();
     }

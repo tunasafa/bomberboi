@@ -207,7 +207,7 @@
             color: #fff;
             font-family: 'Press Start 2P', monospace;
             font-size: clamp(0.5rem, 1.5vw, 0.7rem);
-            z-index: 10;
+            z-index: 9999;
             background: #000;
             padding: 8px 12px;
             border: 2px solid #555;
@@ -528,6 +528,12 @@
             let hasPowerups = false;
 
             const bombUps = player.maxBombs - 3;
+            const rangeUps = player.bombRange - 2;
+            const speedUps = Math.round((player.baseSpeed - 2) / 0.5);
+            const extraLives = player.lives;
+            
+            console.log('Update powerups display:', {bombUps, rangeUps, speedUps, extraLives});
+
             if (bombUps > 0) {
                 html += `
                     <div class="powerup-item">
@@ -538,7 +544,6 @@
                 hasPowerups = true;
             }
 
-            const rangeUps = player.bombRange - 2;
             if (rangeUps > 0) {
                 html += `
                     <div class="powerup-item">
@@ -549,7 +554,6 @@
                 hasPowerups = true;
             }
 
-            const speedUps = Math.round((player.baseSpeed - 2) / 0.5);
             if (speedUps > 0) {
                 html += `
                     <div class="powerup-item">
@@ -560,7 +564,6 @@
                 hasPowerups = true;
             }
 
-            const extraLives = player.lives;
             if (extraLives > 0) {
                 html += `
                     <div class="powerup-item">
@@ -583,7 +586,7 @@
                     ctx.imageSmoothingEnabled = false;
                     
                     if (type === 'bombUp') {
-                        ctx.fillStyle = '#000000';
+                        ctx.fillStyle = '#444444'; // lighter so it shows on black background
                         ctx.fillRect(4, 6, 8, 6);
                         ctx.fillRect(5, 5, 6, 8);
                         ctx.fillRect(7, 4, 2, 2);

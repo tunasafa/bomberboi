@@ -57,21 +57,21 @@ const POWERUP_SPRITES = {
     ],
     speedUp: [
         '................',
-        '................',
-        '.yyy............',
-        'yyyy............',
-        '..OOOO..kdk.....',
-        'yyyy...khhhk....',
-        '.OOOO.khhhwwwk..',
-        'yyyy.khhhwwwbbk.',
-        '....khhhbbhhhhbk',
-        '...kbddbbbbbbbbk',
-        '..kbdddbbbbbbbbk',
-        '.kbdddbbbbbbbbbk',
-        '.kqqqqqqqqqqqqk.',
-        '..rrhhhhrrrrrr..',
-        '...rrqqqqrrrr...',
-        '....kkkkkkkk....'
+        '.......kk.......',
+        '......kOOk......',
+        '.....kOOOOk.....',
+        '....kOOOOOkk....',
+        '...h.kOOOOOkk...',
+        '..kOOOOOkk......',
+        '.hh.kOOOkk......',
+        '.kOOOyyyyyyk....',
+        '..kkOOOOOOk.....',
+        '....kOOOOk......',
+        '...h.kOOOk......',
+        '....kOOOk.......',
+        '...kOkk.........',
+        '...kk...........',
+        '................'
     ],
     extraLife: [
         '................',
@@ -92,6 +92,27 @@ const POWERUP_SPRITES = {
         '................'
     ]
 };
+
+// Shrink the 16px source icons to the nearest whole-pixel 14px version. This
+// keeps the requested smaller silhouette sharp at both 1x HUD and 2x world
+// scale instead of introducing blurry fractional canvas pixels.
+const POWERUP_RENDER_SIZE = 14;
+
+function shrinkPowerupSprite(sprite, targetSize = POWERUP_RENDER_SIZE) {
+    return Array.from({ length: targetSize }, (_, row) => {
+        const sourceRow = Math.round(row * (sprite.length - 1) / (targetSize - 1));
+
+        return Array.from({ length: targetSize }, (_, col) => {
+            const sourceCol = Math.round(col * (sprite[sourceRow].length - 1) / (targetSize - 1));
+            return sprite[sourceRow][sourceCol];
+        }).join('');
+    });
+}
+
+const POWERUP_RENDER_SPRITES = {};
+Object.keys(POWERUP_SPRITES).forEach(type => {
+    POWERUP_RENDER_SPRITES[type] = shrinkPowerupSprite(POWERUP_SPRITES[type]);
+});
 
 class Powerup {
     constructor(game, x, y, type) {
@@ -150,19 +171,20 @@ class Powerup {
     }
     
     static drawIcon(ctx, type, x, y, scale = 1) {
-        const sprite = POWERUP_SPRITES[type];
+        const sprite = POWERUP_RENDER_SPRITES[type];
         if (!sprite) return;
         
         ctx.save();
         ctx.imageSmoothingEnabled = false;
+        const offset = (16 - sprite.length) * scale / 2;
         for (let row = 0; row < sprite.length; row++) {
             for (let col = 0; col < sprite[row].length; col++) {
                 const char = sprite[row][col];
                 if (char !== '.') {
                     ctx.fillStyle = POWERUP_PALETTE[char];
                     ctx.fillRect(
-                        x + col * scale,
-                        y + row * scale,
+                        x + offset + col * scale,
+                        y + offset + row * scale,
                         scale,
                         scale
                     );

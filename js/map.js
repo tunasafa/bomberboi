@@ -471,4 +471,43 @@ drawBonePile(ctx, x, y) {
     ctx.fillRect(x + 18, y + 20, 4, 4);
     ctx.fillRect(x + 14, y + 12, 4, 2);
 }
+
+    destroyBlock(x, y) {
+        const tileX = Math.floor(x / this.tileSize);
+        const tileY = Math.floor(y / this.tileSize);
+        
+        if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
+            if (this.grid[tileY][tileX] === 2) {
+                this.grid[tileY][tileX] = 0;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    addBomb(x, y) {
+        const tileX = Math.floor(x / this.tileSize);
+        const tileY = Math.floor(y / this.tileSize);
+        
+        if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
+            if (this.grid[tileY][tileX] === 0) {
+                this.grid[tileY][tileX] = 3;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    removeBomb(x, y) {
+        const tileX = Math.floor(x / this.tileSize);
+        const tileY = Math.floor(y / this.tileSize);
+        
+        if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
+            if (this.grid[tileY][tileX] === 3) {
+                this.grid[tileY][tileX] = 0;
+                return true;
+            }
+        }
+        return false;
+    }
 }

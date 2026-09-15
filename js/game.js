@@ -5,17 +5,24 @@ class Game {
         this.setupCanvas();
         this.input = new InputHandler();
         this.sound = new SoundManager();
-        this.map = new Map();
+        this.level = 1;
+        this.maxLevel = 25;
+        this.map = new Map(this.level);
         this.player = new Player(this);
         this.enemies = [];
         this.explosions = [];
+        this.powerups = [];
         this.isGameOver = false;
         this.gameWon = false;
         this.paused = false;
         this.score = 0;
         this.lastTime = 0;
         
-        this.createEnemies(4);
+        if (window.updateLevelDisplay) {
+            window.updateLevelDisplay(this.level);
+        }
+        
+        this.createEnemies(3 + Math.floor(this.level * 1.5));
         this.loadSounds();
         
         this.lastTime = performance.now();
@@ -87,12 +94,16 @@ class Game {
         this.enemies.forEach(enemy => enemy.update());
         
         this.explosions.forEach(explosion => explosion.update());
+        
+        this.powerups.forEach(powerup => powerup.update());
     }
     
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
         
         this.map.draw(this.ctx);
+        
+        this.powerups.forEach(powerup => powerup.draw(this.ctx));
         
         this.player.bombs.forEach(bomb => bomb.draw(this.ctx));
         
@@ -130,11 +141,47 @@ class Game {
     }
     
     winGame() {
-        this.gameWon = true;
-        this.score += 1000; 
-        this.updateLeaderboard();
-        document.getElementById('final-score-win').textContent = this.score;
-        document.getElementById('win-screen').classList.remove('hidden');
+        if (this.level < this.maxLevel) {
+            this.levelComplete();
+        } else {
+            this.gameWon = true;
+            this.score += 5000; 
+            this.updateLeaderboard();
+            document.getElementById('final-score-win').textContent = this.score;
+            document.getElementById('win-screen').classList.remove('hidden');
+        }
+    }
+    
+    levelComplete() {
+        this.paused = true;
+        this.score += this.level * 100;
+        if (window.updateScore) window.updateScore(this.score);
+        if (window.showLevelComplete) window.showLevelComplete(this.level + 1);
+    }
+    
+    startNextLevel() {
+        this.level++;
+        if (window.updateLevelDisplay) window.updateLevelDisplay(this.level);
+        
+        this.map = new Map(this.level);
+        
+        // Keep player stats but reset position
+        this.player.x = 32;
+        this.player.y = 32;
+        this.player.targetX = 32;
+        this.player.targetY = 32;
+        this.player.moving = false;
+        this.player.bombs = [];
+        
+        this.enemies = [];
+        this.explosions = [];
+        this.powerups = [];
+        this.paused = false;
+        
+        this.createEnemies(3 + Math.floor(this.level * 1.5));
+        
+        document.getElementById('level-complete-screen').classList.add('hidden');
+        this.lastTime = performance.now();
     }
     
     updateLeaderboard() {
@@ -173,16 +220,23 @@ class Game {
         document.getElementById('win-screen').classList.add('hidden');
         document.getElementById('pause-screen').classList.add('hidden');
         
-        this.map = new Map();
+        document.getElementById('level-complete-screen').classList.add('hidden');
+        
+        this.level = 1;
+        if (window.updateLevelDisplay) window.updateLevelDisplay(this.level);
+        
+        this.map = new Map(this.level);
         this.player = new Player(this);
         this.enemies = [];
         this.explosions = [];
+        this.powerups = [];
         this.isGameOver = false;
         this.gameWon = false;
         this.paused = false;
         this.score = 0;
+        if (window.updateScore) window.updateScore(this.score);
         
-        this.createEnemies(3);
+        this.createEnemies(3 + Math.floor(this.level * 1.5));
         
         this.lastTime = performance.now();
     }

@@ -175,6 +175,23 @@
             border-right-color: #333;
         }
 
+        #level-display {
+            position: absolute;
+            top: 10px;
+            right: 80px;
+            color: #ff0;
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            z-index: 10;
+            background: #000;
+            padding: 8px 12px;
+            border: 2px solid #555;
+            border-top-color: #999;
+            border-left-color: #999;
+            border-bottom-color: #333;
+            border-right-color: #333;
+        }
+
         #pause-screen h1 {
             color: #ff0;
         }
@@ -331,6 +348,12 @@
                 <button id="pause-restart-button">RESTART</button>
             </div>
             
+            <div id="level-complete-screen" class="screen hidden">
+                <h1>LEVEL COMPLETE!</h1>
+                <p>GET READY FOR LEVEL <span id="next-level-number">2</span></p>
+                <button id="next-level-button">CONTINUE</button>
+            </div>
+            
             <div id="game-over-screen" class="screen hidden">
                 <h1>GAME OVER</h1>
                 <p>FINAL SCORE: <span id="final-score">0</span></p>
@@ -371,6 +394,7 @@
     <script src="js/input.js"></script>
     <script src="js/map.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/powerup.js"></script>
     <script src="js/bomb.js"></script>
     <script src="js/enemy.js"></script>
     <script src="js/game.js"></script>
@@ -425,10 +449,31 @@
             document.getElementById('game-container').appendChild(scoreDisplay);
         }
         
+        if (!document.getElementById('level-display')) {
+            const levelDisplay = document.createElement('div');
+            levelDisplay.id = 'level-display';
+            levelDisplay.textContent = 'LEVEL: 1';
+            document.getElementById('game-container').appendChild(levelDisplay);
+        }
+        
+        document.getElementById('next-level-button').addEventListener('click', () => {
+            document.getElementById('level-complete-screen').classList.add('hidden');
+            if (typeof startNextLevel === 'function') {
+                startNextLevel();
+            }
+        });
+        
         window.updateScore = function(score) {
             const scoreDisplay = document.getElementById('score-display');
             if (scoreDisplay) {
                 scoreDisplay.textContent = 'SCORE: ' + String(score).padStart(5, '0');
+            }
+        };
+        
+        window.updateLevelDisplay = function(level) {
+            const levelDisplay = document.getElementById('level-display');
+            if (levelDisplay) {
+                levelDisplay.textContent = 'LEVEL: ' + level;
             }
         };
         
@@ -453,6 +498,14 @@
                 screen.classList.add('hidden');
             });
             document.getElementById('pause-screen').classList.remove('hidden');
+        };
+        
+        window.showLevelComplete = function(nextLevel) {
+            document.getElementById('next-level-number').textContent = nextLevel;
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById('level-complete-screen').classList.remove('hidden');
         };
     </script>
 </body>

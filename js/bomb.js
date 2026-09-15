@@ -164,7 +164,13 @@ class Explosion {
             }
             
             if (this.timer === 29) { 
-                this.game.map.destroyBlock(this.x, this.y);
+                if (this.game.map.destroyBlock(this.x, this.y)) {
+                    if (Math.random() < 0.25) {
+                        const types = ['bombUp', 'rangeUp', 'speedUp'];
+                        const type = types[Math.floor(Math.random() * types.length)];
+                        this.game.powerups.push(new Powerup(this.game, this.x, this.y, type));
+                    }
+                }
             }
         }
     }

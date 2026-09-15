@@ -67,6 +67,34 @@ const ENEMY_SPRITES = {
       [0,0,2,0,0,2,0,0]
     ],
     colors: ['transparent', '#8B0000', '#DC143C', '#FFD700']
+  },
+  
+  slime: {
+    pattern: [
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,1,1,1,1,0,0],
+      [0,1,1,1,1,1,1,0],
+      [1,2,1,1,1,1,2,1],
+      [1,1,1,1,1,1,1,1],
+      [1,1,3,3,3,3,1,1],
+      [1,1,1,1,1,1,1,1]
+    ],
+    colors: ['transparent', '#00FF00', '#FFFFFF', '#006400']
+  },
+  
+  bat: {
+    pattern: [
+      [1,0,0,0,0,0,0,1],
+      [1,1,0,0,0,0,1,1],
+      [1,1,1,1,1,1,1,1],
+      [0,1,2,1,1,2,1,0],
+      [0,1,1,3,3,1,1,0],
+      [0,0,1,1,1,1,0,0],
+      [0,0,0,1,1,0,0,0],
+      [0,0,0,0,0,0,0,0]
+    ],
+    colors: ['transparent', '#4B0082', '#FF0000', '#FFFFFF']
   }
 };
 
@@ -106,7 +134,16 @@ class Enemy {
     }
     
     
-    if (this.moveTimer > 60 || Math.random() < 0.02) {
+    if ((this.spriteType === 'demon' || this.spriteType === 'bat') && this.moveTimer > 30) {
+      const dx = this.game.player.x - this.x;
+      const dy = this.game.player.y - this.y;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        this.direction = dx > 0 ? 1 : 3;
+      } else {
+        this.direction = dy > 0 ? 2 : 0;
+      }
+      this.moveTimer = 0;
+    } else if (this.moveTimer > 60 || Math.random() < 0.02) {
       this.direction = Math.floor(Math.random() * 4);
       this.moveTimer = 0;
     }
@@ -114,7 +151,7 @@ class Enemy {
     
     const prevX = this.x;
     const prevY = this.y;
-    const speed = 1;
+    const speed = getEnemyInfo(this).speed + (this.game.level * 0.1);
     
     switch (this.direction) {
       case 0: 
@@ -256,7 +293,9 @@ function getEnemyInfo(enemy) {
     spider: { speed: 1.2, score: 150, name: "Spider" },
     skull: { speed: 0.8, score: 200, name: "Skull" },
     ghost: { speed: 1.5, score: 300, name: "Ghost" },
-    demon: { speed: 1.1, score: 250, name: "Demon" }
+    demon: { speed: 1.1, score: 250, name: "Demon" },
+    slime: { speed: 0.9, score: 120, name: "Slime" },
+    bat: { speed: 1.6, score: 350, name: "Bat" }
   };
   
   return info[enemy.spriteType] || info.blob;

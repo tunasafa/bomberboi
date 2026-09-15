@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const winRestartButton = document.getElementById('win-restart-button'); 
     const resumeButton = document.getElementById('resume-button'); 
     const pauseRestartButton = document.getElementById('pause-restart-button');
+    const nextLevelButton = document.getElementById('next-level-button');
     const muteButton = document.getElementById('mute-button');
     let game;
     
@@ -17,9 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-   
     if (startButton) {
         startButton.addEventListener('click', startGame);
+    }
+    
+    if (nextLevelButton) {
+        nextLevelButton.addEventListener('click', () => {
+            if (game) {
+                game.startNextLevel();
+            }
+        });
     }
     
     

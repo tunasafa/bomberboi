@@ -127,6 +127,7 @@ class Player {
         this.bombs = [];
         this.maxBombs = 3;
         this.bombRange = 2;
+        this.baseSpeed = 2;
         this.targetX = 32;
         this.targetY = 32;
         this.moving = false;
@@ -185,7 +186,7 @@ class Player {
             }
         } else {
             
-            const speed = 2;
+            const speed = this.baseSpeed;
             if (this.x < this.targetX) {
                 this.x = Math.min(this.x + speed, this.targetX);
             } else if (this.x > this.targetX) {

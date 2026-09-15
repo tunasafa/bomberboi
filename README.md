@@ -4,13 +4,13 @@ version update:
 - graphics and UI improvements
 - powerups, new levels, and smarter enemies added
 
+** CLICK ON THE IMAGE TO PLAY THE GAME **
+
 <div align="center">
   <a href="https://tunasafa.github.io/bomberboi/">
     <img src="img/cover.jpg" alt="PLAY BOMBERBOI" style="border: 4px solid #fff; max-width: 100%; height: auto;">
   </a>
 </div>
-
-or download the files and open the index file in your own pc browser
 
 visuals:
 

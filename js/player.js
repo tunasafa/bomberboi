@@ -344,10 +344,7 @@ class Player {
         const drawX = Math.round(x);
         let drawY = Math.round(y);
 
-        // Very subtle walk bounce.
-        if (this.moving) {
-            drawY += Math.round(Math.sin(this.animationTimer * 0.35));
-        }
+        // Remove walk bounce as per user request
 
         for (let row = 0; row < pattern.length; row++) {
             for (let col = 0; col < pattern[row].length; col++) {

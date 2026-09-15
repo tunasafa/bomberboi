@@ -236,6 +236,7 @@ class Player {
         this.animationFrame = 0;
         this.animationTimer = 0;
         this.walkCycle = 0; 
+        this.bombKeyWasDown = false;
     }
     
     update() {
@@ -307,7 +308,8 @@ class Player {
         }
         
         
-        if (this.game.input.getKey(' ') && this.bombs.length < this.maxBombs) {
+        const isSpaceDown = this.game.input.getKey(' ');
+        if (isSpaceDown && !this.bombKeyWasDown && this.bombs.length < this.maxBombs) {
             const bombX = Math.floor((this.x + this.width / 2) / 32) * 32;
             const bombY = Math.floor((this.y + this.height / 2) / 32) * 32;
             
@@ -329,6 +331,8 @@ class Player {
                 this.game.sound.playSound('bomb');
             }
         }
+        
+        this.bombKeyWasDown = isSpaceDown;
     }
     
     drawPixelArt(ctx, x, y) {

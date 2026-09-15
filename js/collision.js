@@ -1,9 +1,9 @@
-function checkCollision(obj1, obj2) {
+function checkCollision(obj1, obj2, buffer = 0) {
     return (
-        obj1.x < obj2.x + obj2.width &&
-        obj1.x + obj1.width > obj2.x &&
-        obj1.y < obj2.y + obj2.height &&
-        obj1.y + obj1.height > obj2.y
+        obj1.x + buffer < obj2.x + obj2.width - buffer &&
+        obj1.x + obj1.width - buffer > obj2.x + buffer &&
+        obj1.y + buffer < obj2.y + obj2.height - buffer &&
+        obj1.y + obj1.height - buffer > obj2.y + buffer
     );
 }
 

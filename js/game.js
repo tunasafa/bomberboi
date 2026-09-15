@@ -133,22 +133,40 @@ class Game {
     }
     
     gameOver() {
+        if (this.isGameOver || this.player.invincible > 0) return;
+        
+        if (this.player.lives > 0) {
+            this.player.lives--;
+            this.player.invincible = 180; // 3 seconds of invincibility at 60fps
+            return;
+        }
+        
         this.isGameOver = true;
         this.sound.playSound('death');
         this.updateLeaderboard();
         document.getElementById('final-score').textContent = this.score;
-        document.getElementById('game-over-screen').classList.remove('hidden');
+        setTimeout(() => {
+            document.getElementById('game-over-screen').classList.remove('hidden');
+        }, 1500);
     }
     
     winGame() {
+        if (this.isGameOver || this.gameWon || this.levelCompleting) return;
+        
         if (this.level < this.maxLevel) {
-            this.levelComplete();
+            this.levelCompleting = true;
+            setTimeout(() => {
+                this.levelComplete();
+                this.levelCompleting = false;
+            }, 1000);
         } else {
             this.gameWon = true;
             this.score += 5000; 
             this.updateLeaderboard();
             document.getElementById('final-score-win').textContent = this.score;
-            document.getElementById('win-screen').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('win-screen').classList.remove('hidden');
+            }, 1500);
         }
     }
     

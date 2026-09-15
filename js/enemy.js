@@ -176,7 +176,7 @@ class Enemy {
     }
     
     
-    if (checkCollision(this, this.game.player)) {
+    if (checkCollision(this, this.game.player, 6)) {
       this.game.gameOver();
     }
   }

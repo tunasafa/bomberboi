@@ -146,7 +146,7 @@ class Explosion {
            
             if (!this.game.isGameOver && !this.game.gameWon) {
                 
-                if (checkCollision(this, this.game.player)) {
+                if (checkCollision(this, this.game.player, 8)) {
                     this.game.gameOver();
                 }
                 
@@ -166,7 +166,7 @@ class Explosion {
             if (this.timer === 29) { 
                 if (this.game.map.destroyBlock(this.x, this.y)) {
                     if (Math.random() < 0.25) {
-                        const types = ['bombUp', 'rangeUp', 'speedUp'];
+                        const types = ['bombUp', 'bombUp', 'rangeUp', 'rangeUp', 'speedUp', 'speedUp', 'extraLife'];
                         const type = types[Math.floor(Math.random() * types.length)];
                         this.game.powerups.push(new Powerup(this.game, this.x, this.y, type));
                     }

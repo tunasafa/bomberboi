@@ -32,6 +32,9 @@ class Powerup {
             case 'speedUp':
                 this.game.player.baseSpeed = Math.min((this.game.player.baseSpeed || 2) + 0.5, 4);
                 break;
+            case 'extraLife':
+                this.game.player.lives = (this.game.player.lives || 0) + 1;
+                break;
         }
         
         // Remove from game powerups list
@@ -46,35 +49,40 @@ class Powerup {
         
         ctx.save();
         
-        // Draw background circle
         ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x + 16, drawY + 16, 12, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(this.x + 4, drawY + 4, 24, 24);
         
         // Draw icon based on type
         if (this.type === 'bombUp') {
             ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(this.x + 16, drawY + 18, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillRect(this.x + 14, drawY + 10, 4, 4);
+            ctx.fillRect(this.x + 8, drawY + 12, 16, 12);
+            ctx.fillRect(this.x + 10, drawY + 10, 12, 16);
+            ctx.fillRect(this.x + 14, drawY + 8, 4, 4);
             ctx.fillStyle = '#ff0000';
-            ctx.fillRect(this.x + 15, drawY + 8, 2, 2);
+            ctx.fillRect(this.x + 14, drawY + 14, 4, 4);
+            ctx.fillStyle = '#ffaa00';
+            ctx.fillRect(this.x + 16, drawY + 4, 4, 4);
         } else if (this.type === 'rangeUp') {
             ctx.fillStyle = '#ff4500';
-            ctx.fillRect(this.x + 10, drawY + 14, 12, 4);
-            ctx.fillRect(this.x + 14, drawY + 10, 4, 12);
+            ctx.fillRect(this.x + 10, drawY + 14, 12, 10);
+            ctx.fillRect(this.x + 14, drawY + 10, 4, 14);
             ctx.fillStyle = '#ffff00';
-            ctx.fillRect(this.x + 12, drawY + 12, 8, 8);
+            ctx.fillRect(this.x + 12, drawY + 16, 8, 6);
         } else if (this.type === 'speedUp') {
             ctx.fillStyle = '#00ffff';
-            ctx.beginPath();
-            ctx.moveTo(this.x + 12, drawY + 20);
-            ctx.lineTo(this.x + 16, drawY + 8);
-            ctx.lineTo(this.x + 20, drawY + 20);
-            ctx.lineTo(this.x + 16, drawY + 16);
-            ctx.fill();
+            ctx.fillRect(this.x + 14, drawY + 8, 8, 8);
+            ctx.fillRect(this.x + 10, drawY + 16, 12, 8);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(this.x + 8, drawY + 18, 4, 4);
+        } else if (this.type === 'extraLife') {
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(this.x + 8, drawY + 10, 6, 6);
+            ctx.fillRect(this.x + 18, drawY + 10, 6, 6);
+            ctx.fillRect(this.x + 6, drawY + 12, 20, 8);
+            ctx.fillRect(this.x + 10, drawY + 20, 12, 4);
+            ctx.fillRect(this.x + 14, drawY + 24, 4, 4);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(this.x + 10, drawY + 12, 2, 2);
         }
         
         ctx.restore();

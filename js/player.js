@@ -201,51 +201,50 @@ const SIDE_PROFILE_BODY = [
     '............kkkkkkkk............',
     '.........kkbhhhhhhbbbkk.........',
     '.......kkbhhhhhhbbbbbbbkk.......',
-    '......kkbhhhhhbbbyyybbbbbkk.....',
-    '.....kkbhhhhbbbbyyxxybbbdddd....',
-    '....kkbhhhbbbbbbyyxxxbbbddddk...',
-    '....kkbbbbbbbbbbyyxxybbbddddk...',
-    '...kkbbbbbbbbbbbyyxxxbbbddddk...',
-    '...kkbbbaabsssssssfffkkbddddk...',
-    '...kkbbbaassssssssfffkkbkrrrrk..',
-    '....kbbbaasxxxssssffskkbkhhrrk..',
-    '....bfffaasxwxsssssskkk.kqqrrk..',
-    '...kfffsaasssssssssskkk.kqqrrk..',
-    '...kkbaaaasssssssssskkk.kqqrrk..',
-    '....kkkssaaasssssssskk..kqqrrk..',
-    '.....kkkssxffxxsssskkk..krrrrk..',
-    '.......kkkssaaaasskkk...........',
-    '.........kkkkksssskk............',
-    '........kkbbbbbbbbbbbbbkk.......',
-    '......kssshhhhbbbbbbbbbsskk.....',
-    '.....ksssbhhhbbbbbbbbbbbsskk....',
-    '....kssskbbbbbbbbbbbbdddbbbkk...',
-    '...kbbbkkbbbbbbbbbbbbdddkbbbkk..',
-    '.kqhhhrk.bbbbbbbbbbbbbbb..krhhhk'
+    '......kkyyhhhhbbbbbbbbbbkk......',
+    '.....kkyyxxbbbbbbbbbbbbbbbkk....',
+    '....kkyyxxbbbbbbbbbbbbbbbbbbk...',
+    '....kkyyxbbbbbbbbbbbbbbbbbbbk...',
+    '...kkkyybbbbbbbbbbbbbbbbbbbbk...',
+    '...kkssssssssskkbbbbbbbbbbbk....',
+    '...ksssssssssssskkbbbbbbbbbk....',
+    '..kkssxwxssssssskkbbbbbbbbbk....',
+    '..kkssxxxssssssskkbbbbbbhhbk....',
+    '..kksssssssssssskkbbbbbbhhbk....',
+    '...kkssssssssssskkbbbbbbhhbk....',
+    '....kksssxxxxssskkbbbbbbbbbk....',
+    '.....kksssssssskkkbbbbbbbbbk....',
+    '......kkkksssskkkbbbbbbbbbkk....',
+    '........kkkkkkkkkkbbbbbbbkk.....',
+    '.........kkbbbbbbbbbbbbkkk......',
+    '.......kssshhhhbbbbbbbbkk.......',
+    '......ksssbhhhbbbbbbbbbkk.......',
+    '......kssskbbbbbbbbbbbbkk.......',
+    '.....kbbbkkbbbbbbbbbbbbkk.......',
+    '.....krrrk.bbbbbbbbbbbbkk.......'
 ];
 
 const SIDE_PROFILE_LEGS_A = [
-    '.kqrrrrkkkyyyyyygwgyyyykk.krrqqk',
-    '.kqqrrrkkkyyyyyyyxyyyyykk.krrqqk',
-    '.kqqrrrk.kkbbbk..kbbbkk...krrqqk',
-    '.........kkbbbk..kbbbkk.........',
-    '.........kkbbbk..kbbbkk.........',
-    '......kkrwwwrrrk.krrwwwqqkk.....',
-    '......kkrhhhrrrk.krrhhhqqkk.....',
-    '......kkrqqqrrrk.krrrrqqqkk.....'
+    '.....krrrrrkkkyyyyywwyyykkkkrrkk',
+    '.....krrrrrkkkbbbbbxbbbbkkkkrrkk',
+    '.....krrrrrk.kkbbbk.kbbbkk..rrkk',
+    '.............kkbbbk.kbbbkk......',
+    '.............kkbbbk.kbbbkk......',
+    '..........kkrwwwrrk.krwwwrrkk...',
+    '..........kkrhhhrrk.krhhhrrkk...',
+    '..........kkrrrrrrk.krrrrrrkk...'
 ];
 
 const SIDE_PROFILE_LEGS_B = [
-    '.kqrrrrkkkyyyyyygwgyyyykk.krrqqk',
-    '.kqqrrrkkkyyyyyyyxyyyyykk.krrqqk',
-    '.kqqrrrk..kkbbbkkbbbkk....krrqqk',
-    '..........kkbbbkkbbbkk..........',
-    '..........kkbbbkkbbbkk..........',
-    '........kwwwqqrrkrrrwwwqkk......',
-    '........khhhqqrrkrrrhhhqkk......',
-    '........kkrqqqrrkrrrrqqqkk......'
+    '.....krrrrrkkkyyyyywwyyykkkkrrkk',
+    '.....krrrrrkkkbbbbbxbbbbkkkkrrkk',
+    '.....krrrrrk..kkbbbkkbbbkk..rrkk',
+    '..............kkbbbkkbbbkk......',
+    '..............kkbbbkkbbbkk......',
+    '............kwwwrrrrkrrrrwwwrk..',
+    '............khhhrrrrkrrrrhhhrk..',
+    '............kkrrrrrrkrrrrrrrrk..'
 ];
-
 const PLAYER_SPRITES = {
     down: [
         makeSprite([...DOWN_BODY, ...DOWN_LEGS_A]),

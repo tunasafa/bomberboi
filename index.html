@@ -243,53 +243,11 @@
             align-items: center;
         }
 
-        /* Bomberboi Logo Style for Game Over/Win text */
-        .pixel-logo-banner {
-            background-color: #0e5baf; /* Bomberboi blue */
-            border: 4px solid #000;
-            padding: 12px 24px;
+        .logo-img {
+            max-width: 90%;
+            height: auto;
             margin-bottom: 20px;
-            box-shadow: inset 0 0 0 4px #eab187, 4px 4px 0 #000;
-            position: relative;
-        }
-
-        .pixel-logo-text {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            margin: 0 !important;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 0;
-            
-            /* Orange Gradient */
-            background: linear-gradient(180deg, #ed4c14 0%, #f4821a 40%, #ffcfa6 60%, #ffe3cb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-text-stroke: 2px #000;
-        }
-
-        .pixel-logo-text::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            z-index: -1;
-            /* Dark 3D shadow */
-            -webkit-text-stroke: 0;
-            -webkit-text-fill-color: #171018;
-            transform: translate(6px, 6px);
-        }
-
-        .retro-win .pixel-logo-banner {
-            background-color: #0eaf3c;
-            box-shadow: inset 0 0 0 4px #b9ea87, 4px 4px 0 #000;
-        }
-
-        .retro-win .pixel-logo-text {
-            /* Green Gradient */
-            background: linear-gradient(180deg, #14ed26 0%, #1af472 40%, #a6ffc2 60%, #cbffe6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            image-rendering: auto; /* Since it's a high-res generation, we want it smooth, or pixelated if scaled up */
         }
 
         .retro-end p {
@@ -519,9 +477,7 @@
             </div>
             
             <div id="game-over-screen" class="screen retro-end hidden">
-                <div class="pixel-logo-banner">
-                    <h1 class="pixel-logo-text" data-text="GAME OVER">GAME OVER</h1>
-                </div>
+                <img src="img/game_over_logo.jpg" class="logo-img" alt="GAME OVER">
                 <p>FINAL SCORE: <span id="final-score">0</span></p>
                 <div class="pixel-panel">
                     <h2>HIGH SCORES</h2>
@@ -537,9 +493,7 @@
             </div>
             
             <div id="win-screen" class="screen retro-end retro-win hidden">
-                <div class="pixel-logo-banner">
-                    <h1 class="pixel-logo-text" data-text="YOU WIN!">YOU WIN!</h1>
-                </div>
+                <img src="img/you_win_logo.jpg" class="logo-img" alt="YOU WIN!">
                 <p>FINAL SCORE: <span id="final-score-win">0</span></p>
                 <div class="pixel-panel">
                     <h2>HIGH SCORES</h2>

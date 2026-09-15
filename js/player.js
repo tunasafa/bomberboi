@@ -272,8 +272,8 @@ class Player {
         this.x = 32;
         this.y = 32;
         this.bombs = [];
-        this.maxBombs = 3;
-        this.bombRange = 2;
+        this.maxBombs = 1;
+        this.bombRange = 1;
         this.baseSpeed = 2;
         this.lives = 0;
         this.invincible = 0;

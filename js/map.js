@@ -140,13 +140,14 @@ drawGrassGround(ctx, x, y) {
             }
         }
     }
-    // Tufts of grass
+
     ctx.fillStyle = this.theme.groundDarker;
-    ctx.fillRect(x + 4, y + 4, 2, 4);
-    ctx.fillRect(x + 20, y + 12, 2, 4);
-    ctx.fillRect(x + 12, y + 24, 2, 4);
-    ctx.fillRect(x + 28, y + 8, 2, 4);
+    ctx.fillRect(x + 4, y + 4, 2, 2);
+    ctx.fillRect(x + 20, y + 12, 2, 2);
+    ctx.fillRect(x + 12, y + 24, 2, 2);
+    ctx.fillRect(x + 28, y + 8, 2, 2);
 }
+
 
 drawSandGround(ctx, x, y) {
     ctx.fillStyle = this.theme.groundBase;
@@ -226,7 +227,6 @@ drawStoneWall(ctx, x, y) {
     ctx.fillStyle = this.theme.wallBase;
     ctx.fillRect(x, y, this.tileSize, this.tileSize);
     
-    // Large stone bricks (like classic bomberman)
     ctx.fillStyle = this.theme.wallLight;
     ctx.fillRect(x + 2, y + 2, 28, 12);
     ctx.fillRect(x + 2, y + 18, 28, 12);
@@ -236,11 +236,13 @@ drawStoneWall(ctx, x, y) {
     ctx.fillRect(x + 14, y + 2, 2, 12);
     ctx.fillRect(x + 20, y + 18, 2, 12);
     
+
     ctx.fillStyle = this.theme.wallEdge;
     ctx.fillRect(x, y, this.tileSize, 2);
     ctx.fillRect(x, y, 2, this.tileSize);
   
     ctx.fillStyle = this.theme.wallHighlight;
+
     ctx.fillRect(x + 3, y + 3, 26, 1);
     ctx.fillRect(x + 3, y + 19, 26, 1);
     ctx.fillRect(x + 3, y + 3, 1, 10);
@@ -248,8 +250,12 @@ drawStoneWall(ctx, x, y) {
     
     ctx.fillStyle = this.theme.wallAccent;
     ctx.fillRect(x + 6, y + 6, 1, 1);
+    ctx.fillRect(x + 10, y + 8, 1, 1);
+    ctx.fillRect(x + 18, y + 5, 1, 1);
     ctx.fillRect(x + 22, y + 9, 1, 1);
+    ctx.fillRect(x + 8, y + 22, 1, 1);
     ctx.fillRect(x + 14, y + 25, 1, 1);
+    ctx.fillRect(x + 24, y + 23, 1, 1);
 }
 
 drawSandstonePillar(ctx, x, y) {
@@ -360,23 +366,59 @@ drawWoodCrate(ctx, x, y) {
     ctx.fillStyle = this.theme.woodBase;
     ctx.fillRect(x, y, this.tileSize, this.tileSize);
     
-    ctx.fillStyle = this.theme.woodEdge;
-    ctx.fillRect(x, y, this.tileSize, 2);
-    ctx.fillRect(x, y + this.tileSize - 2, this.tileSize, 2);
-    ctx.fillRect(x, y, 2, this.tileSize);
-    ctx.fillRect(x + this.tileSize - 2, y, 2, this.tileSize);
-
     ctx.fillStyle = this.theme.woodLight;
-    ctx.fillRect(x + 2, y + 6, this.tileSize - 4, 4);
-    ctx.fillRect(x + 2, y + 14, this.tileSize - 4, 4);
-    ctx.fillRect(x + 2, y + 22, this.tileSize - 4, 4);
+    ctx.fillRect(x + 2, y + 2, 28, 28);
     
-    // Classic diagonal crossbeam
     ctx.fillStyle = this.theme.woodDark;
-    for (let i = 2; i < this.tileSize - 2; i += 2) {
-        ctx.fillRect(x + i, y + i, 2, 2);
-        ctx.fillRect(x + this.tileSize - i - 2, y + i, 2, 2);
+    for (let i = 0; i < 8; i++) {
+        const grainY = y + 4 + i * 3;
+        ctx.fillRect(x + 2, grainY, 28, 1);
+        
+        if (i % 2 === 0) {
+            ctx.fillRect(x + 4, grainY + 1, 24, 1);
+        } else {
+            ctx.fillRect(x + 6, grainY + 1, 20, 1);
+        }
     }
+    
+
+    ctx.fillStyle = this.theme.woodEdge;
+    ctx.fillRect(x + 8, y + 2, 1, 28);
+    ctx.fillRect(x + 16, y + 2, 1, 28);
+    ctx.fillRect(x + 24, y + 2, 1, 28);
+    
+    ctx.fillStyle = this.theme.woodAccent;
+    
+    ctx.fillRect(x + 12, y + 8, 3, 2);
+    ctx.fillRect(x + 13, y + 7, 1, 4);
+
+    ctx.fillRect(x + 20, y + 18, 2, 3);
+    ctx.fillRect(x + 19, y + 19, 4, 1);
+    
+  
+    ctx.fillStyle = this.theme.woodHighlight;
+    
+    ctx.fillRect(x + 3, y + 3, 26, 1);
+    ctx.fillRect(x + 3, y + 3, 1, 26);
+    
+    
+    for (let i = 0; i < 4; i++) {
+        const highlightY = y + 6 + i * 6;
+        ctx.fillRect(x + 4, highlightY, 24, 1);
+    }
+    
+    
+    ctx.fillStyle = this.theme.woodShadow;
+    
+    ctx.fillRect(x, y, this.tileSize, 1);
+    ctx.fillRect(x, y, 1, this.tileSize);
+    ctx.fillRect(x, y + 31, this.tileSize, 1);
+    ctx.fillRect(x + 31, y, 1, this.tileSize);
+    
+    
+    ctx.fillRect(x + 10, y + 2, 1, 6);
+    ctx.fillRect(x + 22, y + 15, 1, 8);
+    ctx.fillRect(x + 6, y + 25, 8, 1);
 }
 
 drawClayVase(ctx, x, y) {

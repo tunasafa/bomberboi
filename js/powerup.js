@@ -22,56 +22,56 @@ const POWERUP_SPRITES = {
     bombUp: [
         '.......kk.......',
         '......kOOk......',
-        '......kook......',
         '.......ff.......',
         '......kffk......',
-        '.....kKKKKk.....',
-        '....kKmmmKKk....',
-        '...kKcccKKKKk...',
-        '...kKcwcKKKKk...',
-        '...kKmmKKKKKk...',
-        '...kKmmmmKKKk...',
-        '....kKmmmKKk....',
-        '.....kKKKKk.....',
-        '......kkkk......',
-        '......kkkk......',
-        '......dddd......'
+        '....kkkkkkkk....',
+        '..kkKKKKKKKKkk..',
+        '.kKKKKKKKKKKKKk.',
+        '.kKKKccKKKKKKKk.',
+        'kKKKcwwcKKKKKKKk',
+        'kKKKcwwcKKKKKKKk',
+        'kKKKccccKKKKKKKk',
+        'kKKKKccKKKKKKKKk',
+        '.kKKKKKKKKKKKKk.',
+        '.kKKKKKKKKKKKKk.',
+        '..kkKKKKKKKKkk..',
+        '....kkkkkkkk....'
     ],
     rangeUp: [
         '.......kk.......',
         '......kook......',
-        '......oooo......',
-        '.....koOOok.....',
-        '....koOOOOok....',
-        '...koOOOOOOok...',
-        '.kooOOOOOOOOook.',
-        'koyyyyywwyyyyyok',
-        'kkyyyyyyyyyyyykk',
-        '.kkkOOOOOOOOkkk.',
-        '...kkOOOOOOkk...',
-        '....kkooookk....',
-        '.....kooook.....',
-        '......kook......',
-        '......kook......',
-        '.......kk.......'
+        '.....koOook.....',
+        '....koOOOook....',
+        '...koOOOOOook...',
+        '..koOOOOOOOook..',
+        '.koOOOOOOOOOook.',
+        '.koOOOwwOOOOook.',
+        'koOOOOwwOOOOOook',
+        'koOOOOOOOOOOOook',
+        'koOOOOOOOOOOOook',
+        '.koOOOOOOOOOook.',
+        '.kkoOOOOOOOookk.',
+        '..kkoOOOOOookk..',
+        '...kkoOOOookk...',
+        '.....kkkkkk.....'
     ],
     speedUp: [
-        '................',
         '.......kk.......',
-        '......kOOk......',
-        '.....kOOOOk.....',
-        '....kOOOOOkk....',
-        '...h.kOOOOOkk...',
-        '..kOOOOOkk......',
-        '.hh.kOOOkk......',
-        '.kOOOyyyyyyk....',
-        '..kkOOOOOOk.....',
-        '....kOOOOk......',
-        '...h.kOOOk......',
-        '....kOOOk.......',
-        '...kOkk.........',
-        '...kk...........',
-        '................'
+        '......kwOk......',
+        '.....kwwOk......',
+        '....kwwwOk......',
+        '...kwwwwOk......',
+        '..kwwwwwOk......',
+        '.kwwwwwwOkkkkk..',
+        '.kwwwwwOOOOOOk..',
+        '.kkkkkkkOyyyyk..',
+        '.......kOyyyk...',
+        '......kOyyyk....',
+        '.....kOyyk......',
+        '....kOyyk.......',
+        '...kOyk.........',
+        '..kOyk..........',
+        '..kk............'
     ],
     extraLife: [
         '................',
@@ -93,26 +93,8 @@ const POWERUP_SPRITES = {
     ]
 };
 
-// Shrink the 16px source icons to the nearest whole-pixel 14px version. This
-// keeps the requested smaller silhouette sharp at both 1x HUD and 2x world
-// scale instead of introducing blurry fractional canvas pixels.
-const POWERUP_RENDER_SIZE = 14;
-
-function shrinkPowerupSprite(sprite, targetSize = POWERUP_RENDER_SIZE) {
-    return Array.from({ length: targetSize }, (_, row) => {
-        const sourceRow = Math.round(row * (sprite.length - 1) / (targetSize - 1));
-
-        return Array.from({ length: targetSize }, (_, col) => {
-            const sourceCol = Math.round(col * (sprite[sourceRow].length - 1) / (targetSize - 1));
-            return sprite[sourceRow][sourceCol];
-        }).join('');
-    });
-}
-
-const POWERUP_RENDER_SPRITES = {};
-Object.keys(POWERUP_SPRITES).forEach(type => {
-    POWERUP_RENDER_SPRITES[type] = shrinkPowerupSprite(POWERUP_SPRITES[type]);
-});
+// No longer shrinking sprites so they retain their hand-crafted 16x16 shapes.
+const POWERUP_RENDER_SPRITES = POWERUP_SPRITES;
 
 class Powerup {
     constructor(game, x, y, type) {

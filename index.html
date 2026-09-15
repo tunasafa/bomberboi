@@ -234,66 +234,145 @@
             color: #ff0;
         }
 
-        #game-over-screen h1 {
-            color: #f00;
-            text-shadow: 2px 2px 0 #500, -2px -2px 0 #500;
+        /* Retro Game Over & Win Screens */
+        .retro-end {
+            background-color: #000 !important;
+            background-image: linear-gradient(rgba(100, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('img/cover.jpg?v=6') !important;
+            background-size: auto 107.7% !important;
+            background-position: center bottom !important;
+            border: 4px solid #f00 !important;
+            box-shadow: inset 0 0 50px #f00 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 30px !important;
         }
 
-        #win-screen h1 {
-            color: #0f0;
-            text-shadow: 2px 2px 0 #050, -2px -2px 0 #050;
+        .retro-win {
+            background-image: linear-gradient(rgba(0, 100, 0, 0.7), rgba(0, 0, 0, 0.9)), url('img/cover.jpg?v=6') !important;
+            border-color: #0f0 !important;
+            box-shadow: inset 0 0 50px #0f0 !important;
+        }
+
+        .retro-end h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem) !important;
+            color: #f00 !important;
+            text-shadow: 4px 4px 0 #500, -2px -2px 0 #000 !important;
+            margin-bottom: 5px !important;
+            animation: pulse-glitch 2s infinite;
+        }
+
+        .retro-win h1 {
+            color: #0f0 !important;
+            text-shadow: 4px 4px 0 #050, -2px -2px 0 #000 !important;
+        }
+
+        @keyframes pulse-glitch {
+            0% { transform: scale(1); }
+            5% { transform: scale(1.05); }
+            10% { transform: scale(1); }
+            15% { transform: scale(1.02); }
+            20% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        .retro-end p {
+            font-size: clamp(0.7rem, 2.5vw, 1rem) !important;
+            color: #fff !important;
+            text-shadow: 2px 2px 0 #000;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 15px;
+            border: 2px solid #555;
+            margin-bottom: 10px !important;
         }
 
         .leaderboard {
-            background: #111;
-            border: 3px solid #555;
-            border-top-color: #999;
-            border-left-color: #999;
-            border-bottom-color: #333;
-            border-right-color: #333;
+            background: rgba(0, 0, 0, 0.8);
+            border: 4px solid #f00;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             padding: 20px;
-            margin: 20px 0;
+            margin: 10px 0 20px 0;
             width: 85%;
             max-width: 320px;
-            max-height: 40vh;
-            overflow-y: auto;
             position: relative;
         }
 
+        .retro-win .leaderboard {
+            border-color: #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
         .leaderboard h2 {
-            color: #ff0;
+            color: #fff;
             margin-top: 0;
             margin-bottom: 15px;
             font-size: clamp(0.9rem, 3vw, 1.2rem);
+            text-align: center;
+            text-shadow: 2px 2px 0 #f00;
+        }
+        
+        .retro-win .leaderboard h2 {
+            text-shadow: 2px 2px 0 #050;
         }
 
         .leaderboard ol {
             text-align: left;
             padding-left: 0;
-            color: #0f0;
+            margin: 0;
             list-style: none;
             counter-reset: item;
         }
 
         .leaderboard li {
-            margin: 12px 0;
-            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: clamp(0.6rem, 2vw, 0.9rem);
             counter-increment: item;
-            position: relative;
-            padding-left: 30px;
+            color: #ccc;
+            padding: 0;
         }
 
         .leaderboard li::before {
             content: counter(item) ".";
-            position: absolute;
-            left: 0;
-            color: #f50;
-            font-weight: bold;
+            color: #f00;
+            width: 25px;
+            text-align: right;
+            margin-right: 15px;
+            position: static;
+        }
+        
+        .retro-win .leaderboard li::before {
+            color: #0f0;
+        }
+        
+        .leaderboard .score-name {
+            flex-grow: 1;
+            text-align: left;
+            color: #fff;
         }
 
-        .current-score {
-            color: #f00;
-            font-weight: bold;
+        .leaderboard .score-val {
+            color: #ff0;
+            text-align: right;
+        }
+
+        .leaderboard .current-score {
+            animation: blink 1s infinite;
+        }
+
+        .leaderboard .current-score::before,
+        .leaderboard .current-score .score-name,
+        .leaderboard .current-score .score-val {
+            color: #fff !important;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
         /* --- RETRO START SCREEN STYLES --- */
@@ -439,36 +518,36 @@
                 <button id="next-level-button">CONTINUE</button>
             </div>
             
-            <div id="game-over-screen" class="screen hidden">
+            <div id="game-over-screen" class="screen retro-end hidden">
                 <h1>GAME OVER</h1>
                 <p>FINAL SCORE: <span id="final-score">0</span></p>
                 <div class="leaderboard">
-                    <h2>LEADERBOARD</h2>
+                    <h2>HIGH SCORES</h2>
                     <ol id="leaderboard-list">
-                        <li>AAA - 10,000</li>
-                        <li>BBB - 7,500</li>
-                        <li>CCC - 5,000</li>
-                        <li class="current-score">YOU - 0</li>
-                        <li>DDD - 2,500</li>
+                        <li><span class="score-name">AAA</span> <span class="score-val">10000</span></li>
+                        <li><span class="score-name">BBB</span> <span class="score-val">7500</span></li>
+                        <li><span class="score-name">CCC</span> <span class="score-val">5000</span></li>
+                        <li class="current-score"><span class="score-name">YOU</span> <span class="score-val">0</span></li>
+                        <li><span class="score-name">DDD</span> <span class="score-val">2500</span></li>
                     </ol>
                 </div>
-                <button id="restart-button">PLAY AGAIN</button>
+                <button id="restart-button" class="arcade-button">INSERT COIN</button>
             </div>
             
-            <div id="win-screen" class="screen hidden">
+            <div id="win-screen" class="screen retro-end retro-win hidden">
                 <h1>YOU WIN!</h1>
                 <p>FINAL SCORE: <span id="final-score-win">0</span></p>
                 <div class="leaderboard">
-                    <h2>LEADERBOARD</h2>
+                    <h2>HIGH SCORES</h2>
                     <ol id="leaderboard-list-win">
-                        <li>AAA - 10,000</li>
-                        <li>BBB - 7,500</li>
-                        <li class="current-score">YOU - 0</li>
-                        <li>CCC - 5,000</li>
-                        <li>DDD - 2,500</li>
+                        <li><span class="score-name">AAA</span> <span class="score-val">10000</span></li>
+                        <li><span class="score-name">BBB</span> <span class="score-val">7500</span></li>
+                        <li class="current-score"><span class="score-name">YOU</span> <span class="score-val">0</span></li>
+                        <li><span class="score-name">CCC</span> <span class="score-val">5000</span></li>
+                        <li><span class="score-name">DDD</span> <span class="score-val">2500</span></li>
                     </ol>
                 </div>
-                <button id="win-restart-button">PLAY AGAIN</button>
+                <button id="win-restart-button" class="arcade-button">PLAY AGAIN</button>
             </div>
         </div>
     </div>

@@ -228,7 +228,18 @@ class Game {
                 
                 scores.forEach((entry, index) => {
                     const li = document.createElement('li');
-                    li.textContent = `${entry.score} - ${entry.date}`;
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'score-name';
+                    nameSpan.textContent = (entry.score === this.score) ? 'YOU' : 'PLY';
+                    
+                    const valSpan = document.createElement('span');
+                    valSpan.className = 'score-val';
+                    valSpan.textContent = entry.score;
+
+                    li.appendChild(nameSpan);
+                    li.appendChild(valSpan);
+
                     if (entry.score === this.score) {
                         li.classList.add('current-score');
                     }

@@ -1,4 +1,11 @@
-const POWERUP_PALETTE = {
+import re
+
+with open('js/powerup.js', 'r') as f:
+    code = f.read()
+
+# I want to add the sprites at the top, and modify draw() to use Powerup.drawIcon
+
+new_code = """const POWERUP_PALETTE = {
     '.': 'transparent',
     'x': '#000000', // black outline / bomb body
     'X': '#333333', // dark grey
@@ -88,54 +95,13 @@ const POWERUP_SPRITES = {
     ]
 };
 
-class Powerup {
-    constructor(game, x, y, type) {
-        this.game = game;
-        this.x = x;
-        this.y = y;
-        this.width = 32;
-        this.height = 32;
-        this.type = type; // 'bombUp', 'rangeUp', 'speedUp'
-        this.active = true;
-        this.animationTimer = 0;
-    }
+"""
 
-    update() {
-        this.animationTimer++;
-        
-        // Check collision with player
-        if (this.active && checkCollision(this, this.game.player)) {
-            this.collect();
-        }
-    }
+old_class = code[code.find("class Powerup {"):]
 
-    collect() {
-        this.active = false;
-        
-        switch (this.type) {
-            case 'bombUp':
-                this.game.player.maxBombs++;
-                break;
-            case 'rangeUp':
-                this.game.player.bombRange++;
-                break;
-            case 'speedUp':
-                this.game.player.baseSpeed = Math.min((this.game.player.baseSpeed || 2) + 0.5, 4);
-                break;
-            case 'extraLife':
-                this.game.player.lives = (this.game.player.lives || 0) + 1;
-                break;
-        }
-        
-        // Remove from game powerups list
-        this.game.powerups = this.game.powerups.filter(p => p !== this);
-        
-        if (window.updatePowerupsDisplay) {
-            window.updatePowerupsDisplay(this.game.player);
-        }
-    }
-
-    draw(ctx) {
+# Replace the draw method with the new one
+draw_pattern = r'draw\(ctx\) \{.*?\}\s*\}'
+new_draw = """draw(ctx) {
         if (!this.active) return;
         
         const floatY = Math.round(Math.sin(this.animationTimer * 0.1) * 3);
@@ -165,4 +131,9 @@ class Powerup {
         }
         ctx.restore();
     }
-}
+}"""
+old_class = re.sub(draw_pattern, new_draw, old_class, flags=re.DOTALL)
+
+with open('js/powerup.js', 'w') as f:
+    f.write(new_code + old_class)
+

@@ -472,9 +472,8 @@
     <script src="js/collision.js"></script>
     <script src="js/input.js"></script>
     <script src="js/map.js"></script>
-    <script src="new_sprites_32.js?v=1"></script>
-    <script src="js/player.js?v=9"></script>
-    <script src="js/powerup.js"></script>
+    <script src="js/player.js?v=10"></script>
+    <script src="js/powerup.js?v=2"></script>
     <script src="js/bomb.js"></script>
     <script src="js/enemy.js"></script>
     <script src="js/game.js"></script>
@@ -608,36 +607,8 @@
                     const type = canvas.dataset.type;
                     ctx.imageSmoothingEnabled = false;
                     
-                    if (type === 'bombUp') {
-                        ctx.fillStyle = '#444444'; // lighter so it shows on black background
-                        ctx.fillRect(4, 6, 8, 6);
-                        ctx.fillRect(5, 5, 6, 8);
-                        ctx.fillRect(7, 4, 2, 2);
-                        ctx.fillStyle = '#ff0000';
-                        ctx.fillRect(7, 7, 2, 2);
-                        ctx.fillStyle = '#ffaa00';
-                        ctx.fillRect(8, 2, 2, 2);
-                    } else if (type === 'rangeUp') {
-                        ctx.fillStyle = '#ff4500';
-                        ctx.fillRect(5, 7, 6, 5);
-                        ctx.fillRect(7, 5, 2, 7);
-                        ctx.fillStyle = '#ffff00';
-                        ctx.fillRect(6, 8, 4, 3);
-                    } else if (type === 'speedUp') {
-                        ctx.fillStyle = '#00ffff';
-                        ctx.fillRect(7, 4, 4, 4);
-                        ctx.fillRect(5, 8, 6, 4);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(4, 9, 2, 2);
-                    } else if (type === 'extraLife') {
-                        ctx.fillStyle = '#ff0000';
-                        ctx.fillRect(4, 5, 3, 3);
-                        ctx.fillRect(9, 5, 3, 3);
-                        ctx.fillRect(3, 6, 10, 4);
-                        ctx.fillRect(5, 10, 6, 2);
-                        ctx.fillRect(7, 12, 2, 2);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(5, 6, 1, 1);
+                    if (window.Powerup && typeof Powerup.drawIcon === 'function') {
+                        Powerup.drawIcon(ctx, type, 0, 0, 1);
                     }
                 });
             } else {

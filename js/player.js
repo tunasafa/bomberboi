@@ -1,3 +1,5 @@
+// Hand-authored native 32×32 player art. Each character is one crisp canvas
+// pixel, so the silhouette and highlights stay readable at game scale.
 const PLAYER_PALETTE = [
     'transparent', // 0
     '#172033',     // 1: dark outline / navy
@@ -7,7 +9,12 @@ const PLAYER_PALETTE = [
     '#FFD0A6',     // 5: skin
     '#E84646',     // 6: red gloves / boots
     '#FFFFFF',     // 7: eye highlight
-    '#101218'      // 8: almost black
+    '#101218',     // 8: almost black
+    '#0C4A8F',     // 9: blue shadow
+    '#D89572',     // 10: skin shadow
+    '#A72E38',     // 11: red shadow
+    '#C99620',     // 12: gold shadow
+    '#FFE7C7'      // 13: skin highlight
 ];
 
 const PIXEL_KEY = {
@@ -19,13 +26,18 @@ const PIXEL_KEY = {
     's': 5,
     'r': 6,
     'w': 7,
-    'x': 8
+    'x': 8,
+    'd': 9,
+    'a': 10,
+    'q': 11,
+    'g': 12,
+    'f': 13
 };
 
 function makeSprite(rows) {
     return {
         pattern: rows.map((row) => {
-            const fixedRow = row.padEnd(16, '.').slice(0, 16);
+            const fixedRow = row.padEnd(32, '.').slice(0, 32);
             return [...fixedRow].map(pixel => PIXEL_KEY[pixel] ?? 0);
         }),
         colors: PLAYER_PALETTE
@@ -37,90 +49,150 @@ function mirrorSprite(rows) {
 }
 
 const DOWN_BODY = [
-    '................',
-    '.....kkkkkk.....',
-    '....kbhhhbk.....',
-    '...kbhyyyyhbk...',
-    '...kbhbyybhbk...',
-    '...kbsssssbk...',
-    '...kbsxssxsbk...',
-    '...kbssssssbk...',
-    '...krksssskrk...',
-    '....kbbkkbbk....',
-    '...krbbbybbrk...',
-    '...kbbbbbbbbk...'
+    '............kkkkkkkk............',
+    '.........kkbhhhhhhhbbkk.........',
+    '.......kkbhhhbbbbbbbbbbkk.......',
+    '......kkhhhhbbyyggbbbbbbkk......',
+    '.....kkhhhhbbyyxxyybbbbdddk.....',
+    '....kkhhhhbbbyyxxxybbbbdddkk....',
+    '....kddbbbbbbyyxxyybbbbdddkk....',
+    '...kkddbbbbbbyyxxxybbbbdddbkk...',
+    '...kkddbbbbbbbyxxybbbbbdddbkk...',
+    '...kkddbbkksssssssssskkbbddkk...',
+    '.krrrddbbaaffffffffffffbbddrrrk.',
+    '.kqqrddbbaasssssssssffsbbddrqqk.',
+    '.kqqrddbbaaxwxssssxwxfsbbddrqqk.',
+    '.kqqrddbbaaxxxssssxxxfsbbddrqqk.',
+    '.kqqrddbbaassssssssssssbbddrqqk.',
+    '.kqqrddbbaassssaassssssbbddrqqk.',
+    '.krrrddbbaasssxffxsssssbbddrrrk.',
+    '.....ddbbkssaaxxxxaasskbbdd.....',
+    '.........kkksaaaaaaskkk.........',
+    '.....kkbbbbbbbbbbbbbbbbbbkk.....',
+    '.....hhhbbbbbbbbbbbbbbbbddd.....',
+    '.....hhhbkbhhbbbbbbbbbkbddd.....',
+    '..kqqrrkkkbhbbbbbbbbbbkkkrrqqk..',
+    '..kqqrrkkkbbbbbbbbbbddkkkrrqqk..'
 ];
 
 const DOWN_LEGS_A = [
-    '....kbbbkkbbk...',
-    '....kbbk..kbbk..',
-    '...krrrk..krrrk.',
-    '...krrrk..krrrk.'
+    '..kqqrrkkkyyyygwwgyyyykkkrrqqk..',
+    '..kqqrrkbkyyyyyxxyyyyykbkrrqqk..',
+    '..kqqrrkkbbbbbk..kbbbbbkkrrqqk..',
+    '.......kkbbbbbk..kbbbbbkk.......',
+    '.......kkdddddk..kdddddkk.......',
+    '.....kkrwwwrrrk..krrwwwqqkk.....',
+    '.....kkrhhhrrrk..krrhhhqqkk.....',
+    '.....kkrqqqrrrk..krrrqqqqkk.....'
 ];
 
 const DOWN_LEGS_B = [
-    '....kbbbkkbbk...',
-    '....kbbk..kbbk..',
-    '..krrrk....krrrk',
-    '..krrrk....krrrk'
+    '..kqqrrkkkyyyygwwgyyyykkkrrqqk..',
+    '..kqqrrkbkyyyyyxxyyyyykbkrrqqk..',
+    '..kqqrrkkkbbbbbkkbbbbbkkkrrqqk..',
+    '........kkbbbbbkkbbbbbkk........',
+    '........kkdddddkkdddddkk........',
+    '.......kwwwqqrrkkrrqwwwkk.......',
+    '.......khhhqqrrkkrrqhhhkk.......',
+    '.......kkrqqqrrkkrrqqqqkk.......'
 ];
 
 const UP_BODY = [
-    '................',
-    '.....kkkkkk.....',
-    '....kbhhhbk.....',
-    '...kbbbbbbbbk...',
-    '...kbbbbbbbbk...',
-    '...kbbhhhhbbk...',
-    '...kbbbbbbbbk...',
-    '...kbbbbbbbbk...',
-    '...krkbbbbkrk...',
-    '....kbbkkbbk....',
-    '...krbbbybbrk...',
-    '...kbbbbbbbbk...'
+    '............kkkkkkkk............',
+    '.........kkbhhhhhhhbbkk.........',
+    '.......kkbhhhbbbbbbbbbbkk.......',
+    '......kkhhhhbbbbbbbbbbbddd......',
+    '.....kkhhhhbbbbbbbbbbbbdddk.....',
+    '....kkhhhhbbbbbbbbbbbbbdddkk....',
+    '....kkbbbbbbbbbbbbbbbbbdddkk....',
+    '...kkbbbbbbbbbbbbbbbbbbdddbkk...',
+    '...kkbbbddddddddddddddddddbkk...',
+    '...kkbbkkbbbbbbbbbbbbbbkkdbkk...',
+    '...kkbbkkbbbbbbbbbbbbbbkkbbkk...',
+    '...kkbkkbbbbbyyyyyybbbbbkkbkk...',
+    '......kkbbbbbyyxxyybbbbbkk......',
+    '......kkdddddggxxggdddddkk......',
+    '......kkbbbbbyyyyyybbbbbkk......',
+    '......kkbbbbbbbbbbbbbbbbkk......',
+    '.......kkbbbbbbbbbbbbbbkk.......',
+    '........kkbbbbbbbbbbbbkk........',
+    '..........kkkkkkkkkkkk..........',
+    '.....kkbbbkkkkkkkkkkkkbbbkk.....',
+    '.....kkbbb............bbbkk.....',
+    '.....kkbbkbhhbbbbbbbbbkbbkk.....',
+    '..krrrrkkkbhbbbbbbbbbbkkkrrrrk..',
+    '..krrrrkkkbbbbbbbbbbddkkkrrrrk..'
 ];
 
 const UP_LEGS_A = [
-    '....kbbbkkbbk...',
-    '....kbbk..kbbk..',
-    '...krrrk..krrrk.',
-    '...krrrk..krrrk.'
+    '..krrrrkkkyyyyywwyyyyykkkrrrrk..',
+    '..krrrrkbkyyyyyxxyyyyykbkrrrrk..',
+    '..krrrrkkbbbbbk..kbbbbbkkrrrrk..',
+    '.......kkbbbbbk..kbbbbbkk.......',
+    '.......kkbbbbbk..kbbbbbkk.......',
+    '.....kkrrrrrrrk..krrrrrrrkk.....',
+    '.....kkrrrrrrrk..krrrrrrrkk.....',
+    '.....kkrrrrrrrk..krrrrrrrkk.....'
 ];
 
 const UP_LEGS_B = [
-    '....kbbbkkbbk...',
-    '....kbbk..kbbk..',
-    '..krrrk....krrrk',
-    '..krrrk....krrrk'
+    '..krrrrkkkyyyyywwyyyyykkkrrrrk..',
+    '..krrrrkbkyyyyyxxyyyyykbkrrrrk..',
+    '..krrrrkkkbbbbbkkbbbbbkkkrrrrk..',
+    '........kkbbbbbkkbbbbbkk........',
+    '........kkbbbbbkkbbbbbkk........',
+    '.......kkrrrrrrkkrrrrrrkk.......',
+    '.......kkrrrrrrkkrrrrrrkk.......',
+    '.......kkrrrrrrkkrrrrrrkk.......'
 ];
 
 const LEFT_BODY = [
-    '................',
-    '......kkkkkk....',
-    '.....kbhhhbk....',
-    '....kbhyyyybk...',
-    '....kbbbsssbk...',
-    '....kbbxs.ssbk..',
-    '....kbbssssbk...',
-    '....kbbbbbkk....',
-    '...krkbbbbbk....',
-    '....kbbbbbbk....',
-    '..krrkbbbybk....',
-    '...kbbbbbbbk....'
+    '.............kkkkkkk............',
+    '..........kkbhhhhhhbbkk.........',
+    '........kkbhhhbbbbbbbbbkk.......',
+    '.......kkhhhhbbyyyybbbbddd......',
+    '......kkhhhhbbyyxxyybbbdddk.....',
+    '.....kkhhhhbbbyyxxxybbbdddkk....',
+    '.....kkbbbbbbbyyxxyybbbdddkk....',
+    '....kkbbbbbbbbyyxxxybbbdddkk....',
+    '....kkbkkksssssssssssskkddk.....',
+    '.....kkaaasssssssssfffkkdd......',
+    '.....hhhhasssssssssfffkkk.......',
+    '....hhhhaaxwxxssssssskkk........',
+    '....ffssaasssssssssskk..........',
+    '....kksaaasssssssssskk..........',
+    '.....kkaaaassssssssskk..........',
+    '......kaaxxxxxssssssskk.........',
+    '.......kksxffffxxsssskk.........',
+    '........kksssssssssskk..........',
+    '..........kksssssssskk..........',
+    '.......kkbbbbbbbbbbbbbbbkk......',
+    '.......kkhhh........bbbbkk......',
+    '.......kkbkbhhhbbbbbbbkdkk......',
+    '...kqqrrrkkbhhbbbbbbbbkkrrqqk...',
+    '...kqqrrrkkbbbbbbbbbddkkrrqqk...'
 ];
 
 const LEFT_LEGS_A = [
-    '.....kbbkkbbk...',
-    '.....kbk..kbk...',
-    '....krrk..krrk..',
-    '....krrk..krrk..'
+    '...kqqrrrkkyyyygwwyyyykkrrqqk...',
+    '...kqqrrrkkyyyyyxxyyyykkrrqqk...',
+    '...kqqrrkkbbbbk..kbbbbbkkrqqk...',
+    '........kkbbbbk..kbbbbbkk.......',
+    '........kkbbbbk..kbbbbbkk.......',
+    '......kkrwwwrrrk.krrwwwrrkk.....',
+    '......kkrhhhrrrk.krrhhhrrkk.....',
+    '......kkrrrrrrrk.krrrrrrrkk.....'
 ];
 
 const LEFT_LEGS_B = [
-    '.....kbbkkbbk...',
-    '.....kbk..kbk...',
-    '...krrk....krrk.',
-    '...krrk....krrk.'
+    '...kqqrrrkkyyyygwwyyyykkrrqqk...',
+    '...kqqrrrkkyyyyyxxyyyykkrrqqk...',
+    '...kqqrrrkkbbbbkkbbbbbkkrrqqk...',
+    '.........kkbbbbkkbbbbbkk........',
+    '.........kkbbbbkkbbbbbkk........',
+    '........kwwwrrrrkrrrwwwrkk......',
+    '........khhhrrrrkrrrhhhrkk......',
+    '........kkrrrrrrkrrrrrrrkk......'
 ];
 
 const PLAYER_SPRITES = {
@@ -264,8 +336,9 @@ class Player {
         const currentSprite = sprites[this.animationFrame];
         const { pattern, colors } = currentSprite;
 
-        // 16 source pixels × 2 canvas pixels = 32×32 final character.
-        const pixelSize = 2;
+        // The sprite is authored at native 32×32 resolution. Drawing one
+        // source pixel to one canvas pixel keeps every edge crisp.
+        const pixelSize = 1;
 
         // Keep the sprite on whole canvas pixels: important for sharp pixel art.
         const drawX = Math.round(x);
@@ -291,7 +364,9 @@ class Player {
                 );
             }
         }
-    }draw(ctx) {
+    }
+
+    draw(ctx) {
         
         ctx.save();
         

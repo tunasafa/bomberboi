@@ -159,11 +159,11 @@ class Player {
     }
     
     drawPixelArt(ctx, x, y) {
-        const sprites = PLAYER_SPRITES[this.direction];
+        const sprites = PLAYER_SPRITES_32[this.direction];
         const currentSprite = sprites[this.animationFrame];
         const pattern = currentSprite.pattern;
         const colors = currentSprite.colors;
-        const pixelSize = 2; 
+        const pixelSize = 1;
         
         
         let drawY = y;

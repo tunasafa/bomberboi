@@ -249,7 +249,7 @@ def parse(art):
         grid.append([palette.get(char, 0) for char in line])
     return grid
 
-output = f"""const PLAYER_SPRITES = {{
+output = f"""const PLAYER_SPRITES_32 = {{
   down: [
     {{
       pattern: {json.dumps(parse(d1))},

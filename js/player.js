@@ -198,52 +198,52 @@ const LEFT_LEGS_B = [
 // The side profile keeps the helmet, face, shoulders, gloves, belt, pants,
 // and boots in one continuous silhouette. Right-facing art is mirrored below.
 const SIDE_PROFILE_BODY = [
-    '............kkkkkkkk............',
-    '.........kkbhhhhhhbbbkk.........',
-    '.......kkbhhhhhhbbbbbbbkk.......',
-    '......kkyyhhhhbbbbbbbbbbkk......',
-    '.....kkyyxxbbbbbbbbbbbbbbbkk....',
-    '....kkyyxxbbbbbbbbbbbbbbbbbbk...',
-    '....kkyyxbbbbbbbbbbbbbbbbbbbk...',
-    '...kkkyybbbbbbbbbbbbbbbbbbbbk...',
-    '...kkssssssssskkbbbbbbbbbbbk....',
-    '...ksssssssssssskkbbbbbbbbbk....',
-    '..kkssxwxssssssskkbbbbbbbbbk....',
-    '..kkssxxxssssssskkbbbbbbhhbk....',
-    '..kksssssssssssskkbbbbbbhhbk....',
-    '...kkssssssssssskkbbbbbbhhbk....',
-    '....kksssxxxxssskkbbbbbbbbbk....',
-    '.....kksssssssskkkbbbbbbbbbk....',
-    '......kkkksssskkkbbbbbbbbbkk....',
-    '........kkkkkkkkkkbbbbbbbkk.....',
-    '.........kkbbbbbbbbbbbbkkk......',
-    '.......kssshhhhbbbbbbbbkk.......',
-    '......ksssbhhhbbbbbbbbbkk.......',
-    '......kssskbbbbbbbbbbbbkk.......',
-    '.....kbbbkkbbbbbbbbbbbbkk.......',
-    '.....krrrk.bbbbbbbbbbbbkk.......'
+    '...........kkkkkkkkk............',
+    '........kkbbhhhhhbbbbbkk........',
+    '.......kkbhhhhhhbbbbbbbbkk......',
+    '......kkyyhhhhbbbbbbbbbbbbk.....',
+    '.....kkyyxxbbbbbbbbbbbbbbbbk....',
+    '.....kkyxxbbbbbbbbbbbbbbbbbk....',
+    '....kkkyybbbbbbkkrrrrkkbbbbbk...',
+    '....kkbbbbbbbbkrrrrrrrrkbbbbk...',
+    '....kkssssssskrrrrrrrrrrkbbbk...',
+    '...kssssssssskrrrrrrrrrrkbbbbk..',
+    '...kssxwxsssskrrrrrrrrrrkbbbbk..',
+    '..kkssxxxssssskrrrrrrrrkbbhhbk..',
+    '..kkssssssssssskkrrrrkkbbbhhbk..',
+    '...kkssssssssssskkkkkbbbbbhhbk..',
+    '....kksssxxxxssskkbbbbbbbbbbbk..',
+    '.....kksssssssskkbbbbbbbbbbbk...',
+    '......kkkksssskkbbbbbbbbbbkk....',
+    '........kkkkkkkkbbbbbbbbkk......',
+    '.........kkbbbbbbbbbbbbkk.......',
+    '........kkbbbbkkssskkbbkk.......',
+    '........kkbbbbkssskkkbbkk.......',
+    '........kkbbbbkbbbk.bbbkk.......',
+    '........kkbbbbkbbbk.bbbkk.......',
+    '........kkbbbbkbbbk.bbbkk.......'
 ];
 
 const SIDE_PROFILE_LEGS_A = [
-    '.....krrrrrkkkyyyyywwyyykkkkrrkk',
-    '.....krrrrrkkkbbbbbxbbbbkkkkrrkk',
-    '.....krrrrrk.kkbbbk.kbbbkk..rrkk',
-    '.............kkbbbk.kbbbkk......',
-    '.............kkbbbk.kbbbkk......',
-    '..........kkrwwwrrk.krwwwrrkk...',
-    '..........kkrhhhrrk.krhhhrrkk...',
-    '..........kkrrrrrrk.krrrrrrkk...'
+    '........kkyyyykrrrk.yyykk.......',
+    '........kkbbbbkrrrk.bbbkk.......',
+    '........kkbbbbkrrrk.bbbkk.......',
+    '........kkkkkkkkkkkkkkkkk.......',
+    '.........kkbbbk...kbbbkk........',
+    '.......kkrwwwrk...kwwwrrkk......',
+    '.......kkrhhhrk...khhhrrkk......',
+    '.......kkrrrrrk...krrrrrkk......'
 ];
 
 const SIDE_PROFILE_LEGS_B = [
-    '.....krrrrrkkkyyyyywwyyykkkkrrkk',
-    '.....krrrrrkkkbbbbbxbbbbkkkkrrkk',
-    '.....krrrrrk..kkbbbkkbbbkk..rrkk',
-    '..............kkbbbkkbbbkk......',
-    '..............kkbbbkkbbbkk......',
-    '............kwwwrrrrkrrrrwwwrk..',
-    '............khhhrrrrkrrrrhhhrk..',
-    '............kkrrrrrrkrrrrrrrrk..'
+    '........kkyyyykrrrk.yyykk.......',
+    '........kkbbbbkrrrk.bbbkk.......',
+    '........kkbbbbkrrrk.bbbkk.......',
+    '........kkkkkkkkkkkkkkkkk.......',
+    '.........kkbbbk...kbbbkk........',
+    '........kwwwrrkk.kkrwwwrk.......',
+    '........khhhrrkk.kkrhhhrk.......',
+    '........krrrrrkk.kkrrrrrk.......'
 ];
 const PLAYER_SPRITES = {
     down: [

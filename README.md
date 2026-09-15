@@ -12,7 +12,7 @@ version update:
   </a>
 </div>
 
-visuals:
+V1 old visuals:
 
 
 <img width="1086" height="1053" alt="Screenshot 2025-08-19 at 20 32 25" src="https://github.com/user-attachments/assets/1d5e42c0-d673-4507-9aa5-c76351101e96" />

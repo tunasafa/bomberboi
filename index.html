@@ -200,6 +200,39 @@
             border-right-color: #333;
         }
 
+        #powerups-display {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            color: #fff;
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+            z-index: 10;
+            background: #000;
+            padding: 8px 12px;
+            border: 2px solid #555;
+            border-top-color: #999;
+            border-left-color: #999;
+            border-bottom-color: #333;
+            border-right-color: #333;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .powerup-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .powerup-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+        }
+
         #pause-screen h1 {
             color: #ff0;
         }
@@ -343,6 +376,8 @@
             <canvas id="game-canvas"></canvas>
             <button id="mute-button" style="position: absolute; top: 10px; right: 10px; z-index: 10; padding: 5px; background-color: #333; color: white; border: 2px solid #555; cursor: pointer;">Mute</button>
             
+            <div id="powerups-display"></div>
+            
             <div id="start-screen" class="screen">
                 <h1>BOMBERBOI</h1>
                 <p>made by stuna</p>
@@ -482,6 +517,105 @@
             const levelDisplay = document.getElementById('level-display');
             if (levelDisplay) {
                 levelDisplay.textContent = 'LEVEL: ' + level;
+            }
+        };
+
+        window.updatePowerupsDisplay = function(player) {
+            const display = document.getElementById('powerups-display');
+            if (!display) return;
+            
+            let html = '';
+            let hasPowerups = false;
+
+            const bombUps = player.maxBombs - 3;
+            if (bombUps > 0) {
+                html += `
+                    <div class="powerup-item">
+                        <canvas class="powerup-canvas" width="16" height="16" data-type="bombUp"></canvas>
+                        <span>x${bombUps}</span>
+                    </div>
+                `;
+                hasPowerups = true;
+            }
+
+            const rangeUps = player.bombRange - 2;
+            if (rangeUps > 0) {
+                html += `
+                    <div class="powerup-item">
+                        <canvas class="powerup-canvas" width="16" height="16" data-type="rangeUp"></canvas>
+                        <span>x${rangeUps}</span>
+                    </div>
+                `;
+                hasPowerups = true;
+            }
+
+            const speedUps = Math.round((player.baseSpeed - 2) / 0.5);
+            if (speedUps > 0) {
+                html += `
+                    <div class="powerup-item">
+                        <canvas class="powerup-canvas" width="16" height="16" data-type="speedUp"></canvas>
+                        <span>x${speedUps}</span>
+                    </div>
+                `;
+                hasPowerups = true;
+            }
+
+            const extraLives = player.lives;
+            if (extraLives > 0) {
+                html += `
+                    <div class="powerup-item">
+                        <canvas class="powerup-canvas" width="16" height="16" data-type="extraLife"></canvas>
+                        <span>x${extraLives}</span>
+                    </div>
+                `;
+                hasPowerups = true;
+            }
+
+            if (hasPowerups) {
+                display.innerHTML = html;
+                display.style.display = 'flex';
+                
+                // Draw icons on canvases
+                const canvases = display.querySelectorAll('.powerup-canvas');
+                canvases.forEach(canvas => {
+                    const ctx = canvas.getContext('2d');
+                    const type = canvas.dataset.type;
+                    ctx.imageSmoothingEnabled = false;
+                    
+                    if (type === 'bombUp') {
+                        ctx.fillStyle = '#000000';
+                        ctx.fillRect(4, 6, 8, 6);
+                        ctx.fillRect(5, 5, 6, 8);
+                        ctx.fillRect(7, 4, 2, 2);
+                        ctx.fillStyle = '#ff0000';
+                        ctx.fillRect(7, 7, 2, 2);
+                        ctx.fillStyle = '#ffaa00';
+                        ctx.fillRect(8, 2, 2, 2);
+                    } else if (type === 'rangeUp') {
+                        ctx.fillStyle = '#ff4500';
+                        ctx.fillRect(5, 7, 6, 5);
+                        ctx.fillRect(7, 5, 2, 7);
+                        ctx.fillStyle = '#ffff00';
+                        ctx.fillRect(6, 8, 4, 3);
+                    } else if (type === 'speedUp') {
+                        ctx.fillStyle = '#00ffff';
+                        ctx.fillRect(7, 4, 4, 4);
+                        ctx.fillRect(5, 8, 6, 4);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(4, 9, 2, 2);
+                    } else if (type === 'extraLife') {
+                        ctx.fillStyle = '#ff0000';
+                        ctx.fillRect(4, 5, 3, 3);
+                        ctx.fillRect(9, 5, 3, 3);
+                        ctx.fillRect(3, 6, 10, 4);
+                        ctx.fillRect(5, 10, 6, 2);
+                        ctx.fillRect(7, 12, 2, 2);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(5, 6, 1, 1);
+                    }
+                });
+            } else {
+                display.style.display = 'none';
             }
         };
         

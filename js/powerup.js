@@ -39,6 +39,10 @@ class Powerup {
         
         // Remove from game powerups list
         this.game.powerups = this.game.powerups.filter(p => p !== this);
+        
+        if (window.updatePowerupsDisplay) {
+            window.updatePowerupsDisplay(this.game.player);
+        }
     }
 
     draw(ctx) {

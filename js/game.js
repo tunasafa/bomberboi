@@ -21,6 +21,9 @@ class Game {
         if (window.updateLevelDisplay) {
             window.updateLevelDisplay(this.level);
         }
+        if (window.updatePowerupsDisplay) {
+            window.updatePowerupsDisplay(this.player);
+        }
         
         this.createEnemies(3 + Math.floor(this.level * 1.5));
         this.loadSounds();
@@ -138,6 +141,9 @@ class Game {
         if (this.player.lives > 0) {
             this.player.lives--;
             this.player.invincible = 180; // 3 seconds of invincibility at 60fps
+            if (window.updatePowerupsDisplay) {
+                window.updatePowerupsDisplay(this.player);
+            }
             return;
         }
         
@@ -199,6 +205,9 @@ class Game {
         this.createEnemies(3 + Math.floor(this.level * 1.5));
         
         document.getElementById('level-complete-screen').classList.add('hidden');
+        if (window.updatePowerupsDisplay) {
+            window.updatePowerupsDisplay(this.player);
+        }
         this.lastTime = performance.now();
     }
     
@@ -253,6 +262,7 @@ class Game {
         this.paused = false;
         this.score = 0;
         if (window.updateScore) window.updateScore(this.score);
+        if (window.updatePowerupsDisplay) window.updatePowerupsDisplay(this.player);
         
         this.createEnemies(3 + Math.floor(this.level * 1.5));
         

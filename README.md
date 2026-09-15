@@ -1,8 +1,10 @@
-# bomberboi v 1.1
+# bomberboi v 2.0
 
 version update:
-- sound feature added
-you can play it from here : https://tunasafa.github.io/bomberboi/
+- massive graphics and UI overhaul
+- powerups, new levels, and smarter enemies added
+
+## 🎮 [PLAY BOMBERBOI HERE](https://tunasafa.github.io/bomberboi/)
 
 or download the files and open the index file in your own pc browser
 
@@ -20,11 +22,11 @@ visuals:
 
 room for improvement for upcoming versions:
 
-- new levels , new maps, new enemies
-- powerups for the player
-- smarter and more agressive enemies
-- graphics improvements
+- ~~new levels , new maps, new enemies~~ (Added!)
+- ~~powerups for the player~~ (Added!)
+- ~~smarter and more agressive enemies~~ (Added!)
+- ~~graphics improvements~~ (Complete Overhaul!)
 - mobile version
 
 
-+ game sounds
++ ~~game sounds~~ (Added!)

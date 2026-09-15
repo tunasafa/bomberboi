@@ -8,36 +8,36 @@ class Map {
         
         // Determine theme based on level (every level changes theme)
         const themeIndex = (this.level - 1) % 5;
-        const themes = [
+                const themes = [
             { 
-              name: 'Forest', style: 'forest', 
-              groundBase: '#2a5d31', groundDark: '#245028', groundDarker: '#1e4422',
-              wallBase: '#4a4a4a', wallLight: '#6a6a6a', wallDark: '#3a3a3a', wallEdge: '#2a2a2a', wallHighlight: '#8a8a8a', wallAccent: '#5a5a5a',
-              woodBase: '#8B4513', woodLight: '#A0522D', woodDark: '#654321', woodEdge: '#704214', woodAccent: '#4a2c17', woodHighlight: '#CD853F', woodShadow: '#2F1B14'
+              name: 'Classic', style: 'forest', 
+              groundBase: '#4CAF50', groundDark: '#388E3C', groundDarker: '#2E7D32',
+              wallBase: '#BDBDBD', wallLight: '#E0E0E0', wallDark: '#9E9E9E', wallEdge: '#757575', wallHighlight: '#F5F5F5', wallAccent: '#616161',
+              woodBase: '#FF9800', woodLight: '#FFB74D', woodDark: '#F57C00', woodEdge: '#E65100', woodAccent: '#EF6C00', woodHighlight: '#FFE0B2', woodShadow: '#BF360C'
             },
             { 
               name: 'Desert', style: 'desert', 
-              groundBase: '#c2b280', groundDark: '#b0a070', groundDarker: '#9c8c5c',
-              wallBase: '#c2a17a', wallLight: '#d2b18a', wallDark: '#a2815a', wallEdge: '#82613a', wallHighlight: '#e2c19a', wallAccent: '#b2916a',
-              woodBase: '#9b7653', woodLight: '#ab8663', woodDark: '#7b5633', woodEdge: '#8b6643', woodAccent: '#5b3613', woodHighlight: '#cb9673', woodShadow: '#4b2603'
+              groundBase: '#FFF59D', groundDark: '#FFF176', groundDarker: '#FFEE58',
+              wallBase: '#FAFAFA', wallLight: '#FFFFFF', wallDark: '#E0E0E0', wallEdge: '#BDBDBD', wallHighlight: '#FFFFFF', wallAccent: '#9E9E9E',
+              woodBase: '#D84315', woodLight: '#FF5722', woodDark: '#BF360C', woodEdge: '#9E2A0B', woodAccent: '#FF8A65', woodHighlight: '#FFCCBC', woodShadow: '#5D4037'
             },
             { 
               name: 'Ice', style: 'ice', 
-              groundBase: '#a0c8d8', groundDark: '#90b8c8', groundDarker: '#80a8b8',
-              wallBase: '#7090b8', wallLight: '#80a0c8', wallDark: '#507098', wallEdge: '#406088', wallHighlight: '#90b0d8', wallAccent: '#6080a8',
-              woodBase: '#6B8E23', woodLight: '#7BAE33', woodDark: '#4B6E03', woodEdge: '#5B7E13', woodAccent: '#2B4E00', woodHighlight: '#8BCE53', woodShadow: '#1B3E00'
+              groundBase: '#0288D1', groundDark: '#0277BD', groundDarker: '#01579B',
+              wallBase: '#00BCD4', wallLight: '#26C6DA', wallDark: '#00ACC1', wallEdge: '#0097A7', wallHighlight: '#B2EBF2', wallAccent: '#006064',
+              woodBase: '#E1F5FE', woodLight: '#FFFFFF', woodDark: '#B3E5FC', woodEdge: '#81D4FA', woodAccent: '#4FC3F7', woodHighlight: '#FFFFFF', woodShadow: '#0288D1'
             },
             { 
               name: 'Dungeon', style: 'dungeon', 
-              groundBase: '#4a4a5a', groundDark: '#3a3a4a', groundDarker: '#2a2a3a',
-              wallBase: '#3a2a4a', wallLight: '#4a3a5a', wallDark: '#2a1a3a', wallEdge: '#1a0a2a', wallHighlight: '#5a4a6a', wallAccent: '#2a1a4a',
-              woodBase: '#4B0082', woodLight: '#5B1092', woodDark: '#2B0062', woodEdge: '#3B0072', woodAccent: '#1B0042', woodHighlight: '#6B20A2', woodShadow: '#0B0022'
+              groundBase: '#455A64', groundDark: '#37474F', groundDarker: '#263238',
+              wallBase: '#212121', wallLight: '#424242', wallDark: '#000000', wallEdge: '#000000', wallHighlight: '#616161', wallAccent: '#757575',
+              woodBase: '#FDD835', woodLight: '#FFEE58', woodDark: '#FBC02D', woodEdge: '#F9A825', woodAccent: '#F57F17', woodHighlight: '#FFF59D', woodShadow: '#FF6F00'
             },
             { 
               name: 'Hell', style: 'hell', 
-              groundBase: '#6a1a1a', groundDark: '#5a1515', groundDarker: '#4a1010',
-              wallBase: '#2a1a1a', wallLight: '#3a2a2a', wallDark: '#1a0a0a', wallEdge: '#0a0000', wallHighlight: '#4a3a3a', wallAccent: '#1a1111',
-              woodBase: '#8B0000', woodLight: '#9B1000', woodDark: '#6B0000', woodEdge: '#7B0000', woodAccent: '#4B0000', woodHighlight: '#AB2000', woodShadow: '#2B0000'
+              groundBase: '#3E2723', groundDark: '#212121', groundDarker: '#000000',
+              wallBase: '#D32F2F', wallLight: '#F44336', wallDark: '#C62828', wallEdge: '#B71C1C', wallHighlight: '#FFCDD2', wallAccent: '#FF8A80',
+              woodBase: '#F5F5F5', woodLight: '#FFFFFF', woodDark: '#E0E0E0', woodEdge: '#BDBDBD', woodAccent: '#9E9E9E', woodHighlight: '#FFFFFF', woodShadow: '#424242'
             }
         ];
         this.theme = themes[themeIndex];

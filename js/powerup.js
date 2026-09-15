@@ -1,88 +1,93 @@
+// Shared 16×16 icon language for the game world and the HUD scoreboard.
 const POWERUP_PALETTE = {
     '.': 'transparent',
-    'x': '#000000', // black outline / bomb body
-    'X': '#333333', // dark grey
-    'g': '#999999', // light grey (bomb highlight, metal)
-    'b': '#1E90FF', // blue (boot)
-    'B': '#49B9FF', // light blue (wings)
-    'w': '#FFFFFF', // white (highlight)
-    'r': '#E84646', // red (heart)
-    'R': '#990000', // dark red
-    'o': '#FF6600', // orange (fire)
-    'y': '#FFD700', // yellow (fire)
-    'f': '#8B4513'  // brown (fuse)
+    'k': '#101827', // deep navy outline
+    'K': '#25344A', // dark surface
+    'm': '#6C7A8C', // metal shadow
+    'c': '#C8D3E0', // metal highlight
+    'b': '#1677D2', // blue
+    'h': '#49B9FF', // blue highlight
+    'd': '#0C4A8F', // blue shadow
+    'y': '#FFD43B', // gold
+    'g': '#C99620', // gold shadow
+    'o': '#FF8A1E', // orange
+    'O': '#FFE052', // bright flame
+    'r': '#E84646', // red
+    'q': '#A72E38', // red shadow
+    'w': '#FFFFFF', // highlight
+    'f': '#8B4A23'  // fuse
 };
 
 const POWERUP_SPRITES = {
     bombUp: [
-        '................',
-        '.......o........',
-        '......yoy.......',
-        '.......f........',
-        '......Xxx.......',
-        '....xxxxxxx.....',
-        '...xxxgggxxx....',
-        '...xxgggggxx....',
-        '...xxggxxxxx....',
-        '...xxxxxxxxx....',
-        '...xxxxxxxxx....',
-        '....xxxxxxx.....',
-        '.....xxxxx......',
-        '................',
-        '................',
-        '................'
+        '.......kk.......',
+        '......kOOk......',
+        '......kook......',
+        '.......ff.......',
+        '......kffk......',
+        '.....kKKKKk.....',
+        '....kKmmmKKk....',
+        '...kKcccKKKKk...',
+        '...kKcwcKKKKk...',
+        '...kKmmKKKKKk...',
+        '...kKmmmmKKKk...',
+        '....kKmmmKKk....',
+        '.....kKKKKk.....',
+        '......kkkk......',
+        '......kkkk......',
+        '......dddd......'
     ],
     rangeUp: [
-        '................',
-        '.......o........',
-        '......ooo.......',
-        '.....ooooo......',
-        '.....ooyoo......',
-        '....ooyyyoo.....',
-        '....oyyyyyo.....',
-        '...oyyyyyyyo....',
-        '...oyywwwyyo....',
-        '...oyywwwyyo....',
-        '...oyyyyyyyo....',
-        '....oyyyyyo.....',
-        '.....ooooo......',
-        '......ooo.......',
-        '................',
-        '................'
+        '.......kk.......',
+        '......kook......',
+        '......oooo......',
+        '.....koOOok.....',
+        '....koOOOOok....',
+        '...koOOOOOOok...',
+        '.kooOOOOOOOOook.',
+        'koyyyyywwyyyyyok',
+        'kkyyyyyyyyyyyykk',
+        '.kkkOOOOOOOOkkk.',
+        '...kkOOOOOOkk...',
+        '....kkooookk....',
+        '.....kooook.....',
+        '......kook......',
+        '......kook......',
+        '.......kk.......'
     ],
     speedUp: [
         '................',
-        '....B...........',
-        '...BBB......bb..',
-        '...B.B.....bbw..',
-        '..B..B....bbbb..',
-        '..BBBB...bbbbb..',
-        '...BBBBBbbbbbb..',
-        '.......bbbbbbb..',
-        '.....bbbbbbbbb..',
-        '....bbbbbbbbbb..',
-        '...g.g.g.g.g.g..',
-        '...xxxxxxxxxxx..',
-        '...x.x.x.x.x.x..',
         '................',
-        '................',
-        '................'
+        '.yyy............',
+        'yyyy............',
+        '..OOOO..kdk.....',
+        'yyyy...khhhk....',
+        '.OOOO.khhhwwwk..',
+        'yyyy.khhhwwwbbk.',
+        '....khhhbbhhhhbk',
+        '...kbddbbbbbbbbk',
+        '..kbdddbbbbbbbbk',
+        '.kbdddbbbbbbbbbk',
+        '.kqqqqqqqqqqqqk.',
+        '..rrhhhhrrrrrr..',
+        '...rrqqqqrrrr...',
+        '....kkkkkkkk....'
     ],
     extraLife: [
         '................',
-        '................',
-        '..rrrr....rrrr..',
-        '.rrrrrr..rrrrrr.',
-        '.rrwwrr..rrrrrr.',
-        '.rrwwrrrrrrrrrr.',
-        '.rrrrrrrrrrrrrr.',
-        '..rrrrrrrrrrrr..',
-        '...rrrrrrrrrr...',
-        '....rrrrrrrr....',
-        '.....rrrrrr.....',
-        '......rrrr......',
-        '.......rr.......',
-        '................',
+        '..krrk....krrk..',
+        '.krrrrk..krrrrk.',
+        'kqqwwrrrrrrrrrrk',
+        'kqwwrrrrrrrrrrrk',
+        'krqqqrrrrrrrrrrk',
+        '.kqqqrrrrrrrrrk.',
+        '.krqqqrrrrrrrrk.',
+        '..krqqqrrrrrrk..',
+        '...krqqqrrrrk...',
+        '....krqqrrrk....',
+        '.....krrrrk.....',
+        '......krrk......',
+        '.......kk.......',
         '................',
         '................'
     ]
@@ -95,7 +100,7 @@ class Powerup {
         this.y = y;
         this.width = 32;
         this.height = 32;
-        this.type = type; // 'bombUp', 'rangeUp', 'speedUp'
+        this.type = type; // 'bombUp', 'rangeUp', 'speedUp', or 'extraLife'
         this.active = true;
         this.animationTimer = 0;
     }
@@ -149,6 +154,7 @@ class Powerup {
         if (!sprite) return;
         
         ctx.save();
+        ctx.imageSmoothingEnabled = false;
         for (let row = 0; row < sprite.length; row++) {
             for (let col = 0; col < sprite[row].length; col++) {
                 const char = sprite[row][col];

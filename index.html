@@ -202,7 +202,8 @@
         #powerups-display {
             display: none;
             flex-direction: row;
-            gap: 10px;
+            gap: 8px;
+            align-items: center;
             color: #fff;
             font-family: 'Press Start 2P', monospace;
             font-size: clamp(0.6rem, 2vw, 0.8rem);
@@ -213,6 +214,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            min-height: 24px;
+            padding: 2px 6px 2px 2px;
+            background: rgba(8, 12, 22, 0.76);
+            border: 2px solid #25344a;
+            box-shadow: 2px 2px 0 #000;
         }
         
         .powerup-canvas {
@@ -221,7 +227,7 @@
             display: inline-block;
             position: relative;
             image-rendering: pixelated;
-            filter: drop-shadow(2px 2px 0 #000) drop-shadow(-2px -2px 0 #000) drop-shadow(2px -2px 0 #000) drop-shadow(-2px 2px 0 #000) drop-shadow(2px 0px 0 #000) drop-shadow(0px 2px 0 #000) drop-shadow(-2px 0px 0 #000) drop-shadow(0px -2px 0 #000);
+            filter: drop-shadow(1px 1px 0 #000);
         }
 
         #pause-screen h1 {
@@ -473,7 +479,7 @@
     <script src="js/input.js"></script>
     <script src="js/map.js"></script>
     <script src="js/player.js?v=10"></script>
-    <script src="js/powerup.js?v=2"></script>
+    <script src="js/powerup.js?v=3"></script>
     <script src="js/bomb.js"></script>
     <script src="js/enemy.js"></script>
     <script src="js/game.js"></script>
@@ -607,7 +613,7 @@
                     const type = canvas.dataset.type;
                     ctx.imageSmoothingEnabled = false;
                     
-                    if (window.Powerup && typeof Powerup.drawIcon === 'function') {
+                    if (typeof Powerup !== 'undefined' && typeof Powerup.drawIcon === 'function') {
                         Powerup.drawIcon(ctx, type, 0, 0, 1);
                     }
                 });

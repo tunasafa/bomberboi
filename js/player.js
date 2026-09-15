@@ -149,50 +149,50 @@ const UP_LEGS_B = [
 const LEFT_BODY = [
     '.............kkkkkkk............',
     '..........kkbhhhhhhbbkk.........',
-    '........kkbhhhbbbbbbbbbkk.......',
-    '.......kkhhhhbbyyyybbbbddd......',
-    '......kkhhhhbbyyxxyybbbdddk.....',
-    '.....kkhhhhbbbyyxxxybbbdddkk....',
-    '.....kkbbbbbbbyyxxyybbbdddkk....',
-    '....kkbbbbbbbbyyxxxybbbdddkk....',
-    '....kkbkkksssssssssssskkddk.....',
-    '.....kkaaasssssssssfffkkdd......',
-    '.....hhhhasssssssssfffkkk.......',
-    '....hhhhaaxwxxssssssskkk........',
-    '....ffssaasssssssssskk..........',
-    '....kksaaasssssssssskk..........',
-    '.....kkaaaassssssssskk..........',
-    '......kaaxxxxxssssssskk.........',
-    '.......kksxffffxxsssskk.........',
-    '........kksssssssssskk..........',
-    '..........kksssssssskk..........',
-    '.......kkbbbbbbbbbbbbbbbkk......',
-    '.......kkhhh........bbbbkk......',
-    '.......kkbkbhhhbbbbbbbkdkk......',
-    '...kqqrrrkkbhhbbbbbbbbkkrrqqk...',
-    '...kqqrrrkkbbbbbbbbbddkkrrqqk...'
+    '........kkbhhhhhbbbbbbbkk.......',
+    '.......kkhhhhhbbbyyyybbbkk......',
+    '......kkhhhhbbbbyyxxyybbddd.....',
+    '.....kkhhhhbbbbbyyxxxybbdddk....',
+    '....kkddbbbbbbbbyyxxyybbdddkk...',
+    '....kkddbbbbbbbbyyxxxybbdddkk...',
+    '....kkddbbbbbbbbbyxxybbbdddkk...',
+    '....kbbaaassssssssssfffkkkdk....',
+    '....bbbaasssssssssssfffskkk.....',
+    '...bbbbaasxwxxssssssffskkkk.....',
+    '..khhfffassssssssssssskkkkk.....',
+    '..kkhaaaasssssssssssskkkkk......',
+    '...kkksaasssssssssssskkkkk......',
+    '....kkkaaaaassssssssskkkkk......',
+    '.....kkkssxfffxxsssskkkkk.......',
+    '......kkkkssaaaaaaskkkkk........',
+    '........kkkkksaaaasskkk.........',
+    '.........kkbbbbbbbbbbbkk........',
+    '.......kkhhhbbbbbbbbbdddkkk.....',
+    '.......kkhkbhhhbbbbbbbkdkkk.....',
+    '.kqqrrrkkkkbhhbbbbbbbbkkkrrrqqk.',
+    '.kqqrrrkkkkbbbbbbbbbddkkkrrrqqk.'
 ];
 
 const LEFT_LEGS_A = [
-    '...kqqrrrkkyyyygwwyyyykkrrqqk...',
-    '...kqqrrrkkyyyyyxxyyyykkrrqqk...',
-    '...kqqrrkkbbbbk..kbbbbbkkrqqk...',
-    '........kkbbbbk..kbbbbbkk.......',
-    '........kkbbbbk..kbbbbbkk.......',
-    '......kkrwwwrrrk.krrwwwrrkk.....',
-    '......kkrhhhrrrk.krrhhhrrkk.....',
-    '......kkrrrrrrrk.krrrrrrrkk.....'
+    '.kqqrrrkkkkyyyyygwgyyykkkrrrqqk.',
+    '.kqqrrrkkbkyyyyyyxyyyykbkrrrqqk.',
+    '.kqqrrrkkkbbbbk..kbbbbkkkrrrqqk.',
+    '........kkbbbbk..kbbbbkk........',
+    '........kkbbbbk..kbbbbkk........',
+    '......kkrwwwrrrk.krrwwwqqkk.....',
+    '......kkrhhhrrrk.krrhhhqqkk.....',
+    '......kkrqqqrrrk.krrrrqqqkk.....'
 ];
 
 const LEFT_LEGS_B = [
-    '...kqqrrrkkyyyygwwyyyykkrrqqk...',
-    '...kqqrrrkkyyyyyxxyyyykkrrqqk...',
-    '...kqqrrrkkbbbbkkbbbbbkkrrqqk...',
-    '.........kkbbbbkkbbbbbkk........',
-    '.........kkbbbbkkbbbbbkk........',
-    '........kwwwrrrrkrrrwwwrkk......',
-    '........khhhrrrrkrrrhhhrkk......',
-    '........kkrrrrrrkrrrrrrrkk......'
+    '.kqqrrrkkkkyyyyygwgyyykkkrrrqqk.',
+    '.kqqrrrkkbkyyyyyyxyyyykbkrrrqqk.',
+    '.kqqrrrk.kkbbbbkkbbbbkk.krrrqqk.',
+    '.........kkbbbbkkbbbbkk.........',
+    '.........kkbbbbkkbbbbkk.........',
+    '........kwwwqqrrkrrrwwwqkk......',
+    '........khhhqqrrkrrrhhhqkk......',
+    '........kkrqqqrrkrrrrqqqkk......'
 ];
 
 const PLAYER_SPRITES = {

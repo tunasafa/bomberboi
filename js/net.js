@@ -47,7 +47,9 @@ class NetworkManager {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
                         { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
+                    ],
+                    iceTransportPolicy: 'all',
+                    iceCandidatePoolSize: 10
                 }
             });
 
@@ -223,7 +225,9 @@ class NetworkManager {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
                         { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
+                    ],
+                    iceTransportPolicy: 'all',
+                    iceCandidatePoolSize: 10
                 }
             });
 
@@ -294,7 +298,14 @@ class NetworkManager {
                         : 'Connection failed: ' + err.type;
                     reject(new Error(msg));
                 }
-                if (this.onError) this.onError('Connection failed');
+                if (this.onError) this.onError('Connection failed: ' + err.type);
+            });
+
+            this.peer.on('disconnected', () => {
+                console.warn('[NET] Client disconnected from signaling, reconnecting...');
+                if (this.peer && !this.peer.destroyed) {
+                    this.peer.reconnect();
+                }
             });
 
             // Timeout

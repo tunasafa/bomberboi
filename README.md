@@ -1,6 +1,7 @@
 # bomberboi v 2.0
 
 version update:
+- **NEW! ONLINE MULTIPLAYER**: Host and join rooms to battle it out with up to 4 players globally via P2P!
 - graphics and UI improvements
 - powerups, new levels, and smarter enemies added
 
@@ -30,6 +31,7 @@ room for improvement for upcoming versions:
 - ~~powerups for the player~~ (Added!)
 - ~~smarter and more agressive enemies~~ (Added!)
 - ~~graphics improvements~~ (Complete Overhaul!)
+- ~~online multiplayer~~ (Added!)
 - mobile version
 
 

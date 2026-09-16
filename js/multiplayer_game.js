@@ -400,35 +400,68 @@ class MultiplayerGame {
                 p.bombRange = sp.bombRange;
                 p.baseSpeed = sp.baseSpeed;
 
-                // Reconstruct bombs
-                p.bombs = (sp.bombs || []).map(b => {
-                    const bomb = new Bomb(this, b.x, b.y, b.range);
-                    bomb.timer = b.timer;
-                    bomb.exploded = b.exploded;
-                    bomb.animationFrame = b.frame;
-                    bomb.ownerSlot = i;
-                    return bomb;
-                });
+                // Update bombs in-place to avoid GC thrashing
+                if (sp.bombs) {
+                    // Remove old bombs
+                    p.bombs = p.bombs.filter(existing => 
+                        sp.bombs.some(b => b.x === existing.x && b.y === existing.y)
+                    );
+                    // Add or update bombs
+                    for (const b of sp.bombs) {
+                        let existing = p.bombs.find(bomb => bomb.x === b.x && bomb.y === b.y);
+                        if (existing) {
+                            existing.timer = b.timer;
+                            existing.exploded = b.exploded;
+                            existing.animationFrame = b.frame;
+                        } else {
+                            const bomb = new Bomb(this, b.x, b.y, b.range);
+                            bomb.timer = b.timer;
+                            bomb.exploded = b.exploded;
+                            bomb.animationFrame = b.frame;
+                            bomb.ownerSlot = i;
+                            p.bombs.push(bomb);
+                        }
+                    }
+                } else {
+                    p.bombs = [];
+                }
             }
         }
 
-        // Update explosions
+        // Update explosions in-place
         if (state.explosions) {
-            this.explosions = state.explosions.map(e => {
-                const exp = new Explosion(this, e.x, e.y, e.dir);
-                exp.timer = e.timer;
-                exp.animationFrame = e.frame;
-                return exp;
-            });
+            this.explosions = this.explosions.filter(existing => 
+                state.explosions.some(e => e.x === existing.x && e.y === existing.y && e.dir === existing.direction)
+            );
+            for (const e of state.explosions) {
+                let existing = this.explosions.find(exp => exp.x === e.x && exp.y === e.y && exp.direction === e.dir);
+                if (existing) {
+                    existing.timer = e.timer;
+                    existing.animationFrame = e.frame;
+                } else {
+                    const exp = new Explosion(this, e.x, e.y, e.dir);
+                    exp.timer = e.timer;
+                    exp.animationFrame = e.frame;
+                    this.explosions.push(exp);
+                }
+            }
         }
 
-        // Update powerups
+        // Update powerups in-place
         if (state.powerups) {
-            this.powerups = state.powerups.map(p => {
-                const pw = new Powerup(this, p.x, p.y, p.type);
-                pw.animationTimer = p.timer;
-                return pw;
-            });
+            this.powerups = this.powerups.filter(existing => 
+                state.powerups.some(p => p.x === existing.x && p.y === existing.y)
+            );
+            for (const p of state.powerups) {
+                let existing = this.powerups.find(pw => pw.x === p.x && pw.y === p.y);
+                if (existing) {
+                    existing.animationTimer = p.timer;
+                } else {
+                    const pw = new Powerup(this, p.x, p.y, p.type);
+                    pw.animationTimer = p.timer;
+                    this.powerups.push(pw);
+                }
+            }
         }
     }
 

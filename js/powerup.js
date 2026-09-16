@@ -152,27 +152,35 @@ class Powerup {
         Powerup.drawIcon(ctx, this.type, this.x, drawY, 2);
     }
     
+    static spriteCache = {};
+
     static drawIcon(ctx, type, x, y, scale = 1) {
         const sprite = POWERUP_RENDER_SPRITES[type];
         if (!sprite) return;
         
-        ctx.save();
-        ctx.imageSmoothingEnabled = false;
-        const offset = (16 - sprite.length) * scale / 2;
-        for (let row = 0; row < sprite.length; row++) {
-            for (let col = 0; col < sprite[row].length; col++) {
-                const char = sprite[row][col];
-                if (char !== '.') {
-                    ctx.fillStyle = POWERUP_PALETTE[char];
-                    ctx.fillRect(
-                        x + offset + col * scale,
-                        y + offset + row * scale,
-                        scale,
-                        scale
-                    );
+        const size = sprite.length * scale;
+        
+        // Generate and cache the canvas on first request
+        if (!Powerup.spriteCache[type + scale]) {
+            const cacheCanvas = document.createElement('canvas');
+            cacheCanvas.width = size;
+            cacheCanvas.height = size;
+            const cacheCtx = cacheCanvas.getContext('2d');
+            
+            for (let row = 0; row < sprite.length; row++) {
+                for (let col = 0; col < sprite[row].length; col++) {
+                    const char = sprite[row][col];
+                    if (char !== '.') {
+                        cacheCtx.fillStyle = POWERUP_PALETTE[char];
+                        cacheCtx.fillRect(col * scale, row * scale, scale, scale);
+                    }
                 }
             }
+            Powerup.spriteCache[type + scale] = cacheCanvas;
         }
-        ctx.restore();
+        
+        // Draw the cached canvas directly (insanely faster than fillRect)
+        const offset = (16 - sprite.length) * scale / 2;
+        ctx.drawImage(Powerup.spriteCache[type + scale], x + offset, y + offset);
     }
 }

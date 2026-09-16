@@ -52,19 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (nextLevelButton) {
         nextLevelButton.addEventListener('click', () => {
-            if (game) {
-                game.startNextLevel();
-            }
+            if (game) game.startNextLevel();
         });
     }
     
     if (restartButton) {
         restartButton.addEventListener('click', () => {
-            if (game) {
-                game.restart();
-            } else {
-                startGame();
-            }
+            if (game) game.restart();
+            else startGame();
         });
     }
 
@@ -80,29 +75,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (winRestartButton) {
         winRestartButton.addEventListener('click', () => {
-            if (game) {
-                game.restart();
-            } else {
-                startGame();
-            }
+            if (game) game.restart();
+            else startGame();
         });
     }
     
     if (resumeButton) {
         resumeButton.addEventListener('click', () => {
-            if (game) {
-                game.resume();
-            }
+            if (game) game.resume();
         });
     }
     
     if (pauseRestartButton) {
         pauseRestartButton.addEventListener('click', () => {
-            if (game) {
-                game.restart();
-            } else {
-                startGame();
-            }
+            if (game) game.restart();
+            else startGame();
         });
     }
     
@@ -130,6 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
     }
 
+    function showStartScreen() {
+        hideAllScreens();
+        document.getElementById('start-screen').classList.remove('hidden');
+    }
+
     function showLobbyMenu() {
         lobbyMenu.style.display = '';
         hostLobby.style.display = 'none';
@@ -137,10 +129,43 @@ document.addEventListener('DOMContentLoaded', () => {
         clientWaiting.style.display = 'none';
     }
 
+    // ── Draw pixel-art player heads on lobby slot canvases ──
+    function drawPlayerSlotHeads(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container || typeof MP_PLAYER_SPRITE_SETS === 'undefined') return;
+
+        const slots = container.querySelectorAll('.player-slot');
+        slots.forEach((slot) => {
+            const slotIdx = parseInt(slot.dataset.slot, 10);
+            const cvs = slot.querySelector('canvas');
+            if (!cvs || isNaN(slotIdx)) return;
+
+            const ctx = cvs.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, 32, 32);
+
+            const spriteSet = MP_PLAYER_SPRITE_SETS[slotIdx];
+            if (!spriteSet) return;
+
+            // Draw the face portion of the down-facing sprite (rows 0-31)
+            const sprite = spriteSet.down[0]; // frame 0
+            const { pattern, colors } = sprite;
+
+            for (let row = 0; row < Math.min(pattern.length, 32); row++) {
+                for (let col = 0; col < Math.min(pattern[row].length, 32); col++) {
+                    const colorIndex = pattern[row][col];
+                    if (colorIndex === 0) continue;
+                    ctx.fillStyle = colors[colorIndex];
+                    ctx.fillRect(col, row, 1, 1);
+                }
+            }
+        });
+    }
+
     function updatePlayerSlots(containerId, count) {
-        const slots = document.getElementById(containerId);
-        if (!slots) return;
-        const items = slots.querySelectorAll('.player-slot');
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const items = container.querySelectorAll('.player-slot');
         items.forEach((slot, idx) => {
             if (idx < count) {
                 slot.classList.add('active');
@@ -148,6 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 slot.classList.remove('active');
             }
         });
+        // Redraw heads (active/inactive state is handled via CSS filter)
+        drawPlayerSlotHeads(containerId);
     }
 
     function cleanupNetwork() {
@@ -166,12 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Back to start screen
+    // Back to start screen from lobby menu
     if (lobbyBackBtn) {
         lobbyBackBtn.addEventListener('click', () => {
             cleanupNetwork();
-            hideAllScreens();
-            document.getElementById('start-screen').classList.remove('hidden');
+            showStartScreen();
         });
     }
 
@@ -185,24 +211,25 @@ document.addEventListener('DOMContentLoaded', () => {
             hostLobby.style.display = '';
             lobbyStatus.textContent = 'CREATING ROOM...';
             lobbyStatus.classList.remove('lobby-error');
-            mpStartBtn.disabled = true;
+            mpStartBtn.disabled = false;
 
             try {
                 const code = await network.createRoom();
                 roomCodeDisplay.textContent = code;
                 lobbyStatus.textContent = 'WAITING FOR PLAYERS...';
                 updatePlayerSlots('player-slots', 1);
+                drawPlayerSlotHeads('player-slots');
 
                 network.onPlayerJoined = (playerId, totalPlayers) => {
                     updatePlayerSlots('player-slots', totalPlayers);
                     lobbyStatus.textContent = totalPlayers + '/4 PLAYERS';
-                    mpStartBtn.disabled = (totalPlayers < 2);
+                    mpStartBtn.disabled = false;
                 };
 
                 network.onPlayerLeft = (playerId) => {
                     updatePlayerSlots('player-slots', network.playerCount);
                     lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
-                    mpStartBtn.disabled = (network.playerCount < 2);
+                    mpStartBtn.disabled = false;
                 };
 
                 network.onError = (msg) => {
@@ -211,13 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
             } catch (err) {
-                lobbyStatus.textContent = 'FAILED: ' + err.message;
+                lobbyStatus.textContent = 'FAILED: ' + (err.message || err);
                 lobbyStatus.classList.add('lobby-error');
             }
         });
     }
 
-    // Host cancel
+    // Host cancel — go back to lobby menu
     if (hostCancelBtn) {
         hostCancelBtn.addEventListener('click', () => {
             cleanupNetwork();
@@ -231,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!network || !network.isHost) return;
             const seed = Math.floor(Math.random() * 2147483647);
 
-            // Start locally (onGameStart fires for host)
             network.onGameStart = (config) => {
                 hideAllScreens();
                 mpGame = new MultiplayerGame(canvas, network, config);
@@ -253,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Join cancel
+    // Join cancel — go back to lobby menu
     if (joinCancelBtn) {
         joinCancelBtn.addEventListener('click', () => {
             cleanupNetwork();
@@ -266,7 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
         roomCodeInput.addEventListener('input', () => {
             roomCodeInput.value = roomCodeInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
         });
-
         roomCodeInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && roomCodeInput.value.length === 4) {
                 joinConnectBtn.click();
@@ -290,14 +315,16 @@ document.addEventListener('DOMContentLoaded', () => {
             joinStatus.classList.remove('lobby-error');
 
             try {
-                await network.joinRoom(code);
+                const welcomeData = await network.joinRoom(code);
 
                 // Switch to client waiting view
                 joinLobby.style.display = 'none';
                 clientWaiting.style.display = '';
                 clientRoomCode.textContent = code;
                 updatePlayerSlots('client-player-slots', network.playerCount);
-                clientStatus.textContent = 'WAITING FOR HOST TO START...';
+                drawPlayerSlotHeads('client-player-slots');
+                clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
+                clientStatus.classList.remove('lobby-error');
 
                 network.onPlayerJoined = (playerId, totalPlayers) => {
                     updatePlayerSlots('client-player-slots', totalPlayers);
@@ -320,13 +347,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
             } catch (err) {
-                joinStatus.textContent = 'FAILED: ' + (err.message || 'Connection error');
+                joinStatus.textContent = err.message || 'Connection failed';
                 joinStatus.classList.add('lobby-error');
             }
         });
     }
 
-    // Client cancel
+    // Client cancel — go back to lobby menu
     if (clientCancelBtn) {
         clientCancelBtn.addEventListener('click', () => {
             cleanupNetwork();
@@ -337,21 +364,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── MP RESULT SCREEN ────────────────────────
     if (mpRematchBtn) {
         mpRematchBtn.addEventListener('click', () => {
-            // Go back to lobby
             hideAllScreens();
             mpGame = null;
+            cleanupNetwork();
             mpLobbyScreen.classList.remove('hidden');
             showLobbyMenu();
-            cleanupNetwork();
         });
     }
 
     if (mpExitBtn) {
         mpExitBtn.addEventListener('click', () => {
-            hideAllScreens();
             mpGame = null;
             cleanupNetwork();
-            document.getElementById('start-screen').classList.remove('hidden');
+            showStartScreen();
         });
     }
+
+    // ── Draw lobby heads on first paint ─────────
+    // (Delayed slightly to ensure player.js sprites are loaded)
+    setTimeout(() => {
+        drawPlayerSlotHeads('player-slots');
+        drawPlayerSlotHeads('client-player-slots');
+    }, 100);
 });

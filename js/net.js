@@ -42,7 +42,7 @@ class NetworkManager {
             const peerId = this._peerPrefix + this.roomCode;
 
             this.peer = new Peer(peerId, {
-                debug: 0,
+                debug: 1,
                 config: {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
@@ -51,9 +51,9 @@ class NetworkManager {
                 }
             });
 
-            this.peer.on('open', () => {
+            this.peer.on('open', (id) => {
                 this.connected = true;
-                console.log('[NET] Room created:', this.roomCode);
+                console.log('[NET] Room created:', this.roomCode, 'Peer ID:', id);
                 resolve(this.roomCode);
             });
 
@@ -62,20 +62,23 @@ class NetworkManager {
             });
 
             this.peer.on('error', (err) => {
-                console.error('[NET] Host error:', err);
+                console.error('[NET] Host error:', err.type, err.message);
                 if (err.type === 'unavailable-id') {
-                    // Room code collision — try again
+                    // Room code collision — try again with a new code
                     this.peer.destroy();
                     this.roomCode = this._generateCode();
                     this.createRoom().then(resolve).catch(reject);
                 } else {
-                    if (this.onError) this.onError('Failed to create room: ' + err.message);
+                    if (this.onError) this.onError('Failed to create room: ' + err.type);
                     reject(err);
                 }
             });
 
             this.peer.on('disconnected', () => {
-                console.warn('[NET] Host disconnected from signaling');
+                console.warn('[NET] Host disconnected from signaling, reconnecting...');
+                if (this.peer && !this.peer.destroyed) {
+                    this.peer.reconnect();
+                }
             });
         });
     }
@@ -84,17 +87,19 @@ class NetworkManager {
     _handleNewConnection(conn) {
         if (this.connections.length >= 3) {
             // Room is full
-            conn.on('open', () => {
+            const rejectFull = () => {
                 conn.send({ type: 'ERROR', message: 'Room is full' });
                 setTimeout(() => conn.close(), 500);
-            });
+            };
+            if (conn.open) rejectFull();
+            else conn.on('open', rejectFull);
             return;
         }
 
         const newPlayerId = this.connections.length + 1;
         conn.metadata = { playerId: newPlayerId };
 
-        conn.on('open', () => {
+        const onOpen = () => {
             this.connections.push(conn);
             this.playerCount = this.connections.length + 1;
 
@@ -105,7 +110,7 @@ class NetworkManager {
                 playerCount: this.playerCount
             });
 
-            // Tell everyone about the updated player count
+            // Tell ALL clients about the updated player count
             this._broadcastToClients({
                 type: 'PLAYER_COUNT',
                 playerCount: this.playerCount
@@ -113,7 +118,15 @@ class NetworkManager {
 
             console.log('[NET] Player', newPlayerId, 'joined. Total:', this.playerCount);
             if (this.onPlayerJoined) this.onPlayerJoined(newPlayerId, this.playerCount);
-        });
+        };
+
+        // CRITICAL: The connection might already be open by the time
+        // peer.on('connection') fires. Check and handle both cases.
+        if (conn.open) {
+            onOpen();
+        } else {
+            conn.on('open', onOpen);
+        }
 
         conn.on('data', (data) => {
             if (data.type === 'INPUT' && this.onInputReceived) {
@@ -174,7 +187,9 @@ class NetworkManager {
         };
         // Send to each client with their slot
         for (const conn of this.connections) {
-            conn.send({ ...msg, yourSlot: conn.metadata.playerId });
+            if (conn.open) {
+                conn.send({ ...msg, yourSlot: conn.metadata.playerId });
+            }
         }
         // Also notify local host
         if (this.onGameStart) {
@@ -200,9 +215,10 @@ class NetworkManager {
         return new Promise((resolve, reject) => {
             this.roomCode = code.toUpperCase();
             this.isHost = false;
+            let resolved = false;
 
             this.peer = new Peer(undefined, {
-                debug: 0,
+                debug: 1,
                 config: {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
@@ -211,58 +227,89 @@ class NetworkManager {
                 }
             });
 
-            this.peer.on('open', () => {
+            this.peer.on('open', (myId) => {
+                console.log('[NET] Client peer open, ID:', myId);
                 const hostPeerId = this._peerPrefix + this.roomCode;
                 const conn = this.peer.connect(hostPeerId, { reliable: true });
 
-                conn.on('open', () => {
+                const onConnOpen = () => {
                     this.hostConnection = conn;
                     this.connected = true;
-                    console.log('[NET] Connected to room:', this.roomCode);
-                });
+                    console.log('[NET] Connected to host, waiting for WELCOME...');
+                };
+
+                // Handle connection open
+                if (conn.open) {
+                    onConnOpen();
+                } else {
+                    conn.on('open', onConnOpen);
+                }
 
                 conn.on('data', (data) => {
-                    this._handleHostMessage(data, resolve);
+                    if (!resolved && data.type === 'WELCOME') {
+                        resolved = true;
+                        this.playerId = data.playerId;
+                        this.playerCount = data.playerCount;
+                        this.hostConnection = conn;
+                        this.connected = true;
+                        console.log('[NET] Joined! Player slot:', this.playerId);
+                        resolve(data);
+                    } else if (data.type === 'ERROR') {
+                        if (!resolved) {
+                            resolved = true;
+                            reject(new Error(data.message));
+                        }
+                        if (this.onError) this.onError(data.message);
+                    } else {
+                        this._handleClientMessage(data);
+                    }
                 });
 
                 conn.on('close', () => {
                     console.warn('[NET] Lost connection to host');
                     this.connected = false;
+                    if (!resolved) {
+                        resolved = true;
+                        reject(new Error('Connection closed by host'));
+                    }
                     if (this.onError) this.onError('Lost connection to host');
                 });
 
                 conn.on('error', (err) => {
                     console.error('[NET] Client connection error:', err);
-                    if (this.onError) this.onError('Connection error: ' + err.message);
-                    reject(err);
-                });
-
-                // Timeout for connection
-                setTimeout(() => {
-                    if (!this.connected) {
-                        reject(new Error('Connection timeout — room may not exist'));
+                    if (!resolved) {
+                        resolved = true;
+                        reject(err);
                     }
-                }, 8000);
+                    if (this.onError) this.onError('Connection error');
+                });
             });
 
             this.peer.on('error', (err) => {
-                console.error('[NET] Client peer error:', err);
-                if (this.onError) this.onError('Failed to connect: ' + err.message);
-                reject(err);
+                console.error('[NET] Client peer error:', err.type, err.message);
+                if (!resolved) {
+                    resolved = true;
+                    const msg = err.type === 'peer-unavailable'
+                        ? 'Room not found — check the code'
+                        : 'Connection failed: ' + err.type;
+                    reject(new Error(msg));
+                }
+                if (this.onError) this.onError('Connection failed');
             });
+
+            // Timeout
+            setTimeout(() => {
+                if (!resolved) {
+                    resolved = true;
+                    reject(new Error('Connection timed out — room may not exist'));
+                }
+            }, 10000);
         });
     }
 
     // ── CLIENT: Handle messages from host ───────
-    _handleHostMessage(data, resolveJoin) {
+    _handleClientMessage(data) {
         switch (data.type) {
-            case 'WELCOME':
-                this.playerId = data.playerId;
-                this.playerCount = data.playerCount;
-                console.log('[NET] Assigned player ID:', this.playerId);
-                if (resolveJoin) resolveJoin(data);
-                break;
-
             case 'PLAYER_COUNT':
                 this.playerCount = data.playerCount;
                 if (this.onPlayerJoined) this.onPlayerJoined(-1, data.playerCount);
@@ -293,10 +340,6 @@ class NetworkManager {
 
             case 'PLAYER_DIED':
                 // Handled via state updates
-                break;
-
-            case 'ERROR':
-                if (this.onError) this.onError(data.message);
                 break;
         }
     }

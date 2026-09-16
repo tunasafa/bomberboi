@@ -465,34 +465,49 @@
 
         .player-slots {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin: 15px 0;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .player-slot {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 72px;
             border: 3px solid #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-size: 0.5rem;
+            font-family: 'Press Start 2P', monospace;
             color: #555;
             transition: all 0.3s;
+            background: rgba(0,0,0,0.5);
+            padding: 4px;
         }
 
         .player-slot.active {
             border-color: var(--slot-color, #fff);
             color: var(--slot-color, #fff);
             box-shadow: 0 0 10px var(--slot-color, #fff);
+            background: rgba(0,0,0,0.8);
         }
 
-        .player-slot .slot-icon {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
+        .player-slot canvas {
+            image-rendering: pixelated;
+            width: 48px;
+            height: 48px;
+        }
+
+        .player-slot:not(.active) canvas {
+            filter: grayscale(1) brightness(0.3);
+        }
+
+        .player-slot .slot-label {
+            margin-top: 2px;
+            font-size: 0.45rem;
+            letter-spacing: 1px;
         }
 
         .lobby-status {
@@ -628,13 +643,13 @@
                     <p class="room-code-label">SHARE THIS CODE:</p>
                     <div id="room-code-display" class="room-code-display">----</div>
                     <div class="player-slots" id="player-slots">
-                        <div class="player-slot active" style="--slot-color: #1677D2;"><span class="slot-icon">⬤</span><span>P1</span></div>
-                        <div class="player-slot" style="--slot-color: #D21616;"><span class="slot-icon">⬤</span><span>P2</span></div>
-                        <div class="player-slot" style="--slot-color: #16D233;"><span class="slot-icon">⬤</span><span>P3</span></div>
-                        <div class="player-slot" style="--slot-color: #8B16D2;"><span class="slot-icon">⬤</span><span>P4</span></div>
+                        <div class="player-slot active" style="--slot-color: #1677D2;" data-slot="0"><canvas width="32" height="32"></canvas><span class="slot-label">P1</span></div>
+                        <div class="player-slot" style="--slot-color: #D21616;" data-slot="1"><canvas width="32" height="32"></canvas><span class="slot-label">P2</span></div>
+                        <div class="player-slot" style="--slot-color: #16D233;" data-slot="2"><canvas width="32" height="32"></canvas><span class="slot-label">P3</span></div>
+                        <div class="player-slot" style="--slot-color: #8B16D2;" data-slot="3"><canvas width="32" height="32"></canvas><span class="slot-label">P4</span></div>
                     </div>
                     <p id="lobby-status" class="lobby-status">WAITING FOR PLAYERS...</p>
-                    <button id="mp-start-btn" class="arcade-button mp-start-btn" disabled>START</button>
+                    <button id="mp-start-btn" class="arcade-button mp-start-btn">START</button>
                     <br>
                     <button id="host-cancel-btn" class="arcade-button" style="font-size: 0.6rem !important; padding: 6px 12px !important; opacity: 0.5; margin-top: 10px;">CANCEL</button>
                 </div>
@@ -655,10 +670,10 @@
                     <p class="room-code-label">CONNECTED TO ROOM:</p>
                     <div id="client-room-code" class="room-code-display" style="font-size: clamp(1.5rem, 5vw, 2.5rem);">----</div>
                     <div class="player-slots" id="client-player-slots">
-                        <div class="player-slot active" style="--slot-color: #1677D2;"><span class="slot-icon">⬤</span><span>P1</span></div>
-                        <div class="player-slot" style="--slot-color: #D21616;"><span class="slot-icon">⬤</span><span>P2</span></div>
-                        <div class="player-slot" style="--slot-color: #16D233;"><span class="slot-icon">⬤</span><span>P3</span></div>
-                        <div class="player-slot" style="--slot-color: #8B16D2;"><span class="slot-icon">⬤</span><span>P4</span></div>
+                        <div class="player-slot active" style="--slot-color: #1677D2;" data-slot="0"><canvas width="32" height="32"></canvas><span class="slot-label">P1</span></div>
+                        <div class="player-slot" style="--slot-color: #D21616;" data-slot="1"><canvas width="32" height="32"></canvas><span class="slot-label">P2</span></div>
+                        <div class="player-slot" style="--slot-color: #16D233;" data-slot="2"><canvas width="32" height="32"></canvas><span class="slot-label">P3</span></div>
+                        <div class="player-slot" style="--slot-color: #8B16D2;" data-slot="3"><canvas width="32" height="32"></canvas><span class="slot-label">P4</span></div>
                     </div>
                     <p id="client-status" class="lobby-status">WAITING FOR HOST TO START...</p>
                     <button id="client-cancel-btn" class="arcade-button" style="font-size: 0.6rem !important; padding: 6px 12px !important; opacity: 0.5;">LEAVE</button>

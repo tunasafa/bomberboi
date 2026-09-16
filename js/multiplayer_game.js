@@ -96,6 +96,9 @@ class MultiplayerGame {
 
         // Start game loop
         this.lastTime = performance.now();
+        this.lastStateSentTime = 0;
+        this.STATE_SEND_INTERVAL = 1000 / 30; // 30Hz tick rate
+        
         this._boundLoop = this.loop.bind(this);
         requestAnimationFrame(this._boundLoop);
     }
@@ -121,7 +124,7 @@ class MultiplayerGame {
 
         if (!this.paused && !this.isGameOver) {
             if (this.isHost) {
-                this.updateHost();
+                this.updateHost(timestamp);
             } else {
                 // Client: send local input to host every frame
                 this.network.sendInput(this.input.getState());
@@ -133,7 +136,7 @@ class MultiplayerGame {
     }
 
     // ── HOST: Run authoritative game logic ──────
-    updateHost() {
+    updateHost(timestamp) {
         // Update each alive player
         for (let i = 0; i < this.playerCount; i++) {
             const p = this.players[i];
@@ -181,10 +184,10 @@ class MultiplayerGame {
             this._showWinner(this.winnerId);
         }
 
-        // Broadcast state to clients at ~20Hz (every 3 frames at 60fps)
-        this.stateTickCounter++;
-        if (this.stateTickCounter % 3 === 0) {
+        // Broadcast state to clients at strict tick rate
+        if (timestamp - this.lastStateSentTime > this.STATE_SEND_INTERVAL) {
             this.network.broadcastState(this._serializeState());
+            this.lastStateSentTime = timestamp;
         }
     }
 

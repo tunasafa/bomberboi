@@ -28,6 +28,13 @@ class MultiplayerGame {
         // Map generation (deterministic via seed)
         this.map = new GameMap(1);
         this.map.generateMultiplayerMap(this.seed);
+        
+        // Broadcast block updates immediately to avoid JSON array caching bugs
+        this.map.onBlockChanged = (x, y, val) => {
+            if (this.isHost) {
+                this.network.broadcastState({ type: 'BLOCK_UPDATE', x, y, val });
+            }
+        };
 
         // Game state
         this.explosions = [];
@@ -356,13 +363,17 @@ class MultiplayerGame {
             })),
             powerups: this.powerups.filter(p => p.active).map(p => ({
                 x: p.x, y: p.y, type: p.type, timer: p.animationTimer
-            })),
-            grid: this.map.grid
+            }))
         };
     }
 
     // ── CLIENT: Apply state received from host ──
     _applyStateFromHost(state) {
+        if (state.type === 'BLOCK_UPDATE') {
+            this.map.grid[state.y][state.x] = state.val;
+            return;
+        }
+
         // Update players
         if (state.players) {
             for (let i = 0; i < state.players.length && i < this.players.length; i++) {
@@ -411,11 +422,6 @@ class MultiplayerGame {
                 pw.animationTimer = p.timer;
                 return pw;
             });
-        }
-
-        // Update map grid
-        if (state.grid) {
-            this.map.grid = state.grid;
         }
     }
 

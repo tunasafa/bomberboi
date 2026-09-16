@@ -569,6 +569,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 2) {
                 this.grid[tileY][tileX] = 0;
+                if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 0);
                 return true;
             }
         }
@@ -582,6 +583,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 0) {
                 this.grid[tileY][tileX] = 3;
+                if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 3);
                 return true;
             }
         }
@@ -595,6 +597,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 3) {
                 this.grid[tileY][tileX] = 0;
+                if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 0);
                 return true;
             }
         }

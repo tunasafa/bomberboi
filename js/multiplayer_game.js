@@ -58,11 +58,11 @@ class MultiplayerGame {
             player.baseSpeed = 2;
             player.lives = 0;
             this.players.push(player);
-            this.playerInputs.push(new InputHandler());
+            this.playerInputs.push(new InputHandler(false));
         }
 
         // The local player uses the real input handler
-        this.input = new InputHandler();
+        this.input = new InputHandler(true);
         this.playerInputs[this.mySlot] = this.input;
 
         // For the local player reference (used by some code paths)
@@ -90,6 +90,17 @@ class MultiplayerGame {
             this.winnerId = winnerId;
             this._showWinner(winnerId);
         };
+
+        // Handle remote player disconnects
+        if (this.isHost) {
+            this.network.onPlayerLeft = (playerId) => {
+                if (playerId >= 0 && playerId < this.playerCount) {
+                    const p = this.players[playerId];
+                    p.alive = false;
+                    console.log(`[GAME] Player ${playerId} disconnected.`);
+                }
+            };
+        }
 
         // Update HUD
         if (window.updateLevelDisplay) window.updateLevelDisplay('PVP');

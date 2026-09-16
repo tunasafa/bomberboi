@@ -1,16 +1,18 @@
 class InputHandler {
-    constructor() {
+    constructor(listenToWindow = true) {
         this.keys = {};
         this.lastKey = '';
         
-        window.addEventListener('keydown', (e) => {
-            this.keys[e.key] = true;
-            this.lastKey = e.key;
-        });
-        
-        window.addEventListener('keyup', (e) => {
-            this.keys[e.key] = false;
-        });
+        if (listenToWindow) {
+            window.addEventListener('keydown', (e) => {
+                this.keys[e.key] = true;
+                this.lastKey = e.key;
+            });
+            
+            window.addEventListener('keyup', (e) => {
+                this.keys[e.key] = false;
+            });
+        }
     }
     
     getKey(key) {

@@ -519,10 +519,19 @@ class MultiplayerGame {
                 const winnerColor = winnerId >= 0 ? MP_PLAYER_COLORS[winnerId] : '#fff';
                 const isMe = winnerId === this.mySlot;
 
-                document.getElementById('mp-result-title').textContent = isMe ? 'YOU WIN!' : 'GAME OVER';
-                document.getElementById('mp-result-title').style.color = isMe ? '#0f0' : '#f00';
-                document.getElementById('mp-winner-name').textContent = winnerName + ' WINS!';
-                document.getElementById('mp-winner-name').style.color = winnerColor;
+                const resultImg = document.getElementById('mp-result-title-img');
+                if (resultImg) {
+                    resultImg.src = isMe ? 'img/you_win_logo.png' : 'img/game_over_logo.png';
+                    resultImg.alt = isMe ? 'YOU WIN!' : 'GAME OVER';
+                }
+
+                if (winnerId < 0) {
+                    document.getElementById('mp-winner-name').textContent = 'DRAW!';
+                    document.getElementById('mp-winner-name').style.color = '#fff';
+                } else {
+                    document.getElementById('mp-winner-name').textContent = winnerName + ' WINS!';
+                    document.getElementById('mp-winner-name').style.color = winnerColor;
+                }
 
                 document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
                 mpResult.classList.remove('hidden');

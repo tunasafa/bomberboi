@@ -264,9 +264,70 @@ const PLAYER_SPRITES = {
     ]
 };
 
+// Multiplayer color palettes for each player slot
+const MP_PLAYER_PALETTES = [
+    PLAYER_PALETTE, // P1: default blue
+    [ // P2: Red
+        'transparent', '#331017', '#D21616', '#FF4949',
+        '#FFD43B', '#FFD0A6', '#46E8E8', '#FFFFFF',
+        '#101218', '#8F0C0C', '#D89572', '#2EA7A7',
+        '#C99620', '#FFE7C7'
+    ],
+    [ // P3: Green
+        'transparent', '#0B3317', '#16D233', '#49FF6B',
+        '#FFD43B', '#FFD0A6', '#E846E8', '#FFFFFF',
+        '#101218', '#0C8F1A', '#D89572', '#A72EA7',
+        '#C99620', '#FFE7C7'
+    ],
+    [ // P4: Purple
+        'transparent', '#2B1033', '#8B16D2', '#B849FF',
+        '#FFD43B', '#FFD0A6', '#E8E846', '#FFFFFF',
+        '#101218', '#5A0C8F', '#D89572', '#A7A72E',
+        '#C99620', '#FFE7C7'
+    ]
+];
+
+const MP_PLAYER_NAMES = ['BLUE', 'RED', 'GREEN', 'PURPLE'];
+const MP_PLAYER_COLORS = ['#1677D2', '#D21616', '#16D233', '#8B16D2'];
+
+// Generate recolored sprites for a given palette
+function makeRecoloredSprites(palette) {
+    function makeRecoloredSprite(rows, pal) {
+        return {
+            pattern: rows.map((row) => {
+                const fixedRow = row.padEnd(32, '.').slice(0, 32);
+                return [...fixedRow].map(pixel => PIXEL_KEY[pixel] ?? 0);
+            }),
+            colors: pal
+        };
+    }
+    return {
+        down: [
+            makeRecoloredSprite([...DOWN_BODY, ...DOWN_LEGS_A], palette),
+            makeRecoloredSprite([...DOWN_BODY, ...DOWN_LEGS_B], palette)
+        ],
+        up: [
+            makeRecoloredSprite([...UP_BODY, ...UP_LEGS_A], palette),
+            makeRecoloredSprite([...UP_BODY, ...UP_LEGS_B], palette)
+        ],
+        left: [
+            makeRecoloredSprite([...SIDE_PROFILE_BODY, ...SIDE_PROFILE_LEGS_A], palette),
+            makeRecoloredSprite([...SIDE_PROFILE_BODY, ...SIDE_PROFILE_LEGS_B], palette)
+        ],
+        right: [
+            makeRecoloredSprite(mirrorSprite([...SIDE_PROFILE_BODY, ...SIDE_PROFILE_LEGS_A]), palette),
+            makeRecoloredSprite(mirrorSprite([...SIDE_PROFILE_BODY, ...SIDE_PROFILE_LEGS_B]), palette)
+        ]
+    };
+}
+
+// Pre-generate all recolored sprite sets
+const MP_PLAYER_SPRITE_SETS = MP_PLAYER_PALETTES.map(pal => makeRecoloredSprites(pal));
+
 class Player {
-    constructor(game) {
+    constructor(game, colorSlot) {
         this.game = game;
+        this.colorSlot = colorSlot || 0;
         this.width = 32;
         this.height = 32;
         this.x = 32;
@@ -276,6 +337,7 @@ class Player {
         this.bombRange = 1;
         this.baseSpeed = 2;
         this.lives = 0;
+        this.alive = true;
         this.invincible = 0;
         this.targetX = 32;
         this.targetY = 32;
@@ -386,7 +448,8 @@ class Player {
     }
     
     drawPixelArt(ctx, x, y) {
-        const sprites = PLAYER_SPRITES[this.direction];
+        const spriteSet = (this.colorSlot > 0) ? MP_PLAYER_SPRITE_SETS[this.colorSlot] : PLAYER_SPRITES;
+        const sprites = spriteSet[this.direction];
         const currentSprite = sprites[this.animationFrame];
         const { pattern, colors } = currentSprite;
 

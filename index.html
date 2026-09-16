@@ -391,6 +391,153 @@
         }
         /* -------------------------------- */
 
+        /* ── MULTIPLAYER LOBBY STYLES ── */
+        .lobby-screen {
+            background-color: #000 !important;
+            justify-content: flex-start !important;
+            padding-top: 30px !important;
+        }
+
+        .lobby-screen h1 {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #ff0;
+            text-shadow: 2px 2px 0 #f50, -2px -2px 0 #05f;
+            margin-bottom: 20px;
+        }
+
+        .lobby-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lobby-btn {
+            padding: 12px 24px !important;
+            font-size: clamp(0.7rem, 2vw, 0.9rem) !important;
+            min-width: 140px;
+        }
+
+        .room-code-display {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            color: #0f0;
+            letter-spacing: 12px;
+            font-family: 'Press Start 2P', monospace;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+            margin: 15px 0;
+            user-select: all;
+            cursor: pointer;
+        }
+
+        .room-code-label {
+            font-size: clamp(0.6rem, 2vw, 0.8rem) !important;
+            color: #aaa !important;
+            margin-bottom: 5px !important;
+        }
+
+        .room-code-input {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            background: #111;
+            color: #0f0;
+            border: 3px solid #333;
+            border-bottom-color: #0f0;
+            padding: 10px 16px;
+            text-align: center;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            width: 200px;
+            max-width: 80%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .room-code-input:focus {
+            border-color: #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .room-code-input::placeholder {
+            color: #333;
+            letter-spacing: 4px;
+        }
+
+        .player-slots {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .player-slot {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            color: #555;
+            transition: all 0.3s;
+        }
+
+        .player-slot.active {
+            border-color: var(--slot-color, #fff);
+            color: var(--slot-color, #fff);
+            box-shadow: 0 0 10px var(--slot-color, #fff);
+        }
+
+        .player-slot .slot-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .lobby-status {
+            font-size: clamp(0.6rem, 2vw, 0.8rem) !important;
+            color: #888 !important;
+            margin: 10px 0 !important;
+            min-height: 1.2em;
+        }
+
+        .lobby-error {
+            color: #f44 !important;
+        }
+
+        .mp-start-btn {
+            background: #0a3d0a !important;
+            color: #0f0 !important;
+            border-color: #0f0 !important;
+            font-size: clamp(0.9rem, 3vw, 1.2rem) !important;
+            padding: 12px 30px !important;
+            animation: mp-pulse 1.5s ease-in-out infinite;
+        }
+
+        .mp-start-btn:disabled {
+            opacity: 0.3;
+            animation: none;
+            cursor: not-allowed;
+        }
+
+        @keyframes mp-pulse {
+            0%, 100% { box-shadow: 0 0 5px #0f0; }
+            50% { box-shadow: 0 0 20px #0f0, 0 0 40px rgba(0,255,0,0.3); }
+        }
+
+        /* MP result screen */
+        .mp-result h1 {
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
+            margin-bottom: 10px;
+        }
+
+        .mp-winner-name {
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            margin: 10px 0 30px 0;
+            font-family: 'Press Start 2P', monospace;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -461,7 +608,69 @@
             
             <div id="start-screen" class="screen retro-start">
                 <button id="start-button" class="arcade-button">START GAME</button>
+                <button id="multiplayer-button" class="arcade-button" style="background: rgba(0,100,0,0.8) !important; border-color: #0f0 !important; color: #0f0 !important;">MULTIPLAYER</button>
                 <p class="credit">© 2026 STUNA CORP.</p>
+            </div>
+
+            <!-- Multiplayer Lobby Screen -->
+            <div id="mp-lobby-screen" class="screen lobby-screen hidden">
+                <h1>⚔ MULTIPLAYER ⚔</h1>
+                <div id="lobby-menu">
+                    <div class="lobby-buttons">
+                        <button id="create-room-btn" class="arcade-button lobby-btn">CREATE ROOM</button>
+                        <button id="join-room-btn" class="arcade-button lobby-btn">JOIN ROOM</button>
+                    </div>
+                    <button id="lobby-back-btn" class="arcade-button" style="font-size: 0.7rem !important; padding: 8px 16px !important; opacity: 0.6;">← BACK</button>
+                </div>
+
+                <!-- Host lobby view -->
+                <div id="host-lobby" style="display: none; text-align: center;">
+                    <p class="room-code-label">SHARE THIS CODE:</p>
+                    <div id="room-code-display" class="room-code-display">----</div>
+                    <div class="player-slots" id="player-slots">
+                        <div class="player-slot active" style="--slot-color: #1677D2;"><span class="slot-icon">⬤</span><span>P1</span></div>
+                        <div class="player-slot" style="--slot-color: #D21616;"><span class="slot-icon">⬤</span><span>P2</span></div>
+                        <div class="player-slot" style="--slot-color: #16D233;"><span class="slot-icon">⬤</span><span>P3</span></div>
+                        <div class="player-slot" style="--slot-color: #8B16D2;"><span class="slot-icon">⬤</span><span>P4</span></div>
+                    </div>
+                    <p id="lobby-status" class="lobby-status">WAITING FOR PLAYERS...</p>
+                    <button id="mp-start-btn" class="arcade-button mp-start-btn" disabled>START</button>
+                    <br>
+                    <button id="host-cancel-btn" class="arcade-button" style="font-size: 0.6rem !important; padding: 6px 12px !important; opacity: 0.5; margin-top: 10px;">CANCEL</button>
+                </div>
+
+                <!-- Join lobby view -->
+                <div id="join-lobby" style="display: none; text-align: center;">
+                    <p class="room-code-label">ENTER ROOM CODE:</p>
+                    <input id="room-code-input" class="room-code-input" type="text" maxlength="4" placeholder="----" autocomplete="off" spellcheck="false">
+                    <br>
+                    <p id="join-status" class="lobby-status"></p>
+                    <button id="join-connect-btn" class="arcade-button lobby-btn" style="margin-top: 10px;">CONNECT</button>
+                    <br>
+                    <button id="join-cancel-btn" class="arcade-button" style="font-size: 0.6rem !important; padding: 6px 12px !important; opacity: 0.5; margin-top: 10px;">CANCEL</button>
+                </div>
+
+                <!-- Client waiting view -->
+                <div id="client-waiting" style="display: none; text-align: center;">
+                    <p class="room-code-label">CONNECTED TO ROOM:</p>
+                    <div id="client-room-code" class="room-code-display" style="font-size: clamp(1.5rem, 5vw, 2.5rem);">----</div>
+                    <div class="player-slots" id="client-player-slots">
+                        <div class="player-slot active" style="--slot-color: #1677D2;"><span class="slot-icon">⬤</span><span>P1</span></div>
+                        <div class="player-slot" style="--slot-color: #D21616;"><span class="slot-icon">⬤</span><span>P2</span></div>
+                        <div class="player-slot" style="--slot-color: #16D233;"><span class="slot-icon">⬤</span><span>P3</span></div>
+                        <div class="player-slot" style="--slot-color: #8B16D2;"><span class="slot-icon">⬤</span><span>P4</span></div>
+                    </div>
+                    <p id="client-status" class="lobby-status">WAITING FOR HOST TO START...</p>
+                    <button id="client-cancel-btn" class="arcade-button" style="font-size: 0.6rem !important; padding: 6px 12px !important; opacity: 0.5;">LEAVE</button>
+                </div>
+            </div>
+
+            <!-- Multiplayer Result Screen -->
+            <div id="mp-result-screen" class="screen retro-end mp-result hidden">
+                <h1 id="mp-result-title" style="color: #0f0;">GAME OVER</h1>
+                <div id="mp-winner-name" class="mp-winner-name"></div>
+                <button id="mp-rematch-btn" class="arcade-button">REMATCH</button>
+                <button id="mp-exit-btn" class="arcade-button" style="font-size: 0.7rem !important; opacity: 0.7;">EXIT</button>
             </div>
             
             <div id="pause-screen" class="screen hidden">
@@ -510,17 +719,20 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/sounds.js"></script>
     <script src="js/collision.js"></script>
-    <script src="js/input.js"></script>
-    <script src="js/map.js?v=6"></script>
-    <script src="js/player.js?v=17"></script>
+    <script src="js/input.js?v=2"></script>
+    <script src="js/map.js?v=7"></script>
+    <script src="js/player.js?v=18"></script>
     <script src="js/powerup.js?v=9"></script>
     <script src="js/bomb.js?v=2"></script>
     <script src="js/enemy.js"></script>
     <script src="js/game.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/net.js"></script>
+    <script src="js/multiplayer_game.js"></script>
+    <script src="js/main.js?v=2"></script>
     
     <script>
         document.getElementById('start-button').addEventListener('click', () => {

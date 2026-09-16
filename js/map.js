@@ -1,3 +1,14 @@
+// Seeded pseudo-RNG (mulberry32) for deterministic map generation
+function seededRandom(seed) {
+    let s = seed | 0;
+    return function () {
+        s = (s + 0x6D2B79F5) | 0;
+        let t = Math.imul(s ^ (s >>> 15), 1 | s);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
 // Map system
 class Map {
     constructor(level = 1) {
@@ -70,6 +81,43 @@ class Map {
         grid[1][2] = 0;
         grid[2][1] = 0;
         
+        return grid;
+    }
+
+    // Generate a multiplayer map using a seed for deterministic generation
+    // Clears all 4 corners for player spawning
+    generateMultiplayerMap(seed) {
+        const rng = seededRandom(seed);
+        const grid = [];
+        const density = 0.35;
+
+        for (let y = 0; y < this.rows; y++) {
+            const row = [];
+            for (let x = 0; x < this.cols; x++) {
+                if (x === 0 || y === 0 || x === this.cols - 1 || y === this.rows - 1) {
+                    row.push(1); // border walls
+                } else if (x % 2 === 0 && y % 2 === 0) {
+                    row.push(1); // pillar walls
+                } else if (rng() < density) {
+                    row.push(2); // destructible block
+                } else {
+                    row.push(0); // empty
+                }
+            }
+            grid.push(row);
+        }
+
+        // Clear all 4 corners for player spawning (3 tiles each)
+        // Top-left (P1)
+        grid[1][1] = 0; grid[1][2] = 0; grid[2][1] = 0;
+        // Bottom-right (P2)
+        grid[11][11] = 0; grid[11][10] = 0; grid[10][11] = 0;
+        // Bottom-left (P3)
+        grid[11][1] = 0; grid[11][2] = 0; grid[10][1] = 0;
+        // Top-right (P4)
+        grid[1][11] = 0; grid[1][10] = 0; grid[2][11] = 0;
+
+        this.grid = grid;
         return grid;
     }
     

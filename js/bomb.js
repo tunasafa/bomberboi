@@ -115,11 +115,24 @@ class Bomb {
             }
         }
         
-        const bombIndex = this.game.player.bombs.findIndex(bomb => 
-            bomb.x === this.x && bomb.y === this.y
-        );
-        if (bombIndex !== -1) {
-            this.game.player.bombs.splice(bombIndex, 1);
+        // Remove bomb from correct player's bombs list
+        if (this.game.players && this.ownerSlot !== undefined) {
+            // Multiplayer mode
+            const owner = this.game.players[this.ownerSlot];
+            if (owner) {
+                const bombIndex = owner.bombs.findIndex(bomb => 
+                    bomb.x === this.x && bomb.y === this.y
+                );
+                if (bombIndex !== -1) owner.bombs.splice(bombIndex, 1);
+            }
+        } else {
+            // Solo mode
+            const bombIndex = this.game.player.bombs.findIndex(bomb => 
+                bomb.x === this.x && bomb.y === this.y
+            );
+            if (bombIndex !== -1) {
+                this.game.player.bombs.splice(bombIndex, 1);
+            }
         }
     }
 }
@@ -146,18 +159,31 @@ class Explosion {
            
             if (!this.game.isGameOver && !this.game.gameWon) {
                 
-                if (checkCollision(this, this.game.player, 8)) {
-                    this.game.gameOver();
+                // Multiplayer: check all players
+                if (this.game.players) {
+                    for (let i = 0; i < this.game.players.length; i++) {
+                        const p = this.game.players[i];
+                        if (p.alive && p.invincible <= 0 && checkCollision(this, p, 8)) {
+                            this.game.gameOver();
+                        }
+                    }
+                } else {
+                    // Solo mode: single player
+                    if (checkCollision(this, this.game.player, 8)) {
+                        this.game.gameOver();
+                    }
                 }
                 
                
-                for (let i = this.game.enemies.length - 1; i >= 0; i--) {
-                    const enemy = this.game.enemies[i];
-                    if (checkCollision(this, enemy)) {
-                        enemy.destroy();
-                        
-                        if (this.game.enemies.length === 0) {
-                            this.game.winGame();
+                if (this.game.enemies) {
+                    for (let i = this.game.enemies.length - 1; i >= 0; i--) {
+                        const enemy = this.game.enemies[i];
+                        if (checkCollision(this, enemy)) {
+                            enemy.destroy();
+                            
+                            if (this.game.enemies.length === 0) {
+                                this.game.winGame();
+                            }
                         }
                     }
                 }

@@ -7,7 +7,7 @@ class Game {
         this.sound = new SoundManager();
         this.level = 1;
         this.maxLevel = 25;
-        this.map = new Map(this.level);
+        this.map = new GameMap(this.level);
         this.player = new Player(this);
         this.enemies = [];
         this.explosions = [];
@@ -187,7 +187,7 @@ class Game {
         this.level++;
         if (window.updateLevelDisplay) window.updateLevelDisplay(this.level);
         
-        this.map = new Map(this.level);
+        this.map = new GameMap(this.level);
         
         // Keep player stats but reset position
         this.player.x = 32;
@@ -263,7 +263,7 @@ class Game {
         this.level = 1;
         if (window.updateLevelDisplay) window.updateLevelDisplay(this.level);
         
-        this.map = new Map(this.level);
+        this.map = new GameMap(this.level);
         this.player = new Player(this);
         this.enemies = [];
         this.explosions = [];

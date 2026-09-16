@@ -26,7 +26,7 @@ class MultiplayerGame {
         this.loadSounds();
 
         // Map generation (deterministic via seed)
-        this.map = new Map(1);
+        this.map = new GameMap(1);
         this.map.generateMultiplayerMap(this.seed);
 
         // Game state

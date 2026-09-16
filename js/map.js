@@ -10,7 +10,7 @@ function seededRandom(seed) {
 }
 
 // Map system
-class Map {
+class GameMap {
     constructor(level = 1) {
         this.level = level;
         this.tileSize = 32;

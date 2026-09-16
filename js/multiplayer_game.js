@@ -32,7 +32,8 @@ class MultiplayerGame {
         // Broadcast block updates immediately to avoid JSON array caching bugs
         this.map.onBlockChanged = (x, y, val) => {
             if (this.isHost) {
-                this.network.broadcastState({ type: 'BLOCK_UPDATE', x, y, val });
+                // DO NOT use "type" as the key, since broadcastState injects type: 'STATE'
+                this.network.broadcastState({ updateType: 'BLOCK_UPDATE', x, y, val });
             }
         };
 
@@ -144,8 +145,14 @@ class MultiplayerGame {
             if (this.isHost) {
                 this.updateHost(timestamp);
             } else {
-                // Client: send local input to host every frame
-                this.network.sendInput(this.input.getState());
+                // Client: send local input to host only when changed or every 100ms
+                const inputState = this.input.getState();
+                const inputStr = JSON.stringify(inputState);
+                if (inputStr !== this._lastInputStr || (timestamp - (this._lastInputTime || 0) > 100)) {
+                    this.network.sendInput(inputState);
+                    this._lastInputStr = inputStr;
+                    this._lastInputTime = timestamp;
+                }
             }
         }
 
@@ -369,7 +376,7 @@ class MultiplayerGame {
 
     // ── CLIENT: Apply state received from host ──
     _applyStateFromHost(state) {
-        if (state.type === 'BLOCK_UPDATE') {
+        if (state.updateType === 'BLOCK_UPDATE') {
             this.map.grid[state.y][state.x] = state.val;
             return;
         }

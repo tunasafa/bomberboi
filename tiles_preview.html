@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOMBERBOI | 25-Level Map Tiles Showcase & Inspector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            image-rendering: pixelated;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #141419;
+            color: #E0E0E0;
+            font-family: 'Press Start 2P', monospace;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2B2B36;
+        }
+
+        h1 {
+            color: #FFD43B;
+            font-size: 17px;
+            margin: 0 0 12px 0;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .subtitle {
+            font-size: 9px;
+            color: #8E8EA0;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 16px auto;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-size: 9px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .controls button, .nav-btn {
+            font-family: inherit;
+            font-size: 8px;
+            padding: 8px 12px;
+            background: #252532;
+            color: #FFF;
+            border: 2px solid #3F3F52;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .controls button:hover, .controls button.active, .nav-btn:hover, .nav-btn.active {
+            background: #FFD43B;
+            color: #000;
+            border-color: #FFF;
+        }
+
+        .level-nav-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            max-width: 1000px;
+            margin: 0 auto 24px auto;
+            padding: 12px;
+            background: #1A1A26;
+            border: 2px solid #2F2F40;
+        }
+
+        .level-nav-bar span {
+            font-size: 8px;
+            color: #FFD43B;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .nav-chip {
+            font-family: inherit;
+            font-size: 8px;
+            padding: 5px 8px;
+            background: #242433;
+            color: #90A4AE;
+            border: 1px solid #3D3D52;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.12s;
+        }
+
+        .nav-chip:hover {
+            background: #49B9FF;
+            color: #000;
+            border-color: #FFF;
+        }
+
+        .theme-container {
+            max-width: 1000px;
+            margin: 0 auto 36px auto;
+            background: #1A1A24;
+            border: 3px solid #2D2D3D;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            scroll-margin-top: 20px;
+        }
+
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2A2A38;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .theme-title {
+            font-size: 13px;
+            color: #49B9FF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-badge {
+            font-size: 8px;
+            padding: 4px 8px;
+            border-radius: 2px;
+            background: #28283A;
+            color: #AAA;
+        }
+
+        .theme-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .tile-card {
+            background: #13131A;
+            border: 2px solid #282838;
+            padding: 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tile-title {
+            font-size: 9px;
+            color: #FFF;
+            margin-bottom: 10px;
+        }
+
+        .tile-type {
+            font-size: 7px;
+            margin-top: 4px;
+            padding: 2px 6px;
+            display: inline-block;
+        }
+
+        .type-ground { color: #81C784; }
+        .type-wall { color: #E57373; }
+        .type-block { color: #FFB74D; }
+
+        .canvas-holder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #09090D;
+            padding: 12px;
+            border: 2px solid #20202C;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            image-rendering: pixelated;
+            display: block;
+        }
+
+        .tile-desc {
+            font-size: 8px;
+            color: #888899;
+            line-height: 1.4;
+            min-height: 24px;
+        }
+
+        .board-card {
+            grid-column: 1 / -1;
+            background: #111116;
+            border: 2px solid #252535;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .board-title {
+            font-size: 10px;
+            color: #FFD43B;
+            margin-bottom: 12px;
+        }
+
+        .board-wrapper {
+            border: 3px solid #333;
+            background: #000;
+            box-shadow: 0 0 16px rgba(0,0,0,0.8);
+        }
+
+        .hint {
+            font-size: 8px;
+            color: #777;
+            margin-top: 8px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 16px;
+            font-size: 9px;
+            color: #49B9FF;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            color: #FFF;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-link">&larr; BACK TO GAME</a>
+
+    <header>
+        <h1>25-LEVEL MAP TILES SHOWCASE & INSPECTOR</h1>
+        <p class="subtitle">
+            Authentic 90s retro arcade pixel art across all 25 levels. High contrast, distinct themes, and interactive 7×7 destructible mini-boards. Click destructible blocks to test destruction and ground reveal!
+        </p>
+        <div class="controls">
+            <span>ZOOM LEVEL:</span>
+            <button class="zoom-btn" data-zoom="2">2X (64px)</button>
+            <button class="zoom-btn active" data-zoom="3">3X (96px)</button>
+            <button class="zoom-btn" data-zoom="4">4X (128px)</button>
+        </div>
+
+        <div class="level-nav-bar">
+            <span>QUICK JUMP TO LEVEL:</span>
+            <div id="nav-chips" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
+        </div>
+    </header>
+
+    <main id="themes-root"></main>
+
+    <!-- Game Scripts -->
+    <script src="js/map.js?v=21"></script>
+    <script>
+        let currentZoom = 3;
+
+        const THEMES_CONFIG = [
+            {
+                level: 1, name: 'CLASSIC MEADOW', badge: 'Level 1 / Default (Darker Rustic Crate)',
+                groundName: 'Meadow Grass', groundDesc: 'Soft green with organic pixel grass tufts & daisies',
+                wallName: 'Granite Stone Wall', wallDesc: 'Chiseled solid stone wall with full mortar capstone (no empty gray gap)',
+                blockName: 'Darker Rustic Wood Crate', blockDesc: 'Darker timber crate with authentic wood grain lines, knots, and steel corner brackets'
+            },
+            {
+                level: 2, name: 'DESERT DUNES', badge: 'Level 2 (2.5D Curvy Terracotta Vase & Monolith)',
+                groundName: 'Sandstone Dunes', groundDesc: 'Warm mellow sand with gentle stepped ripples',
+                wallName: 'Sandstone Monolith', wallDesc: 'Solid Egyptian temple monolith with full carved lotus capital filling upper space',
+                blockName: '2.5D Curvy Terracotta Vase', blockDesc: '2.5D curvy amphora urn model with graceful slender neck, bulbous swelling belly, flared pedestal foot, sculpted ear handles & amber frieze band'
+            },
+            {
+                level: 3, name: 'GLACIAL CAVERN', badge: 'Level 3 (Realistic Glacial Ice Block & Brick Wall)',
+                groundName: 'Frost Snowfield', groundDesc: 'Pale calm crystalline snow with drift contours',
+                wallName: 'Glacial Ice Brick Wall', wallDesc: 'Staggered brick courses in royal blue and aquamarine ice palette with frosted mortar seams',
+                blockName: 'Realistic Glacial Ice Block', blockDesc: 'Realistic chiseled translucent glacial ice block with frosted top surface, subsurface light scattering, jagged cleavage fractures & frozen air bubbles'
+            },
+            {
+                level: 4, name: 'CASTLE DUNGEON', badge: 'Level 4 (Lightened Vault Chest)',
+                groundName: 'Light Courtyard Flagstones', groundDesc: 'Light stone floor pavers clearly reading as walkable ground',
+                wallName: 'Fortified Steel Pillar', wallDesc: 'Heavy dark steel plates with corner iron rivets',
+                blockName: 'Lightened Vault Chest', blockDesc: 'Medieval chest with lightened warm wood staves, heavy wrought-iron bands & brass padlock'
+            },
+            {
+                level: 5, name: 'VOLCANIC HELL', badge: 'Level 5 (Continuous Magma Floor & Radiant Red Ruby)',
+                groundName: 'Continuous Magma Crust Floor', groundDesc: 'Organic cracked basalt crust and continuous flowing molten magma veins with radiant yellow hot-spots (no cross pattern, seamless 2D tiling)',
+                wallName: 'Dark Gray Basalt Pillar', wallDesc: 'Heavy dark gray fortress stone with rivets (High Contrast)',
+                blockName: 'Radiant Red Ruby Gemstone', blockDesc: 'Faceted cut radiant red ruby crystal block with lighter fiery crimson body, sparkling pink facets and brilliant white diamond glints'
+            },
+            {
+                level: 6, name: 'MAYAN TEMPLE', badge: 'Level 6 (2.5D Jade Totem & 2.5D Aztec Coin)',
+                groundName: 'Lightened Jade-Moss Pavers', groundDesc: 'Lightened cool jade-moss stone tiles creating high visual contrast against warm ochre totems',
+                wallName: '2.5D Feathered Jade Totem', wallDesc: 'Detailed 2.5D Mayan stele totem with sunny top cornice, carved deity mask, fangs, jade eyes & stepped plinth',
+                blockName: '2.5D Round Aztec Stone Coin', blockDesc: '2.5D thick round stone medallion with extruded cylinder depth, beveled rim, 3D square hole & corner jade gems'
+            },
+            {
+                level: 7, name: 'INDUSTRIAL FACTORY', badge: 'Level 7 (Contrasting Floor & Simple 2.5D Steel Wall)',
+                groundName: 'Contrasting Vulcanized Floor', groundDesc: 'Dark vulcanized steel floor plate creating sharp contrast against light steel walls',
+                wallName: 'Simple 2.5D Steel Block Wall', wallDesc: 'Clean monolithic 2.5D steel block tile with perimeter bevels and corner rivets',
+                blockName: 'Hazard Cargo Container', blockDesc: 'Yellow/black hazard striped steel shipping crate'
+            },
+            {
+                level: 8, name: 'TOXIC SEWER', badge: 'Level 8 (Thin Sidewalls Exhaust Fan)',
+                groundName: 'Light Bluish Grey Concrete', groundDesc: 'Light bluish light grey concrete floor with subtle hairline drainage seams',
+                wallName: 'Industrial Exhaust Fan Wall', wallDesc: 'Heavy steel ventilation shroud with ultra-thin 2px sidewalls and massive 26px recessed rotating 4-blade exhaust fan',
+                blockName: 'Corrosive Chemical Drum', blockDesc: 'Reinforced toxic chemical barrel with radioactive warning label'
+            },
+            {
+                level: 9, name: 'SKYLINE ROOFTOP', badge: 'Level 9 (Clean Concrete)',
+                groundName: 'Clean Concrete Roof Deck', groundDesc: 'Clean smooth rooftop pavers without distracting center dots',
+                wallName: 'Air Conditioner Unit Wall', wallDesc: 'Industrial rooftop air chiller with ventilation louvers',
+                blockName: 'Wooden Rooftop Pallet', blockDesc: 'Shipping pallet with heavy timber crossbeams'
+            },
+            {
+                level: 10, name: 'DEEP GEM MINE', badge: 'Level 10 (Thin Steel Frame & Matching Slate)',
+                groundName: 'Lighter Cavern Gravel', groundDesc: 'Warm lighter brown gravel with loose stone specks',
+                wallName: 'Thin-Frame Cavern Support Wall', wallDesc: 'Sleek 3px structural steel girder frame around matching deep cavern slate mineral bedrock with rock fissures',
+                blockName: 'Big Shiny Orange Gemstone', blockDesc: 'Single massive faceted block of sparkling radiant orange gemstone with diamond specular glints'
+            },
+            {
+                level: 11, name: 'CYBER LAB', badge: 'Level 11 (Lighter Servers & One-Tone-Lighter Lines)',
+                groundName: 'Cleanroom Tile Floor', groundDesc: 'Sterile high-tech tiles with floor grid lines one tone lighter than the floor itself',
+                wallName: 'Lighter Server Wall Rack', wallDesc: 'Lighter titanium/slate server rack casing with bright status LEDs & exhaust vents',
+                blockName: 'Pressure Dial Gauge', blockDesc: 'Analog meter console with red needle, green/red arcs & brass rim'
+            },
+            {
+                level: 12, name: 'FEUDAL JAPAN', badge: 'Level 12 (Ishigaki Stone Wall & 2.5D Sushi)',
+                groundName: 'Japanese Wood Floor', groundDesc: 'Clean horizontal cedar wood floor planks with subtle grain',
+                wallName: 'Ishigaki Grey Stone Castle Wall', wallDesc: 'Full-tile traditional ishigaki grey stone masonry with interlocking mortared ashlar blocks',
+                blockName: '2.5D Nigiri Sushi Piece', blockDesc: 'Detailed 2.5D nigiri sushi with pillowy rice bed, draped salmon fillet, diagonal fat marbling lines, wasabi hint & nori seaweed belt'
+            },
+            {
+                level: 13, name: 'CITY STREETS', badge: 'Level 13 (Speed Camera Device Box)',
+                groundName: 'Lightened Asphalt Roadway', groundDesc: 'Lightened asphalt street with crisp white dividing dash and fine aggregate gravel specks',
+                wallName: 'Cast-Iron Manhole Cover', wallDesc: 'Authentic weathered cast-iron metal manhole with concentric traction ring, slotted pry holes & waffle tread',
+                blockName: 'Speed Camera Box Device', blockDesc: 'Monolithic high-visibility urban speed camera device box filling tile (no neck) with optical camera lens, strobe flash diffuser unit, infrared radar emitter & dual status LEDs'
+            },
+            {
+                level: 14, name: "PHARAOH'S VAULT", badge: 'Level 14 (Royal Cobalt Lapis Obelisk)',
+                groundName: 'Polished Limestone & Scarabs', groundDesc: 'Alabaster limestone with royal lapis & gold scarab mosaic',
+                wallName: 'Royal Cobalt Lapis Obelisk', wallDesc: 'Majestic royal cobalt blue lapis lazuli obelisk with pure electroplated gold pyramidion, Winged Disc of Horus, Sacred Ankh & Eye of Horus',
+                blockName: 'Golden Egyptian Treasure Chest', blockDesc: 'Bright 100% antique gold arched chest with ruby gems (distinct from obelisk)'
+            },
+            {
+                level: 15, name: 'BEE HIVE', badge: 'Level 15 (Continuous Honeycomb & Big Blooming Flower)',
+                groundName: 'Warm Honey Floor', groundDesc: 'Golden liquid honey floor with honeycomb cell glints',
+                wallName: 'Continuous Honeycomb Wax Cells', wallDesc: 'Seamless continuous hexagonal honeycomb cells flowing across adjacent tiles without spilling out of tile borders',
+                blockName: 'Big Blooming Pink Flower', blockDesc: 'Bigger and better 4-petal organic blooming flower with no side leaves, no underline, 3D shading and radiant golden stamen core'
+            },
+            {
+                level: 16, name: 'PIRATE GALLEON', badge: 'Level 16 (Bordered Rum Cask)',
+                groundName: 'Teak Deck Planks', groundDesc: 'Weathered nautical ship deck with brass deck screws',
+                wallName: 'Cannon Port Bulkhead', wallDesc: 'Cast-iron cannon muzzle inside reinforced wood bulkhead',
+                blockName: 'Bordered Oak Rum Cask', blockDesc: '3D curved oak cask with crisp dark outer border outline clearly differentiating it from the deck floor planks'
+            },
+            {
+                level: 17, name: 'WILD WEST OUTPOST', badge: 'Level 17 (Replaces Mushroom)',
+                groundName: 'Dusty Frontier Boardwalk', groundDesc: 'Horizontal weathered cedar timber planks with hand-forged iron perimeter nails',
+                wallName: 'Fort Palisade Log Wall', wallDesc: 'Heavy vertical log palisade timbers bound with hammered iron reinforcement band',
+                blockName: 'Red TNT Dynamite Crate', blockDesc: 'High-explosive crimson dynamite crate with stenciled TNT, burning black powder fuse & spark'
+            },
+            {
+                level: 18, name: 'CLOCKWORK STEAMWORKS', badge: 'Level 18 (Clean Bronze)',
+                groundName: 'Solid Bronze Floor', groundDesc: 'Clean solid bronze floor plate without distracting middle squares',
+                wallName: 'Copper Steam Boiler', wallDesc: 'Heavy copper pressure boiler with pressure dial gauge',
+                blockName: 'Interlocking Brass Cogs', blockDesc: 'Intricate mechanical clockwork gear wheel assembly'
+            },
+            {
+                level: 19, name: 'VAMPIRE CATHEDRAL', badge: 'Level 19 (Old Framed Stone Cross)',
+                groundName: 'Lightened Gothic Marble', groundDesc: 'Softened plum & wine checkered marble pavers for enhanced floor visibility',
+                wallName: 'Halloween Cabbage/Pumpkin Head', wallDesc: 'Carved orange pumpkin head pillar with glowing yellow face',
+                blockName: 'Framed Carved Stone Cross', blockDesc: 'Original framed stone tile with recessed dark basin and carved marble crucifix cross with 3D light ridge'
+            },
+            {
+                level: 20, name: 'SPACE STATION', badge: 'Level 20 (Simple Bulkhead & Cargo Crate)',
+                groundName: 'Titanium Station Deck', groundDesc: 'Pressurized dark slate alloy deck with clean seam trim',
+                wallName: 'Titanium Bulkhead Panel', wallDesc: 'Clean, simple sci-fi titanium bulkhead wall with corner rivets and center indicator',
+                blockName: 'Modular Cargo Tech Crate', blockDesc: 'Clean, simple sci-fi supply container with reinforced corners and magnetic latch'
+            },
+            {
+                level: 21, name: 'NUCLEAR SILO', badge: 'Level 21 (Gray Floor & Hazard Wall)',
+                groundName: 'Gray Concrete Floor', groundDesc: 'Simple grayish concrete floor tile providing calm clean ground',
+                wallName: 'Safety Hazard Blast Wall', wallDesc: 'Massive reinforced yellow & black diagonal hazard blast barrier',
+                blockName: 'Detailed Radioactive Drum', blockDesc: '3D corrugated drum with hazard trefoil & bubbling green ooze'
+            },
+            {
+                level: 22, name: 'CASINO ROYALE', badge: 'Level 22 (Dice & $1 Chip)',
+                groundName: 'Green Felt Table Floor', groundDesc: 'Classic emerald green felt poker card table with gold border',
+                wallName: 'Ivory Casino Dice (5)', wallDesc: '3D beveled ivory die showing 5 crimson pips on every side',
+                blockName: '$1 Round Casino Chip', blockDesc: 'Authentic round royal blue chip with white edge inserts & stamped $1'
+            },
+            {
+                level: 23, name: 'ZEN GARDEN', badge: 'Level 23 (Normal Pixel Simple Water)',
+                groundName: 'Raked Zen Sand Floor', groundDesc: 'Peaceful raked sand with parallel furrow ripple lines and smooth garden pebbles',
+                wallName: 'Normal Pixel Simple Water', wallDesc: 'Classic 90s retro pixel simple water with deep azure base, flowing horizontal currents and gentle wavelets (no pool, no pond, just water)',
+                blockName: 'Stone Pagoda Lantern', blockDesc: 'Carved granite pagoda lantern (Toro) with glowing amber flame window'
+            },
+            {
+                level: 24, name: 'CELESTIAL TEMPLE', badge: 'Level 24 (Black Space Surround)',
+                groundName: 'Solid Black Starry Sky', groundDesc: 'Solid black space with balanced single-pixel white star dots',
+                wallName: 'Winged Alabaster Column', wallDesc: 'Winged temple column cleanly framed with pure black space (no grey borders)',
+                blockName: 'Celestial Solar Relic', blockDesc: 'Radiant golden Sunstone with 8-point sunburst rays and white-hot star core'
+            },
+            {
+                level: 25, name: 'GOLDEN EMPEROR PALACE', badge: 'Level 25 (Contrasting Obsidian Column)',
+                groundName: 'Royal White Marble Floor', groundDesc: 'Polished white palace marble with subtle golden border inlays',
+                wallName: 'Imperial Gilded Obsidian Column', wallDesc: 'Deep obsidian black marble column with 4 vertical polished gold fluting channels, gold Corinthian capital & imperial ruby medallion (contrasting with white marble floor)',
+                blockName: 'Flawless Diamond Jewel Block', blockDesc: 'Brilliant multifaceted aquamarine diamond with white star glints'
+            }
+        ];
+
+        function renderNav() {
+            const container = document.getElementById('nav-chips');
+            container.innerHTML = '';
+            THEMES_CONFIG.forEach(cfg => {
+                const a = document.createElement('a');
+                a.className = 'nav-chip';
+                a.href = '#theme-' + cfg.level;
+                a.textContent = `L${cfg.level}`;
+                a.title = `${cfg.level}. ${cfg.name}`;
+                container.appendChild(a);
+            });
+        }
+
+        function renderAll() {
+            const root = document.getElementById('themes-root');
+            root.innerHTML = '';
+            renderNav();
+
+            THEMES_CONFIG.forEach(cfg => {
+                const map = new GameMap(cfg.level);
+
+                const section = document.createElement('div');
+                section.className = 'theme-container';
+                section.id = 'theme-' + cfg.level;
+
+                section.innerHTML = `
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span>LEVEL ${cfg.level}: ${cfg.name}</span>
+                            <span class="theme-badge">${cfg.badge}</span>
+                        </div>
+                    </div>
+                    <div class="theme-layout">
+                        <!-- Ground Tile -->
+                        <div class="tile-card">
+                            <div>
+                                <div class="tile-title">${cfg.groundName}</div>
+                                <span class="tile-type type-ground">GROUND (EMPTY)</span>
+                            </div>
+                            <div class="canvas-holder">
+                                <canvas id="c-ground-${cfg.level}" width="32" height="32"></canvas>
+                            </div>
+                            <div class="tile-desc">${cfg.groundDesc}</div>
+                        </div>
+
+                        <!-- Wall Tile -->
+                        <div class="tile-card">
+                            <div>
+                                <div class="tile-title">${cfg.wallName}</div>
+                                <span class="tile-type type-wall">INDESTRUCTIBLE (HARD)</span>
+                            </div>
+                            <div class="canvas-holder">
+                                <canvas id="c-wall-${cfg.level}" width="32" height="32"></canvas>
+                            </div>
+                            <div class="tile-desc">${cfg.wallDesc}</div>
+                        </div>
+
+                        <!-- Block Tile -->
+                        <div class="tile-card">
+                            <div>
+                                <div class="tile-title">${cfg.blockName}</div>
+                                <span class="tile-type type-block">DESTRUCTIBLE (SOFT)</span>
+                            </div>
+                            <div class="canvas-holder">
+                                <canvas id="c-block-${cfg.level}" width="32" height="32"></canvas>
+                            </div>
+                            <div class="tile-desc">${cfg.blockDesc}</div>
+                        </div>
+
+                        <!-- Mini Board Gameplay Slice -->
+                        <div class="board-card">
+                            <div class="board-title">GAMEPLAY BOARD CONTEXT (CLICK BLOCKS TO DESTROY)</div>
+                            <div class="board-wrapper">
+                                <canvas id="c-board-${cfg.level}" width="224" height="224"></canvas>
+                            </div>
+                            <div class="hint">Click destructible blocks to test destruction and tile cache invalidation</div>
+                        </div>
+                    </div>
+                `;
+
+                root.appendChild(section);
+
+                // Draw individual 32x32 tiles
+                const groundC = document.getElementById(`c-ground-${cfg.level}`);
+                const wallC = document.getElementById(`c-wall-${cfg.level}`);
+                const blockC = document.getElementById(`c-block-${cfg.level}`);
+
+                applyZoom(groundC, 32, 32, currentZoom);
+                applyZoom(wallC, 32, 32, currentZoom);
+                applyZoom(blockC, 32, 32, currentZoom);
+
+                map.drawGround(groundC.getContext('2d'), 0, 0);
+
+                const wCtx = wallC.getContext('2d');
+                map.drawGround(wCtx, 0, 0);
+                map.drawWall(wCtx, 0, 0);
+
+                const bCtx = blockC.getContext('2d');
+                map.drawGround(bCtx, 0, 0);
+                map.drawBlock(bCtx, 0, 0);
+
+                // Draw mini 7x7 board
+                setupMiniBoard(cfg.level, map);
+            });
+        }
+
+        function applyZoom(canvas, baseW, baseH, zoom) {
+            canvas.style.width = (baseW * zoom) + 'px';
+            canvas.style.height = (baseH * zoom) + 'px';
+        }
+
+        function setupMiniBoard(level, map) {
+            const canvas = document.getElementById(`c-board-${level}`);
+            const ctx = canvas.getContext('2d');
+            const tileSize = 32;
+            const rows = 7;
+            const cols = 7;
+
+            // Pre-defined 7x7 board layout with walls, pillars, blocks, and open ground
+            // 1 = wall, 2 = destructible block, 0 = ground
+            const grid = [
+                [1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 2, 2, 0, 1],
+                [1, 0, 1, 2, 1, 0, 1],
+                [1, 2, 2, 2, 2, 2, 1],
+                [1, 0, 1, 2, 1, 0, 1],
+                [1, 0, 2, 2, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1]
+            ];
+
+            function drawBoard() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const px = x * tileSize;
+                        const py = y * tileSize;
+                        const val = grid[y][x];
+
+                        map.drawGround(ctx, px, py);
+                        if (val === 1) map.drawWall(ctx, px, py);
+                        else if (val === 2) map.drawBlock(ctx, px, py);
+                    }
+                }
+            }
+
+            // Click block to destroy and reveal ground
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const clickX = (e.clientX - rect.left) * scaleX;
+                const clickY = (e.clientY - rect.top) * scaleY;
+
+                const gx = Math.floor(clickX / tileSize);
+                const gy = Math.floor(clickY / tileSize);
+
+                if (gx >= 0 && gx < cols && gy >= 0 && gy < rows) {
+                    if (grid[gy][gx] === 2) {
+                        grid[gy][gx] = 0; // destroy
+                        drawBoard();
+                    } else if (grid[gy][gx] === 0) {
+                        grid[gy][gx] = 2; // recreate
+                        drawBoard();
+                    }
+                }
+            });
+
+            applyZoom(canvas, 224, 224, Math.max(1, currentZoom - 1));
+            drawBoard();
+        }
+
+        // Zoom button controls
+        document.querySelectorAll('.zoom-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentZoom = parseInt(btn.dataset.zoom, 10);
+
+                THEMES_CONFIG.forEach(cfg => {
+                    const groundC = document.getElementById(`c-ground-${cfg.level}`);
+                    const wallC = document.getElementById(`c-wall-${cfg.level}`);
+                    const blockC = document.getElementById(`c-block-${cfg.level}`);
+                    const boardC = document.getElementById(`c-board-${cfg.level}`);
+
+                    if (groundC) applyZoom(groundC, 32, 32, currentZoom);
+                    if (wallC) applyZoom(wallC, 32, 32, currentZoom);
+                    if (blockC) applyZoom(blockC, 32, 32, currentZoom);
+                    if (boardC) applyZoom(boardC, 224, 224, Math.max(1, currentZoom - 1));
+                });
+            });
+        });
+
+        // Initial render
+        renderAll();
+    </script>
+</body>
+</html>

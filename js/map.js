@@ -17,6 +17,11 @@ class GameMap {
         this.rows = 13;
         this.cols = 13;
         
+        // Offscreen canvas cache for the entire map
+        this._cacheCanvas = null;
+        this._cacheCtx = null;
+        this._cacheDirty = true;
+        
         // Determine theme based on level (every level changes theme)
         const themeIndex = (this.level - 1) % 5;
                 const themes = [
@@ -121,23 +126,57 @@ class GameMap {
         return grid;
     }
     
-    draw(ctx) {
-    for (let y = 0; y < this.rows; y++) {
-        for (let x = 0; x < this.cols; x++) {
-            const tile = this.grid[y][x];
-            const tileX = x * this.tileSize;
-            const tileY = y * this.tileSize;
-            
-            this.drawGround(ctx, tileX, tileY);
-            
-            if (tile === 1) { 
-                this.drawWall(ctx, tileX, tileY);
-            } else if (tile === 2) { 
-                this.drawBlock(ctx, tileX, tileY);
+    // Ensure the offscreen cache canvas exists and is fully rendered
+    _ensureCache() {
+        if (!this._cacheCanvas) {
+            this._cacheCanvas = document.createElement('canvas');
+            this._cacheCanvas.width = this.cols * this.tileSize;
+            this._cacheCanvas.height = this.rows * this.tileSize;
+            this._cacheCtx = this._cacheCanvas.getContext('2d');
+            this._cacheDirty = true;
+        }
+        if (this._cacheDirty) {
+            for (let y = 0; y < this.rows; y++) {
+                for (let x = 0; x < this.cols; x++) {
+                    this._renderTile(x, y);
+                }
             }
+            this._cacheDirty = false;
         }
     }
-}
+
+    // Render a single tile to the offscreen cache
+    _renderTile(x, y) {
+        const ctx = this._cacheCtx;
+        const tileX = x * this.tileSize;
+        const tileY = y * this.tileSize;
+        const tile = this.grid[y][x];
+
+        this.drawGround(ctx, tileX, tileY);
+
+        if (tile === 1) {
+            this.drawWall(ctx, tileX, tileY);
+        } else if (tile === 2) {
+            this.drawBlock(ctx, tileX, tileY);
+        }
+    }
+
+    // Invalidate and re-render a single tile (used when blocks change)
+    invalidateTile(gridX, gridY) {
+        if (this._cacheCanvas && this._cacheCtx) {
+            this._renderTile(gridX, gridY);
+        }
+    }
+
+    // Mark the entire cache as dirty (used on level change / map regen)
+    invalidate() {
+        this._cacheDirty = true;
+    }
+
+    draw(ctx) {
+        this._ensureCache();
+        ctx.drawImage(this._cacheCanvas, 0, 0);
+    }
 
 drawGround(ctx, x, y) {
     switch (this.theme.style) {
@@ -569,6 +608,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 2) {
                 this.grid[tileY][tileX] = 0;
+                this.invalidateTile(tileX, tileY);
                 if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 0);
                 return true;
             }
@@ -583,6 +623,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 0) {
                 this.grid[tileY][tileX] = 3;
+                this.invalidateTile(tileX, tileY);
                 if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 3);
                 return true;
             }
@@ -597,6 +638,7 @@ drawBonePile(ctx, x, y) {
         if (tileX >= 0 && tileX < this.cols && tileY >= 0 && tileY < this.rows) {
             if (this.grid[tileY][tileX] === 3) {
                 this.grid[tileY][tileX] = 0;
+                this.invalidateTile(tileX, tileY);
                 if (this.onBlockChanged) this.onBlockChanged(tileX, tileY, 0);
                 return true;
             }

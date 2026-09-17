@@ -453,31 +453,31 @@ class Player {
         const currentSprite = sprites[this.animationFrame];
         const { pattern, colors } = currentSprite;
 
-        // The sprite is authored at native 32×32 resolution. Drawing one
-        // source pixel to one canvas pixel keeps every edge crisp.
-        const pixelSize = 1;
-
         // Keep the sprite on whole canvas pixels: important for sharp pixel art.
         const drawX = Math.round(x);
         let drawY = Math.round(y);
 
-        // Remove walk bounce as per user request
+        // Use cached offscreen canvas for this sprite frame
+        const cacheKey = `${this.colorSlot}-${this.direction}-${this.animationFrame}`;
+        if (!Player._spriteCache[cacheKey]) {
+            const offscreen = document.createElement('canvas');
+            offscreen.width = 32;
+            offscreen.height = pattern.length;
+            const offCtx = offscreen.getContext('2d');
+            offCtx.imageSmoothingEnabled = false;
 
-        for (let row = 0; row < pattern.length; row++) {
-            for (let col = 0; col < pattern[row].length; col++) {
-                const colorIndex = pattern[row][col];
-
-                if (colorIndex === 0) continue;
-
-                ctx.fillStyle = colors[colorIndex];
-                ctx.fillRect(
-                    drawX + col * pixelSize,
-                    drawY + row * pixelSize,
-                    pixelSize,
-                    pixelSize
-                );
+            for (let row = 0; row < pattern.length; row++) {
+                for (let col = 0; col < pattern[row].length; col++) {
+                    const colorIndex = pattern[row][col];
+                    if (colorIndex === 0) continue;
+                    offCtx.fillStyle = colors[colorIndex];
+                    offCtx.fillRect(col, row, 1, 1);
+                }
             }
+            Player._spriteCache[cacheKey] = offscreen;
         }
+
+        ctx.drawImage(Player._spriteCache[cacheKey], drawX, drawY);
     }
 
     draw(ctx) {
@@ -526,3 +526,6 @@ class Player {
         return this.moving;
     }
 }
+
+// Static cache shared across all Player instances — pre-rendered sprite canvases
+Player._spriteCache = {};

@@ -378,6 +378,7 @@ class MultiplayerGame {
     _applyStateFromHost(state) {
         if (state.updateType === 'BLOCK_UPDATE') {
             this.map.grid[state.y][state.x] = state.val;
+            this.map.invalidateTile(state.x, state.y);
             return;
         }
 
@@ -400,15 +401,32 @@ class MultiplayerGame {
                 p.bombRange = sp.bombRange;
                 p.baseSpeed = sp.baseSpeed;
 
-                // Update bombs in-place to avoid GC thrashing
-                if (sp.bombs) {
-                    // Remove old bombs
-                    p.bombs = p.bombs.filter(existing => 
-                        sp.bombs.some(b => b.x === existing.x && b.y === existing.y)
-                    );
-                    // Add or update bombs
+                // Update bombs using keyed lookup (O(1) per bomb instead of O(n²))
+                if (sp.bombs && sp.bombs.length > 0) {
+                    const incomingKeys = new Set();
                     for (const b of sp.bombs) {
-                        let existing = p.bombs.find(bomb => bomb.x === b.x && bomb.y === b.y);
+                        incomingKeys.add(b.x + ',' + b.y);
+                    }
+
+                    const existingMap = new Map();
+                    for (const bomb of p.bombs) {
+                        existingMap.set(bomb.x + ',' + bomb.y, bomb);
+                    }
+
+                    // In-place filter: keep only bombs that exist in incoming state
+                    let writeIdx = 0;
+                    for (let j = 0; j < p.bombs.length; j++) {
+                        const key = p.bombs[j].x + ',' + p.bombs[j].y;
+                        if (incomingKeys.has(key)) {
+                            p.bombs[writeIdx++] = p.bombs[j];
+                        }
+                    }
+                    p.bombs.length = writeIdx;
+
+                    // Add or update
+                    for (const b of sp.bombs) {
+                        const key = b.x + ',' + b.y;
+                        const existing = existingMap.get(key);
                         if (existing) {
                             existing.timer = b.timer;
                             existing.exploded = b.exploded;
@@ -423,18 +441,36 @@ class MultiplayerGame {
                         }
                     }
                 } else {
-                    p.bombs = [];
+                    p.bombs.length = 0;
                 }
             }
         }
 
-        // Update explosions in-place
+        // Update explosions using keyed lookup
         if (state.explosions) {
-            this.explosions = this.explosions.filter(existing => 
-                state.explosions.some(e => e.x === existing.x && e.y === existing.y && e.dir === existing.direction)
-            );
+            const incomingExpKeys = new Set();
             for (const e of state.explosions) {
-                let existing = this.explosions.find(exp => exp.x === e.x && exp.y === e.y && exp.direction === e.dir);
+                incomingExpKeys.add(e.x + ',' + e.y + ',' + e.dir);
+            }
+
+            const existingExpMap = new Map();
+            for (const exp of this.explosions) {
+                existingExpMap.set(exp.x + ',' + exp.y + ',' + exp.direction, exp);
+            }
+
+            // In-place filter
+            let writeIdx = 0;
+            for (let j = 0; j < this.explosions.length; j++) {
+                const key = this.explosions[j].x + ',' + this.explosions[j].y + ',' + this.explosions[j].direction;
+                if (incomingExpKeys.has(key)) {
+                    this.explosions[writeIdx++] = this.explosions[j];
+                }
+            }
+            this.explosions.length = writeIdx;
+
+            for (const e of state.explosions) {
+                const key = e.x + ',' + e.y + ',' + e.dir;
+                const existing = existingExpMap.get(key);
                 if (existing) {
                     existing.timer = e.timer;
                     existing.animationFrame = e.frame;
@@ -447,13 +483,30 @@ class MultiplayerGame {
             }
         }
 
-        // Update powerups in-place
+        // Update powerups using keyed lookup
         if (state.powerups) {
-            this.powerups = this.powerups.filter(existing => 
-                state.powerups.some(p => p.x === existing.x && p.y === existing.y)
-            );
+            const incomingPwKeys = new Set();
             for (const p of state.powerups) {
-                let existing = this.powerups.find(pw => pw.x === p.x && pw.y === p.y);
+                incomingPwKeys.add(p.x + ',' + p.y);
+            }
+
+            const existingPwMap = new Map();
+            for (const pw of this.powerups) {
+                existingPwMap.set(pw.x + ',' + pw.y, pw);
+            }
+
+            let writeIdx = 0;
+            for (let j = 0; j < this.powerups.length; j++) {
+                const key = this.powerups[j].x + ',' + this.powerups[j].y;
+                if (incomingPwKeys.has(key)) {
+                    this.powerups[writeIdx++] = this.powerups[j];
+                }
+            }
+            this.powerups.length = writeIdx;
+
+            for (const p of state.powerups) {
+                const key = p.x + ',' + p.y;
+                const existing = existingPwMap.get(key);
                 if (existing) {
                     existing.animationTimer = p.timer;
                 } else {

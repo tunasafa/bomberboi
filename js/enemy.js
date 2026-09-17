@@ -190,45 +190,39 @@ class Enemy {
     const bobAmount = Math.sin(this.animationTimer * 0.1 + this.bobOffset) * 1;
     const drawY = y + bobAmount;
     
-    
-    let currentColors = [...colors];
-    if (this.animationFrame === 1 && this.spriteType === 'ghost') {
-      
-      currentColors = colors.map(color => 
-        color === 'transparent' ? color : color + '88'
-      );
-    }
-    
-    for (let row = 0; row < pattern.length; row++) {
-      for (let col = 0; col < pattern[row].length; col++) {
-        const colorIndex = pattern[row][col];
-        if (colorIndex > 0) {
-          ctx.fillStyle = currentColors[colorIndex];
-          ctx.fillRect(
-            x + col * pixelSize,
-            drawY + row * pixelSize,
-            pixelSize,
-            pixelSize
-          );
+    // Determine cache key — ghost frame 1 has transparency variant
+    const isGhostTransparent = (this.animationFrame === 1 && this.spriteType === 'ghost');
+    const cacheKey = this.spriteType + (isGhostTransparent ? '-ghost1' : '');
+
+    if (!Enemy._spriteCache[cacheKey]) {
+        let currentColors = [...colors];
+        if (isGhostTransparent) {
+            currentColors = colors.map(color => 
+                color === 'transparent' ? color : color + '88'
+            );
         }
-      }
+
+        const spriteW = pattern[0].length * pixelSize;
+        const spriteH = pattern.length * pixelSize;
+        const offscreen = document.createElement('canvas');
+        offscreen.width = spriteW;
+        offscreen.height = spriteH;
+        const offCtx = offscreen.getContext('2d');
+        offCtx.imageSmoothingEnabled = false;
+
+        for (let row = 0; row < pattern.length; row++) {
+            for (let col = 0; col < pattern[row].length; col++) {
+                const colorIndex = pattern[row][col];
+                if (colorIndex > 0) {
+                    offCtx.fillStyle = currentColors[colorIndex];
+                    offCtx.fillRect(col * pixelSize, row * pixelSize, pixelSize, pixelSize);
+                }
+            }
+        }
+        Enemy._spriteCache[cacheKey] = offscreen;
     }
-    
-    
-    if (this.spriteType === 'demon') {
-      ctx.shadowColor = '#FF4500';
-      ctx.shadowBlur = 8;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-    } else if (this.spriteType === 'ghost') {
-      ctx.shadowColor = '#4169E1';
-      ctx.shadowBlur = 6;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-    }
-    
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
+
+    ctx.drawImage(Enemy._spriteCache[cacheKey], x, drawY);
   }
   
   draw(ctx) {
@@ -286,6 +280,9 @@ class Enemy {
     }
   }
 }
+
+// Static cache shared across all Enemy instances — pre-rendered sprite canvases
+Enemy._spriteCache = {};
 
 function getEnemyInfo(enemy) {
   const info = {

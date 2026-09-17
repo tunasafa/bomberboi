@@ -30,10 +30,17 @@ class MultiplayerGame {
         this.map.generateMultiplayerMap(this.seed);
         
         // Broadcast block updates immediately to avoid JSON array caching bugs
+        this._recentBlockChanges = [];
         this.map.onBlockChanged = (x, y, val) => {
             if (this.isHost) {
-                // DO NOT use "type" as the key, since broadcastState injects type: 'STATE'
+                this._recentBlockChanges.push({ x, y, val, time: performance.now() });
+                // Broadcast immediately and repeat once over unreliable channel
                 this.network.broadcastState({ updateType: 'BLOCK_UPDATE', x, y, val });
+                setTimeout(() => {
+                    if (this.network && this.network.isHost) {
+                        this.network.broadcastState({ updateType: 'BLOCK_UPDATE', x, y, val });
+                    }
+                }, 40);
             }
         };
 
@@ -46,6 +53,7 @@ class MultiplayerGame {
         this.lastTime = 0;
         this.paused = false;
         this.stateTickCounter = 0;
+        this._lastReceivedSeq = -1;
         this.score = 0;
         this.enemies = null; // null signals multiplayer mode to bomb.js
 
@@ -91,6 +99,11 @@ class MultiplayerGame {
                 this._applyStateFromHost(state);
             };
         }
+
+        // Listen for player death sound
+        this.network.onPlayerDied = (playerId) => {
+            this.sound.playSound('death');
+        };
 
         // Listen for game over
         this.network.onGameOver = (winnerId) => {
@@ -148,10 +161,16 @@ class MultiplayerGame {
             if (this.isHost) {
                 this.updateHost(timestamp);
             } else {
-                // Client: send local input to host only when changed or every 100ms
+                this.updateClient(timestamp, deltaTime);
+
+                // Client: send local input to host with high responsiveness
                 const inputState = this.input.getState();
                 const inputStr = JSON.stringify(inputState);
-                if (inputStr !== this._lastInputStr || (timestamp - (this._lastInputTime || 0) > 100)) {
+                const hasAnyKey = Object.values(inputState).some(Boolean);
+                const timeSinceLast = timestamp - (this._lastInputTime || 0);
+
+                // Send immediately on change, or every 40ms if holding a key, or heartbeat every 100ms
+                if (inputStr !== this._lastInputStr || (hasAnyKey && timeSinceLast > 40) || timeSinceLast > 100) {
                     this.network.sendInput(inputState);
                     this._lastInputStr = inputStr;
                     this._lastInputTime = timestamp;
@@ -217,6 +236,74 @@ class MultiplayerGame {
             this.network.broadcastState(this._serializeState());
             this.lastStateSentTime = timestamp;
         }
+    }
+
+    // ── CLIENT: 60fps interpolation and local animation ──
+    updateClient(timestamp, deltaTime) {
+        // Smoothly interpolate all alive players towards their target grid positions
+        for (let i = 0; i < this.playerCount; i++) {
+            const p = this.players[i];
+            if (!p.alive) continue;
+
+            if (p.invincible > 0) p.invincible--;
+
+            const dx = p.targetX - p.x;
+            const dy = p.targetY - p.y;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq > 0.01) {
+                p.moving = true;
+                p.animationTimer = (p.animationTimer || 0) + 1;
+                if (p.animationTimer % 15 === 0) {
+                    p.animationFrame = (p.animationFrame + 1) % 2;
+                }
+
+                const speed = p.baseSpeed || 2;
+                if (p.x < p.targetX) p.x = Math.min(p.x + speed, p.targetX);
+                else if (p.x > p.targetX) p.x = Math.max(p.x - speed, p.targetX);
+                if (p.y < p.targetY) p.y = Math.min(p.y + speed, p.targetY);
+                else if (p.y > p.targetY) p.y = Math.max(p.y - speed, p.targetY);
+
+                if (p.x === p.targetX && p.y === p.targetY) {
+                    p.moving = false;
+                    p.animationFrame = 0;
+                }
+            } else {
+                p.moving = false;
+                p.animationFrame = 0;
+            }
+        }
+
+        // Animate bombs locally at 60 FPS
+        for (let i = 0; i < this.playerCount; i++) {
+            const p = this.players[i];
+            for (let j = 0; j < p.bombs.length; j++) {
+                const b = p.bombs[j];
+                b.animationFrame++;
+                b.timer = Math.max(0, b.timer - 1);
+            }
+        }
+
+        // Animate explosions locally at 60 FPS
+        for (let i = this.explosions.length - 1; i >= 0; i--) {
+            const exp = this.explosions[i];
+            exp.timer--;
+            exp.animationFrame = 30 - exp.timer;
+            if (exp.timer <= 0) {
+                this.explosions.splice(i, 1);
+            }
+        }
+
+        // Animate powerups bobbing locally
+        for (let i = 0; i < this.powerups.length; i++) {
+            this.powerups[i].animationTimer = (this.powerups[i].animationTimer || 0) + 1;
+        }
+    }
+
+    _getRecentBlockChanges() {
+        const now = performance.now();
+        this._recentBlockChanges = this._recentBlockChanges.filter(b => (now - b.time) < 2000);
+        return this._recentBlockChanges.map(b => [b.x, b.y, b.val]);
     }
 
     // ── Update a single player (host only) ──────
@@ -351,29 +438,44 @@ class MultiplayerGame {
     // ── Serialize game state for network ────────
     _serializeState() {
         return {
-            players: this.players.map(p => ({
-                x: p.x, y: p.y,
-                targetX: p.targetX, targetY: p.targetY,
-                dir: p.direction,
-                frame: p.animationFrame,
-                alive: p.alive,
-                moving: p.moving,
-                invincible: p.invincible,
-                lives: p.lives,
-                maxBombs: p.maxBombs,
-                bombRange: p.bombRange,
-                baseSpeed: p.baseSpeed,
-                bombs: p.bombs.map(b => ({
-                    x: b.x, y: b.y, timer: b.timer, range: b.range,
-                    exploded: b.exploded, frame: b.animationFrame
+            seq: this.stateTickCounter++,
+            p: this.players.map(p => ({
+                x: Math.round(p.x * 10) / 10,
+                y: Math.round(p.y * 10) / 10,
+                tx: p.targetX,
+                ty: p.targetY,
+                d: p.direction,
+                f: p.animationFrame,
+                a: p.alive ? 1 : 0,
+                m: p.moving ? 1 : 0,
+                iv: p.invincible,
+                l: p.lives,
+                mb: p.maxBombs,
+                br: p.bombRange,
+                bs: p.baseSpeed,
+                b: p.bombs.map(b => ({
+                    x: b.x,
+                    y: b.y,
+                    t: b.timer,
+                    r: b.range,
+                    e: b.exploded ? 1 : 0,
+                    f: b.animationFrame
                 }))
             })),
-            explosions: this.explosions.map(e => ({
-                x: e.x, y: e.y, dir: e.direction, timer: e.timer, frame: e.animationFrame
+            e: this.explosions.map(e => ({
+                x: e.x,
+                y: e.y,
+                d: e.direction,
+                t: e.timer,
+                f: e.animationFrame
             })),
-            powerups: this.powerups.filter(p => p.active).map(p => ({
-                x: p.x, y: p.y, type: p.type, timer: p.animationTimer
-            }))
+            pw: this.powerups.filter(p => p.active).map(p => ({
+                x: p.x,
+                y: p.y,
+                tp: p.type,
+                t: p.animationTimer
+            })),
+            bks: this._getRecentBlockChanges()
         };
     }
 
@@ -385,29 +487,85 @@ class MultiplayerGame {
             return;
         }
 
-        // Update players
-        if (state.players) {
-            for (let i = 0; i < state.players.length && i < this.players.length; i++) {
-                const sp = state.players[i];
-                const p = this.players[i];
-                p.x = sp.x;
-                p.y = sp.y;
-                p.targetX = sp.targetX;
-                p.targetY = sp.targetY;
-                p.direction = sp.dir;
-                p.animationFrame = sp.frame;
-                p.alive = sp.alive;
-                p.moving = sp.moving;
-                p.invincible = sp.invincible;
-                p.lives = sp.lives;
-                p.maxBombs = sp.maxBombs;
-                p.bombRange = sp.bombRange;
-                p.baseSpeed = sp.baseSpeed;
+        // Discard out-of-order stale packets over UDP
+        if (state.seq !== undefined) {
+            if (this._lastReceivedSeq !== undefined && state.seq < this._lastReceivedSeq) {
+                return;
+            }
+            this._lastReceivedSeq = state.seq;
+        }
 
-                // Update bombs using keyed lookup (O(1) per bomb instead of O(n²))
-                if (sp.bombs && sp.bombs.length > 0) {
+        // Apply any recent block updates to ensure 100% grid consistency
+        if (state.bks && Array.isArray(state.bks)) {
+            for (let k = 0; k < state.bks.length; k++) {
+                const [bx, by, bval] = state.bks[k];
+                if (this.map.grid[by] && this.map.grid[by][bx] !== bval) {
+                    this.map.grid[by][bx] = bval;
+                    this.map.invalidateTile(bx, by);
+                }
+            }
+        }
+
+        // Update players
+        const rawPlayers = state.p || state.players;
+        if (rawPlayers) {
+            for (let i = 0; i < rawPlayers.length && i < this.players.length; i++) {
+                const sp = rawPlayers[i];
+                const p = this.players[i];
+
+                const hostX = sp.x;
+                const hostY = sp.y;
+                const hostTx = sp.tx !== undefined ? sp.tx : (sp.targetX !== undefined ? sp.targetX : hostX);
+                const hostTy = sp.ty !== undefined ? sp.ty : (sp.targetY !== undefined ? sp.targetY : hostY);
+                const isAlive = sp.a !== undefined ? (sp.a === 1) : (sp.alive !== undefined ? sp.alive : p.alive);
+                const isMoving = sp.m !== undefined ? (sp.m === 1) : (sp.moving !== undefined ? sp.moving : false);
+
+                // Play death sound if player just died
+                if (p.alive && !isAlive) {
+                    this.sound.playSound('death');
+                }
+
+                p.alive = isAlive;
+                p.targetX = hostTx;
+                p.targetY = hostTy;
+                p.direction = sp.d !== undefined ? sp.d : (sp.dir || p.direction);
+                p.invincible = sp.iv !== undefined ? sp.iv : (sp.invincible !== undefined ? sp.invincible : p.invincible);
+                p.lives = sp.l !== undefined ? sp.l : (sp.lives !== undefined ? sp.lives : p.lives);
+                p.maxBombs = sp.mb !== undefined ? sp.mb : (sp.maxBombs !== undefined ? sp.maxBombs : p.maxBombs);
+                p.bombRange = sp.br !== undefined ? sp.br : (sp.bombRange !== undefined ? sp.bombRange : p.bombRange);
+                p.baseSpeed = sp.bs !== undefined ? sp.bs : (sp.baseSpeed !== undefined ? sp.baseSpeed : p.baseSpeed);
+
+                // Smooth position reconciliation
+                const diffX = hostX - p.x;
+                const diffY = hostY - p.y;
+                const dist = Math.sqrt(diffX * diffX + diffY * diffY);
+
+                if (dist > 16 || !isMoving) {
+                    // Large discrepancy, teleport, or player stopped: snap
+                    if (!isMoving && dist < 2) {
+                        p.x = hostX;
+                        p.y = hostY;
+                        p.moving = false;
+                    } else if (dist > 16) {
+                        p.x = hostX;
+                        p.y = hostY;
+                    } else {
+                        // Smooth blend
+                        p.x += diffX * 0.4;
+                        p.y += diffY * 0.4;
+                    }
+                } else {
+                    // Player is moving: smooth out drift without hard snapping
+                    p.x += diffX * 0.35;
+                    p.y += diffY * 0.35;
+                    p.moving = true;
+                }
+
+                // Update bombs
+                const rawBombs = sp.b || sp.bombs;
+                if (rawBombs && rawBombs.length > 0) {
                     const incomingKeys = new Set();
-                    for (const b of sp.bombs) {
+                    for (const b of rawBombs) {
                         incomingKeys.add(b.x + ',' + b.y);
                     }
 
@@ -416,7 +574,6 @@ class MultiplayerGame {
                         existingMap.set(bomb.x + ',' + bomb.y, bomb);
                     }
 
-                    // In-place filter: keep only bombs that exist in incoming state
                     let writeIdx = 0;
                     for (let j = 0; j < p.bombs.length; j++) {
                         const key = p.bombs[j].x + ',' + p.bombs[j].y;
@@ -426,21 +583,26 @@ class MultiplayerGame {
                     }
                     p.bombs.length = writeIdx;
 
-                    // Add or update
-                    for (const b of sp.bombs) {
+                    for (const b of rawBombs) {
                         const key = b.x + ',' + b.y;
                         const existing = existingMap.get(key);
+                        const bTimer = b.t !== undefined ? b.t : b.timer;
+                        const bExp = b.e !== undefined ? (b.e === 1) : b.exploded;
+                        const bFrame = b.f !== undefined ? b.f : b.animationFrame;
+                        const bRange = b.r !== undefined ? b.r : b.range;
+
                         if (existing) {
-                            existing.timer = b.timer;
-                            existing.exploded = b.exploded;
-                            existing.animationFrame = b.frame;
+                            existing.timer = bTimer;
+                            existing.exploded = bExp;
+                            existing.animationFrame = bFrame;
                         } else {
-                            const bomb = new Bomb(this, b.x, b.y, b.range);
-                            bomb.timer = b.timer;
-                            bomb.exploded = b.exploded;
-                            bomb.animationFrame = b.frame;
+                            const bomb = new Bomb(this, b.x, b.y, bRange);
+                            bomb.timer = bTimer;
+                            bomb.exploded = bExp;
+                            bomb.animationFrame = bFrame;
                             bomb.ownerSlot = i;
                             p.bombs.push(bomb);
+                            this.sound.playSound('bomb');
                         }
                     }
                 } else {
@@ -449,11 +611,14 @@ class MultiplayerGame {
             }
         }
 
-        // Update explosions using keyed lookup
-        if (state.explosions) {
+        // Update explosions
+        const rawExplosions = state.e || state.explosions;
+        if (rawExplosions) {
+            const hadExplosions = this.explosions.length > 0;
             const incomingExpKeys = new Set();
-            for (const e of state.explosions) {
-                incomingExpKeys.add(e.x + ',' + e.y + ',' + e.dir);
+            for (const e of rawExplosions) {
+                const eDir = e.d !== undefined ? e.d : (e.dir || e.direction);
+                incomingExpKeys.add(e.x + ',' + e.y + ',' + eDir);
             }
 
             const existingExpMap = new Map();
@@ -461,7 +626,6 @@ class MultiplayerGame {
                 existingExpMap.set(exp.x + ',' + exp.y + ',' + exp.direction, exp);
             }
 
-            // In-place filter
             let writeIdx = 0;
             for (let j = 0; j < this.explosions.length; j++) {
                 const key = this.explosions[j].x + ',' + this.explosions[j].y + ',' + this.explosions[j].direction;
@@ -471,26 +635,34 @@ class MultiplayerGame {
             }
             this.explosions.length = writeIdx;
 
-            for (const e of state.explosions) {
-                const key = e.x + ',' + e.y + ',' + e.dir;
+            for (const e of rawExplosions) {
+                const eDir = e.d !== undefined ? e.d : (e.dir || e.direction);
+                const eTimer = e.t !== undefined ? e.t : e.timer;
+                const eFrame = e.f !== undefined ? e.f : (e.frame !== undefined ? e.frame : e.animationFrame);
+                const key = e.x + ',' + e.y + ',' + eDir;
                 const existing = existingExpMap.get(key);
                 if (existing) {
-                    existing.timer = e.timer;
-                    existing.animationFrame = e.frame;
+                    existing.timer = eTimer;
+                    existing.animationFrame = eFrame;
                 } else {
-                    const exp = new Explosion(this, e.x, e.y, e.dir);
-                    exp.timer = e.timer;
-                    exp.animationFrame = e.frame;
+                    const exp = new Explosion(this, e.x, e.y, eDir);
+                    exp.timer = eTimer;
+                    exp.animationFrame = eFrame;
                     this.explosions.push(exp);
                 }
             }
+
+            if (!hadExplosions && this.explosions.length > 0) {
+                this.sound.playSound('explosion');
+            }
         }
 
-        // Update powerups using keyed lookup
-        if (state.powerups) {
+        // Update powerups
+        const rawPowerups = state.pw || state.powerups;
+        if (rawPowerups) {
             const incomingPwKeys = new Set();
-            for (const p of state.powerups) {
-                incomingPwKeys.add(p.x + ',' + p.y);
+            for (const pw of rawPowerups) {
+                incomingPwKeys.add(pw.x + ',' + pw.y);
             }
 
             const existingPwMap = new Map();
@@ -507,15 +679,18 @@ class MultiplayerGame {
             }
             this.powerups.length = writeIdx;
 
-            for (const p of state.powerups) {
-                const key = p.x + ',' + p.y;
+            for (const pw of rawPowerups) {
+                const key = pw.x + ',' + pw.y;
                 const existing = existingPwMap.get(key);
+                const pwType = pw.tp !== undefined ? pw.tp : pw.type;
+                const pwTimer = pw.t !== undefined ? pw.t : (pw.timer || 0);
+
                 if (existing) {
-                    existing.animationTimer = p.timer;
+                    existing.animationTimer = pwTimer;
                 } else {
-                    const pw = new Powerup(this, p.x, p.y, p.type);
-                    pw.animationTimer = p.timer;
-                    this.powerups.push(pw);
+                    const powerup = new Powerup(this, pw.x, pw.y, pwType);
+                    powerup.animationTimer = pwTimer;
+                    this.powerups.push(powerup);
                 }
             }
         }

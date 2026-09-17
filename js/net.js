@@ -16,9 +16,12 @@ class NetworkManager {
         this.onStateUpdate = null;    // callback(stateObj) — clients only
         this.onInputReceived = null;  // callback(playerId, inputState) — host only
         this.onGameOver = null;       // callback(winnerId)
+        this.onPlayerDied = null;     // callback(playerId)
         this.onError = null;          // callback(errorMsg)
         this.connected = false;
         this._peerPrefix = 'bomberboi-mp-';
+        this._lastStartSeed = null;
+        this._lastGameOverWinner = null;
     }
 
     // ── Generate a short room code ──────────────
@@ -46,7 +49,9 @@ class NetworkManager {
                 config: {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                        { urls: 'stun:stun2.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
                     ],
                     iceTransportPolicy: 'all',
                     iceCandidatePoolSize: 10
@@ -111,6 +116,19 @@ class NetworkManager {
                 playerId: newPlayerId,
                 playerCount: this.playerCount
             });
+
+            // Resend WELCOME shortly after to ensure arrival over unreliable channel
+            setTimeout(() => {
+                if (conn.open) {
+                    try {
+                        conn.send({
+                            type: 'WELCOME',
+                            playerId: newPlayerId,
+                            playerCount: this.playerCount
+                        });
+                    } catch (e) { /* ignore */ }
+                }
+            }, 80);
 
             // Tell ALL clients about the updated player count
             this._broadcastToClients({
@@ -187,12 +205,20 @@ class NetworkManager {
             seed: seed,
             playerCount: this.playerCount
         };
-        // Send to each client with their slot
-        for (const conn of this.connections) {
-            if (conn.open) {
-                conn.send({ ...msg, yourSlot: conn.metadata.playerId });
+        const sendStart = () => {
+            for (const conn of this.connections) {
+                if (conn.open) {
+                    try {
+                        conn.send({ ...msg, yourSlot: conn.metadata.playerId });
+                    } catch (e) { /* ignore */ }
+                }
             }
-        }
+        };
+        sendStart();
+        // Redundantly broadcast START to ensure delivery over unreliable channel
+        setTimeout(sendStart, 50);
+        setTimeout(sendStart, 120);
+
         // Also notify local host
         if (this.onGameStart) {
             this.onGameStart({ seed, playerCount: this.playerCount, yourSlot: 0 });
@@ -202,7 +228,12 @@ class NetworkManager {
     // ── HOST: Announce game over ────────────────
     announceGameOver(winnerId) {
         if (!this.isHost) return;
-        this._broadcastToClients({ type: 'GAME_OVER', winnerId });
+        const sendGameOver = () => {
+            this._broadcastToClients({ type: 'GAME_OVER', winnerId });
+        };
+        sendGameOver();
+        setTimeout(sendGameOver, 60);
+        setTimeout(sendGameOver, 140);
         if (this.onGameOver) this.onGameOver(winnerId);
     }
 
@@ -210,6 +241,7 @@ class NetworkManager {
     announcePlayerDeath(playerId) {
         if (!this.isHost) return;
         this._broadcastToClients({ type: 'PLAYER_DIED', playerId });
+        setTimeout(() => this._broadcastToClients({ type: 'PLAYER_DIED', playerId }), 60);
     }
 
     // ── CLIENT: Join a room ─────────────────────
@@ -224,7 +256,9 @@ class NetworkManager {
                 config: {
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                        { urls: 'stun:stun2.l.google.com:19302' },
+                        { urls: 'stun:global.stun.twilio.com:3478' }
                     ],
                     iceTransportPolicy: 'all',
                     iceCandidatePoolSize: 10
@@ -234,7 +268,7 @@ class NetworkManager {
             this.peer.on('open', (myId) => {
                 console.log('[NET] Client peer open, ID:', myId);
                 const hostPeerId = this._peerPrefix + this.roomCode;
-                const conn = this.peer.connect(hostPeerId, { reliable: true });
+                const conn = this.peer.connect(hostPeerId, { reliable: false });
 
                 const onConnOpen = () => {
                     this.hostConnection = conn;
@@ -332,6 +366,9 @@ class NetworkManager {
                 break;
 
             case 'START':
+                if (this._lastStartSeed === data.seed) break;
+                this._lastStartSeed = data.seed;
+                this._lastGameOverWinner = null;
                 if (this.onGameStart) {
                     this.onGameStart({
                         seed: data.seed,
@@ -346,11 +383,15 @@ class NetworkManager {
                 break;
 
             case 'GAME_OVER':
+                if (this._lastGameOverWinner === data.winnerId && this._lastGameOverWinner !== null) {
+                    break;
+                }
+                this._lastGameOverWinner = data.winnerId;
                 if (this.onGameOver) this.onGameOver(data.winnerId);
                 break;
 
             case 'PLAYER_DIED':
-                // Handled via state updates
+                if (this.onPlayerDied) this.onPlayerDied(data.playerId);
                 break;
         }
     }
@@ -376,5 +417,7 @@ class NetworkManager {
         this.roomCode = '';
         this.playerId = -1;
         this.playerCount = 1;
+        this._lastStartSeed = null;
+        this._lastGameOverWinner = null;
     }
 }

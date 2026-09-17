@@ -117,6 +117,7 @@ class MultiplayerGame {
         this.lastTime = performance.now();
         this.lastStateSentTime = 0;
         this.STATE_SEND_INTERVAL = 1000 / 30; // 30Hz tick rate
+        this._stopped = false;
         
         this._boundLoop = this.loop.bind(this);
         requestAnimationFrame(this._boundLoop);
@@ -137,6 +138,8 @@ class MultiplayerGame {
     }
 
     loop(timestamp) {
+        if (this._stopped) return;
+
         let deltaTime = timestamp - this.lastTime;
         if (deltaTime > 1000) deltaTime = 16.67;
         this.lastTime = timestamp;
@@ -592,8 +595,14 @@ class MultiplayerGame {
         }, 1500);
     }
 
-    // ── Cleanup ─────────────────────────────────
+    // ── Stop the game loop (preserves network) ─
+    stop() {
+        this._stopped = true;
+    }
+
+    // ── Full cleanup (destroys network too) ─────
     destroy() {
+        this._stopped = true;
         this._boundLoop = null;
         this.network.destroy();
     }

@@ -259,6 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const seed = Math.floor(Math.random() * 2147483647);
 
             network.onGameStart = (config) => {
+                // Safety: stop any lingering old game loop
+                if (mpGame) mpGame.stop();
                 hideAllScreens();
                 mpGame = new MultiplayerGame(canvas, network, config);
             };
@@ -299,6 +301,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Helper: set up client onGameStart callback (reused for join + rematch)
+    function setClientGameStartCallback() {
+        network.onGameStart = (config) => {
+            // Safety: stop any lingering old game loop
+            if (mpGame) mpGame.stop();
+            hideAllScreens();
+            mpGame = new MultiplayerGame(canvas, network, config);
+        };
+    }
+
     // Connect to room
     if (joinConnectBtn) {
         joinConnectBtn.addEventListener('click', async () => {
@@ -336,10 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
                 };
 
-                network.onGameStart = (config) => {
-                    hideAllScreens();
-                    mpGame = new MultiplayerGame(canvas, network, config);
-                };
+                setClientGameStartCallback();
 
                 network.onError = (msg) => {
                     clientStatus.textContent = msg;
@@ -362,18 +371,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ── MP RESULT SCREEN ────────────────────────
+    // REMATCH: return to lobby with the same room — no new code needed
     if (mpRematchBtn) {
         mpRematchBtn.addEventListener('click', () => {
-            hideAllScreens();
+            // Stop the game loop but keep the network alive
+            if (mpGame) mpGame.stop();
             mpGame = null;
-            cleanupNetwork();
-            mpLobbyScreen.classList.remove('hidden');
-            showLobbyMenu();
+
+            if (network && network.connected) {
+                // ── Persistent room: return to lobby ──
+                hideAllScreens();
+                mpLobbyScreen.classList.remove('hidden');
+
+                // Clear game-specific callbacks
+                network.onStateUpdate = null;
+                network.onInputReceived = null;
+                network.onGameOver = null;
+
+                if (network.isHost) {
+                    // Show host lobby view with current players
+                    lobbyMenu.style.display = 'none';
+                    hostLobby.style.display = '';
+                    joinLobby.style.display = 'none';
+                    clientWaiting.style.display = 'none';
+                    roomCodeDisplay.textContent = network.roomCode;
+                    updatePlayerSlots('player-slots', network.playerCount);
+                    lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
+                    lobbyStatus.classList.remove('lobby-error');
+                    mpStartBtn.disabled = false;
+
+                    // Re-register lobby callbacks
+                    network.onPlayerJoined = (playerId, totalPlayers) => {
+                        updatePlayerSlots('player-slots', totalPlayers);
+                        lobbyStatus.textContent = totalPlayers + '/4 PLAYERS';
+                        mpStartBtn.disabled = false;
+                    };
+                    network.onPlayerLeft = (playerId) => {
+                        updatePlayerSlots('player-slots', network.playerCount);
+                        lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
+                    };
+                    network.onError = (msg) => {
+                        lobbyStatus.textContent = msg;
+                        lobbyStatus.classList.add('lobby-error');
+                    };
+                } else {
+                    // Show client waiting view
+                    lobbyMenu.style.display = 'none';
+                    hostLobby.style.display = 'none';
+                    joinLobby.style.display = 'none';
+                    clientWaiting.style.display = '';
+                    clientRoomCode.textContent = network.roomCode;
+                    updatePlayerSlots('client-player-slots', network.playerCount);
+                    clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
+                    clientStatus.classList.remove('lobby-error');
+
+                    // Re-register lobby callbacks
+                    network.onPlayerJoined = (playerId, totalPlayers) => {
+                        updatePlayerSlots('client-player-slots', totalPlayers);
+                        clientStatus.textContent = totalPlayers + '/4 PLAYERS - WAITING...';
+                    };
+                    network.onPlayerLeft = (playerId) => {
+                        updatePlayerSlots('client-player-slots', network.playerCount);
+                        clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
+                    };
+                    setClientGameStartCallback();
+                    network.onError = (msg) => {
+                        clientStatus.textContent = msg;
+                        clientStatus.classList.add('lobby-error');
+                    };
+                }
+            } else {
+                // Network died — fall back to fresh lobby
+                cleanupNetwork();
+                hideAllScreens();
+                mpLobbyScreen.classList.remove('hidden');
+                showLobbyMenu();
+            }
         });
     }
 
+    // EXIT: fully destroy network and go to main menu
     if (mpExitBtn) {
         mpExitBtn.addEventListener('click', () => {
+            if (mpGame) mpGame.stop();
             mpGame = null;
             cleanupNetwork();
             showStartScreen();

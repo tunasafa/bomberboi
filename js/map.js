@@ -60,12 +60,12 @@ class GameMap {
                 wallBase: '#262633', wallLight: '#424254', wallDark: '#171721', wallEdge: '#0D0D14', wallHighlight: '#747491', wallAccent: '#9E9EB8',
                 woodBase: '#8D6E63', woodLight: '#A1887F', woodDark: '#6D4C41', woodEdge: '#3E2723', woodAccent: '#FFB300', woodHighlight: '#D7CCC8', woodShadow: '#261C19'
             },
-            // Level 5: Volcanic Hell (Continuous Molten Lava Floor + Radiant Red Ruby Gemstone)
+            // Level 5: Volcanic Hell (Continuous Molten Lava Floor + Radiant Yellow Gemstone)
             {
                 level: 5, name: 'Volcanic Hell', style: 'hell',
                 groundBase: '#B32E24', groundDark: '#620E26', groundDarker: '#3E0A18',
                 wallBase: '#373740', wallLight: '#545461', wallDark: '#23232B', wallEdge: '#131317', wallHighlight: '#79798A', wallAccent: '#9595A6',
-                woodBase: '#E11D48', woodLight: '#F43F5E', woodDark: '#9F1239', woodEdge: '#881337', woodAccent: '#FB7185', woodHighlight: '#FDA4AF', woodShadow: '#3E0A18'
+                woodBase: '#FFD700', woodLight: '#FFFDE7', woodDark: '#D97706', woodEdge: '#78350F', woodAccent: '#F59E0B', woodHighlight: '#FFFFFF', woodShadow: '#1F0A00'
             },
             // Level 6: Mayan Temple (Lightened Jade-Moss Stone Floor + Totem + Coin)
             {
@@ -95,11 +95,11 @@ class GameMap {
                 wallBase: '#E0F2F1', wallLight: '#FFFFFF', wallDark: '#B2DFDB', wallEdge: '#80CBC4', wallHighlight: '#E0F7FA', wallAccent: '#00897B',
                 woodBase: '#D81B60', woodLight: '#F06292', woodDark: '#880E4F', woodEdge: '#4A002A', woodAccent: '#BA68C8', woodHighlight: '#F8BBD0', woodShadow: '#2E001A'
             },
-            // Level 10: Deep Gem Mine (Cavern Mineral Slate Insides + Big Orange Gem)
+            // Level 10: Deep Gem Mine (Authentic Earthy Dirt Floor + Bedrock Wall + Big Orange Gem)
             {
                 level: 10, name: 'Deep Gem Mine', style: 'mine',
-                groundBase: '#8D6E63', groundDark: '#795548', groundDarker: '#5D4037',
-                wallBase: '#263238', wallLight: '#37474F', wallDark: '#1E293B', wallEdge: '#111827', wallHighlight: '#78909C', wallAccent: '#94A3B8',
+                groundBase: '#6A5137', groundDark: '#5E452E', groundDarker: '#503A26',
+                wallBase: '#1E293B', wallLight: '#37474F', wallDark: '#111827', wallEdge: '#0F172A', wallHighlight: '#78909C', wallAccent: '#C084FC',
                 woodBase: '#F97316', woodLight: '#FB923C', woodDark: '#C2410C', woodEdge: '#7C2D12', woodAccent: '#FACC15', woodHighlight: '#FEF08A', woodShadow: '#431407'
             },
             // Level 11: Cyber Lab (Lighter Server Computers Wall + Dial Gauge Destructible)
@@ -186,11 +186,11 @@ class GameMap {
                 wallBase: '#FFFFFF', wallLight: '#F8FAFC', wallDark: '#CBD5E1', wallEdge: '#94A3B8', wallHighlight: '#DC2626', wallAccent: '#B91C1C',
                 woodBase: '#1D4ED8', woodLight: '#3B82F6', woodDark: '#1E40AF', woodEdge: '#172554', woodAccent: '#FFFFFF', woodHighlight: '#DBEAFE', woodShadow: '#0F172A'
             },
-            // Level 23: Zen Garden (Raked Sand + Normal Pixel Simple Water Wall + Stone Lantern)
+            // Level 23: Zen Garden (Raked Sand + Terracotta Brick Wall + Stone Lantern)
             {
                 level: 23, name: 'Zen Garden', style: 'zen',
                 groundBase: '#D7CCC8', groundDark: '#BCAAA4', groundDarker: '#A1887F',
-                wallBase: '#0288D1', wallLight: '#4FC3F7', wallDark: '#01579B', wallEdge: '#0277BD', wallHighlight: '#FFFFFF', wallAccent: '#039BE5',
+                wallBase: '#8F310E', wallLight: '#B8531A', wallDark: '#5A0D05', wallEdge: '#2A0502', wallHighlight: '#C05915', wallAccent: '#78220C',
                 woodBase: '#607D8B', woodLight: '#78909C', woodDark: '#455A64', woodEdge: '#263238', woodAccent: '#FFB300', woodHighlight: '#CFD8DC', woodShadow: '#1B2327'
             },
             // Level 24: Celestial Temple (Solid Black Starry Floor + Winged Pillar + Solar Relic)
@@ -200,12 +200,12 @@ class GameMap {
                 wallBase: '#FFFFFF', wallLight: '#FFFFFF', wallDark: '#CFD8DC', wallEdge: '#000000', wallHighlight: '#FFD700', wallAccent: '#00E5FF',
                 woodBase: '#F59E0B', woodLight: '#FBBF24', woodDark: '#D97706', woodEdge: '#B45309', woodAccent: '#FEF08A', woodHighlight: '#FFFFFF', woodShadow: '#78350F'
             },
-            // Level 25: Golden Emperor's Palace (Royal White Marble + Contrasting Gilded Obsidian Column + Diamond Jewel)
+            // Level 25: Golden Emperor's Palace (Royal White Marble + Contrasting Gilded Obsidian Column + Multifaceted Diamond Jewel)
             {
                 level: 25, name: 'Emperor Palace', style: 'palace',
                 groundBase: '#ECEFF1', groundDark: '#CFD8DC', groundDarker: '#B0BEC5',
                 wallBase: '#111827', wallLight: '#1F2937', wallDark: '#0F172A', wallEdge: '#030712', wallHighlight: '#FFD700', wallAccent: '#DC2626',
-                woodBase: '#80DEEA', woodLight: '#E0F7FA', woodDark: '#26C6DA', woodEdge: '#00838F', woodAccent: '#00E5FF', woodHighlight: '#FFFFFF', woodShadow: '#004D40'
+                woodBase: '#38BDF8', woodLight: '#BAE6FD', woodDark: '#0284C7', woodEdge: '#075985', woodAccent: '#7DD3FC', woodHighlight: '#FFFFFF', woodShadow: '#334155'
             }
         ];
     }
@@ -392,7 +392,7 @@ class GameMap {
             case 'nuclear': this.drawNuclearBlastShield(ctx, x, y); break;
             case 'casino': this.drawCasinoDice(ctx, x, y); break;
             case 'zen':
-            case 'library': this.drawZenWaterWall(ctx, x, y); break; // Zen ornamental water pond tile
+            case 'library': this.drawZenBrickWall(ctx, x, y); break; // Terracotta brick wall
             case 'celestial': this.drawCelestialColumn(ctx, x, y); break;
             case 'palace': this.drawPalaceColossus(ctx, x, y); break;
             default: this.drawStoneWall(ctx, x, y); break;
@@ -886,129 +886,16 @@ class GameMap {
     }
 
     drawIceBlock(ctx, x, y) {
-        // Realistic Chiseled Translucent Glacial Ice Block
-        // 1. Soft cold indigo ground contact shadow
-        ctx.fillStyle = '#061A2E';
-        ctx.fillRect(x + 4, y + 27, 24, 4);
-        ctx.fillStyle = '#030E1A';
-        ctx.fillRect(x + 6, y + 29, 20, 2);
-
-        // 2. Outer Silhouette: Chamfered crystalline block
-        ctx.fillStyle = '#B2EBF2'; // Pale ice glaze rim
-        ctx.fillRect(x + 5, y + 3, 22, 1);
-        ctx.fillStyle = '#00687E'; // Shaded ice mass
-        ctx.fillRect(x + 4, y + 4, 24, 1);
-        ctx.fillRect(x + 3, y + 5, 26, 21);
-        ctx.fillStyle = '#00485C'; // Deep underside
-        ctx.fillRect(x + 4, y + 26, 24, 1);
-        ctx.fillStyle = '#061A2E';
-        ctx.fillRect(x + 5, y + 27, 22, 1);
-
-        // 3. Isometric Frosted Top Surface (Capturing high sky luminance: y+4..9)
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 5, y + 4, 22, 2);
-        ctx.fillStyle = '#B2EBF2';
-        ctx.fillRect(x + 4, y + 6, 24, 3);
-        ctx.fillStyle = this.theme.woodLight; // #80DEEA
-        ctx.fillRect(x + 5, y + 7, 22, 2);
-
-        // Crisp specular top-left ridge
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 5, y + 4, 14, 1);
-        ctx.fillRect(x + 4, y + 5, 2, 2);
-        ctx.fillRect(x + 12, y + 5, 6, 1);
-
-        // Beveled horizontal top rim ridge
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 4, y + 9, 24, 1);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 4, y + 9, 10, 1);
-
-        // 4. Vertical Front Faces with 2.5D Volumetric Translucency:
-        // Left Sunlit Face (x+4..15, y+10..25)
-        ctx.fillStyle = '#26C6DA';
-        ctx.fillRect(x + 4, y + 10, 12, 16);
-        ctx.fillStyle = this.theme.woodBase; // #4DD0E1 Glowing internal scatter
-        ctx.fillRect(x + 4, y + 10, 4, 16);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 4, y + 10, 1, 15); // Left vertical specular ridge
-
-        // Center vertical prism ridge (x+16, y+10..25)
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 16, y + 10, 1, 16);
-
-        // Right Shaded Face with Subsurface Scattering (x+17..27, y+10..25)
-        ctx.fillStyle = this.theme.woodDark; // #0097A7
-        ctx.fillRect(x + 17, y + 10, 11, 16);
-        ctx.fillStyle = '#00687E';
-        ctx.fillRect(x + 21, y + 10, 7, 16);
-        ctx.fillStyle = '#00485C';
-        ctx.fillRect(x + 25, y + 11, 3, 15);
-        ctx.fillRect(x + 17, y + 24, 11, 2); // Bottom underside shade
-
-        // 5. Glowing Subsurface Core (Light trapped inside the ice cube):
-        ctx.fillStyle = '#00BCD4';
-        ctx.fillRect(x + 9, y + 13, 9, 8);
-        ctx.fillStyle = '#26C6DA';
-        ctx.fillRect(x + 10, y + 14, 7, 6);
-
-        // 6. Realistic Internal Glacial Cleavage Fractures (Diagonal jagged chiseled planes):
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 7, y + 14, 3, 1);
-        ctx.fillRect(x + 9, y + 15, 3, 1);
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 11, y + 16, 4, 1);
-        ctx.fillRect(x + 14, y + 17, 4, 1);
-        ctx.fillStyle = '#B2EBF2';
-        ctx.fillRect(x + 17, y + 18, 3, 1);
-        ctx.fillRect(x + 19, y + 19, 4, 1);
-        ctx.fillStyle = this.theme.woodBase;
-        ctx.fillRect(x + 22, y + 20, 3, 1);
-
-        // Fissure refraction shadow underneath the crack
-        ctx.fillStyle = '#003344';
-        ctx.fillRect(x + 8, y + 15, 3, 1);
-        ctx.fillRect(x + 11, y + 17, 4, 1);
-        ctx.fillRect(x + 15, y + 18, 3, 1);
-        ctx.fillRect(x + 18, y + 19, 4, 1);
-
-        // Secondary micro-fissure branching upward
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 12, y + 14, 1, 2);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 13, y + 12, 2, 2);
-        ctx.fillStyle = '#003344';
-        ctx.fillRect(x + 14, y + 13, 1, 2);
-
-        // 7. Frozen Subsurface Air Bubbles (Spherical micro inclusions with refraction):
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 7, y + 18, 2, 2);
-        ctx.fillStyle = '#003344';
-        ctx.fillRect(x + 7, y + 20, 2, 1);
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 21, y + 13, 2, 2);
-        ctx.fillStyle = '#00485C';
-        ctx.fillRect(x + 21, y + 15, 2, 1);
-
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 13, y + 22, 2, 2);
-        ctx.fillStyle = '#003344';
-        ctx.fillRect(x + 13, y + 24, 2, 1);
-
-        ctx.fillStyle = this.theme.woodLight;
-        ctx.fillRect(x + 23, y + 22, 2, 2);
-        ctx.fillStyle = '#00485C';
-        ctx.fillRect(x + 23, y + 24, 2, 1);
-
-        // 8. Corner & Edge Specular Glistening:
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 4, y + 4, 3, 2);
-        ctx.fillRect(x + 5, y + 3, 2, 3);
-        ctx.fillRect(x + 16, y + 9, 2, 2);
-        ctx.fillStyle = '#E0F7FA';
-        ctx.fillRect(x + 26, y + 4, 2, 2);
-        ctx.fillRect(x + 4, y + 25, 1, 2);
+        // Multi-Spire Natural Glacial Ice Crystal
+        const batches = [["#004D5A", [[21, 24, 1, 1]]], ["#072A40", [[5, 29, 23, 1], [6, 30, 21, 1]]], ["#E0F2FE", [[11, 9, 2, 1], [10, 10, 5, 1], [11, 11, 5, 1], [13, 12, 3, 1], [14, 13, 1, 1]]], ["#00363F", [[26, 9, 1, 1], [27, 11, 1, 1], [28, 13, 1, 1], [29, 15, 1, 13], [25, 28, 5, 1]]], ["#006064", [[23, 10, 1, 18], [26, 12, 1, 2], [26, 14, 2, 2], [26, 16, 3, 2], [25, 18, 4, 10]]], ["#E0F2FA", [[11, 17, 1, 1], [12, 18, 1, 1], [13, 19, 1, 2], [14, 21, 1, 1], [15, 22, 1, 1]]], ["#0097A7", [[19, 13, 1, 1], [18, 14, 2, 3], [17, 17, 1, 1], [19, 17, 1, 1], [17, 18, 2, 1], [17, 19, 3, 9]]], ["#00838F", [[22, 11, 1, 1], [20, 12, 3, 3], [21, 15, 2, 1], [20, 16, 3, 3], [21, 19, 2, 1], [20, 20, 1, 1], [22, 20, 1, 1], [20, 21, 3, 3], [20, 24, 1, 1], [22, 24, 1, 1], [20, 25, 3, 3]]], ["#80DEEA", [[17, 4, 1, 1], [18, 5, 1, 1], [19, 6, 1, 1], [20, 7, 1, 1], [21, 8, 1, 1], [22, 9, 1, 1], [25, 10, 1, 8], [13, 13, 1, 1], [13, 21, 1, 1], [15, 21, 1, 1], [13, 22, 2, 1], [14, 23, 2, 1], [13, 24, 3, 4]]], ["#B2EBF2", [[10, 11, 1, 1], [6, 12, 1, 2], [10, 12, 3, 2], [5, 14, 2, 2], [10, 14, 2, 2], [4, 16, 3, 1], [10, 16, 3, 1], [5, 17, 2, 4], [10, 17, 1, 1], [12, 17, 1, 1], [10, 18, 2, 1], [10, 19, 3, 9], [6, 21, 1, 4]]], ["#4DD0E1", [[17, 5, 1, 1], [17, 6, 2, 1], [17, 7, 3, 1], [17, 8, 4, 1], [17, 9, 5, 1], [17, 10, 6, 1], [17, 11, 5, 1], [17, 12, 3, 1], [18, 13, 1, 1], [17, 16, 1, 1], [18, 17, 1, 1], [19, 18, 1, 1], [20, 19, 1, 1], [21, 20, 1, 1]]], ["#00485C", [[14, 4, 1, 1], [18, 4, 1, 1], [13, 5, 1, 1], [19, 5, 1, 1], [11, 6, 2, 1], [20, 6, 2, 1], [10, 7, 2, 1], [21, 7, 2, 1], [6, 8, 1, 2], [8, 8, 3, 1], [22, 8, 2, 1], [8, 9, 2, 1], [23, 9, 3, 1], [5, 10, 1, 2], [8, 10, 1, 18], [24, 10, 1, 18], [26, 10, 1, 2], [4, 12, 1, 2], [27, 12, 1, 2], [3, 14, 1, 3], [28, 14, 1, 2], [3, 17, 2, 4], [3, 21, 3, 4], [3, 25, 4, 3], [3, 28, 22, 1]]], ["#FFFFFF", [[16, 0, 1, 1], [15, 1, 3, 1], [14, 2, 5, 1], [15, 3, 3, 1], [15, 4, 2, 1], [14, 5, 3, 1], [13, 6, 4, 1], [6, 7, 3, 1], [12, 7, 5, 1], [7, 8, 1, 2], [11, 8, 6, 1], [24, 8, 3, 1], [10, 9, 1, 1], [13, 9, 4, 1], [6, 10, 2, 2], [9, 10, 1, 18], [15, 10, 2, 1], [16, 11, 1, 2], [5, 12, 1, 2], [7, 12, 1, 16], [15, 13, 3, 1], [4, 14, 1, 2], [12, 14, 6, 2], [20, 15, 1, 1], [13, 16, 4, 3], [14, 19, 3, 2], [16, 21, 1, 7], [13, 23, 1, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================
@@ -1237,52 +1124,16 @@ class GameMap {
     }
 
     drawRubyBlock(ctx, x, y) {
-        // Lighter Radiant Red Ruby Gemstone Tile (Faceted cut crystal block)
-        // Soft ground contact drop shadow
-        ctx.fillStyle = this.theme.woodShadow; // #3E0A18
-        ctx.fillRect(x + 4, y + 27, 24, 3);
-
-        // Deep crimson wine outer border (lighter than murky black)
-        ctx.fillStyle = this.theme.woodEdge; // #881337
-        ctx.fillRect(x + 2, y + 2, 28, 28);
-
-        // Radiant pure ruby red body
-        ctx.fillStyle = this.theme.woodBase; // #E11D48
-        ctx.fillRect(x + 3, y + 3, 26, 26);
-
-        // Faceted crystal bevel cuts (2.5D prismatic facets)
-        ctx.fillStyle = this.theme.woodLight; // #F43F5E Top and left sunlit facets
-        ctx.fillRect(x + 5, y + 5, 22, 5);
-        ctx.fillRect(x + 5, y + 5, 5, 22);
-
-        ctx.fillStyle = this.theme.woodDark; // #9F1239 Right and bottom shadow facets
-        ctx.fillRect(x + 22, y + 5, 5, 22);
-        ctx.fillRect(x + 5, y + 22, 22, 5);
-
-        // Corner miter shadow
-        ctx.fillStyle = '#700D2B';
-        ctx.fillRect(x + 23, y + 23, 4, 4);
-
-        // Elevated central table facet (Lighter, sparkling glowing red)
-        ctx.fillStyle = this.theme.woodAccent; // #FB7185
-        ctx.fillRect(x + 8, y + 8, 16, 16);
-        ctx.fillStyle = '#FF4D6D';
-        ctx.fillRect(x + 10, y + 10, 12, 12);
-
-        // Facet cut dividing lines
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 5, y + 5, 1, 1);
-        ctx.fillRect(x + 6, y + 6, 1, 1);
-        ctx.fillRect(x + 7, y + 7, 1, 1);
-
-        // Diamond specular glints
-        ctx.fillStyle = this.theme.woodHighlight; // #FDA4AF
-        ctx.fillRect(x + 6, y + 6, 4, 2);
-        ctx.fillRect(x + 6, y + 6, 2, 4);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 7, y + 7, 2, 2);
-        ctx.fillRect(x + 19, y + 13, 2, 2);
-        ctx.fillRect(x + 13, y + 19, 2, 2);
+        // Fragile Clear Crystal Yellow Gemstone with Fracture Fissures
+        const batches = [["#1F0A00", [[4, 28, 6, 1], [23, 28, 6, 1]]], ["#120500", [[3, 29, 27, 1], [6, 30, 21, 1]]], ["#FFF9C4", [[6, 10, 2, 1], [6, 11, 4, 1], [6, 12, 3, 5], [6, 17, 2, 1], [6, 18, 1, 3]]], ["#B45309", [[27, 9, 1, 1], [24, 10, 4, 4], [25, 14, 3, 1], [24, 15, 4, 6], [20, 19, 1, 1], [19, 20, 1, 2], [18, 22, 1, 1]]], ["#92400E", [[20, 20, 4, 1], [20, 21, 8, 1], [19, 22, 8, 1], [19, 23, 7, 1], [19, 24, 6, 1], [20, 25, 4, 1], [20, 26, 3, 1], [21, 27, 1, 1]]], ["#FFD700", [[20, 10, 1, 1], [19, 11, 2, 3], [12, 13, 1, 1], [12, 14, 2, 1], [11, 15, 2, 1], [14, 15, 1, 1], [16, 15, 4, 1], [11, 16, 1, 1], [19, 16, 1, 1], [11, 18, 1, 2], [8, 19, 2, 1], [7, 20, 1, 1]]], ["#F59E0B", [[13, 16, 2, 1], [16, 16, 3, 1], [12, 17, 3, 1], [12, 18, 2, 2], [15, 18, 1, 1], [15, 19, 2, 1], [8, 20, 5, 1], [14, 20, 3, 2], [6, 21, 7, 1], [6, 22, 6, 1], [7, 23, 5, 1], [8, 24, 3, 2], [9, 26, 1, 1]]], ["#FEF08A", [[22, 5, 2, 1], [21, 6, 4, 1], [21, 7, 5, 1], [19, 8, 8, 1], [20, 9, 7, 1], [10, 11, 1, 1], [9, 12, 2, 3], [23, 14, 2, 1], [9, 15, 1, 2], [21, 15, 2, 1], [8, 17, 2, 1], [16, 17, 2, 1], [7, 19, 1, 1], [13, 21, 1, 1], [12, 22, 1, 2], [11, 24, 1, 2]]], ["#D97706", [[21, 10, 3, 4], [21, 14, 2, 1], [20, 15, 1, 1], [23, 15, 1, 1], [20, 16, 4, 1], [18, 17, 6, 1], [16, 18, 8, 1], [17, 19, 3, 1], [21, 19, 3, 1], [17, 20, 2, 2], [13, 22, 5, 1], [13, 23, 6, 1], [12, 24, 7, 1], [12, 25, 8, 1], [10, 26, 10, 1], [10, 27, 11, 1]]], ["#FFFFFF", [[10, 4, 13, 1], [11, 5, 11, 1], [11, 6, 10, 1], [8, 7, 1, 1], [12, 7, 9, 1], [9, 8, 1, 1], [12, 8, 1, 1], [14, 8, 1, 1], [5, 9, 3, 1], [10, 9, 6, 1], [5, 10, 1, 12], [8, 10, 10, 1], [11, 11, 1, 4], [13, 11, 5, 2], [14, 13, 4, 1], [14, 14, 5, 1], [10, 15, 1, 5], [13, 15, 1, 1], [15, 15, 1, 2], [12, 16, 1, 1]]], ["#FFFDE7", [[9, 5, 2, 1], [8, 6, 3, 1], [7, 7, 1, 1], [9, 7, 3, 1], [6, 8, 3, 1], [10, 8, 2, 1], [13, 8, 1, 1], [15, 8, 4, 1], [8, 9, 2, 1], [16, 9, 4, 1], [18, 10, 2, 1], [12, 11, 1, 2], [18, 11, 1, 3], [13, 13, 1, 1], [19, 14, 2, 1], [11, 17, 1, 1], [15, 17, 1, 1], [7, 18, 3, 1], [14, 18, 1, 2], [13, 20, 1, 1]]], ["#78350F", [[10, 3, 13, 1], [9, 4, 1, 1], [23, 4, 1, 1], [8, 5, 1, 1], [24, 5, 1, 1], [7, 6, 1, 1], [25, 6, 1, 1], [6, 7, 1, 1], [26, 7, 1, 1], [5, 8, 1, 1], [27, 8, 1, 1], [4, 9, 1, 13], [28, 9, 1, 13], [4, 22, 2, 1], [27, 22, 2, 1], [5, 23, 2, 1], [26, 23, 2, 1], [6, 24, 2, 1], [25, 24, 2, 1], [7, 25, 1, 1], [24, 25, 2, 1], [8, 26, 1, 1], [23, 26, 2, 1], [9, 27, 1, 1], [22, 27, 2, 1], [10, 28, 13, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================
@@ -1308,209 +1159,29 @@ class GameMap {
     }
 
     drawTempleTotem(ctx, x, y) {
-        // Detailed 2.5D Mayan Stele / Ceremonial Deity Totem Pillar
-        // Stele outer border
-        ctx.fillStyle = this.theme.wallEdge; // #3B2907
-        ctx.fillRect(x, y, this.tileSize, this.tileSize);
-
-        // 2.5D Top Cornice / Headpiece (y=1 to y=7)
-        ctx.fillStyle = this.theme.wallHighlight; // #D6AE58 Top-facing sunny cornice
-        ctx.fillRect(x + 1, y + 1, 30, 2);
-        ctx.fillStyle = this.theme.wallBase;      // #8C6826
-        ctx.fillRect(x + 1, y + 3, 30, 4);
-        ctx.fillStyle = this.theme.wallLight;     // #B0883C Left bevel
-        ctx.fillRect(x + 1, y + 1, 4, 6);
-        ctx.fillStyle = this.theme.wallDark;      // #5E4413 Right bevel
-        ctx.fillRect(x + 27, y + 1, 4, 6);
-
-        // Jade feather plume crown (2.5D radiating plumes)
-        ctx.fillStyle = this.theme.wallAccent; // #00BFA5 Radiant jade
-        ctx.fillRect(x + 5, y + 2, 4, 2);
-        ctx.fillRect(x + 11, y + 2, 4, 2);
-        ctx.fillRect(x + 17, y + 2, 4, 2);
-        ctx.fillRect(x + 23, y + 2, 4, 2);
-        ctx.fillStyle = '#1DE9B6';
-        ctx.fillRect(x + 6, y + 2, 2, 1);
-        ctx.fillRect(x + 12, y + 2, 2, 1);
-
-        // Gold headband band across forehead
-        ctx.fillStyle = '#FFD700';
-        ctx.fillRect(x + 3, y + 5, 26, 2);
-        ctx.fillStyle = '#FFE082';
-        ctx.fillRect(x + 3, y + 5, 12, 1);
-        ctx.fillStyle = this.theme.wallAccent; // Central forehead jade cabochon
-        ctx.fillRect(x + 13, y + 5, 6, 2);
-        ctx.fillStyle = '#1DE9B6';
-        ctx.fillRect(x + 14, y + 5, 4, 1);
-
-        // Main Stele Shaft Face (y=7 to y=23)
-        ctx.fillStyle = this.theme.wallBase;
-        ctx.fillRect(x + 2, y + 7, 28, 16);
-        ctx.fillStyle = this.theme.wallLight; // Left side sunlit pillar
-        ctx.fillRect(x + 2, y + 7, 3, 16);
-        ctx.fillStyle = this.theme.wallDark;  // Right side shadowed pillar
-        ctx.fillRect(x + 27, y + 7, 3, 16);
-
-        // 2.5D Carved Deity Mask
-        // Protruding jade brow ridge
-        ctx.fillStyle = this.theme.wallAccent;
-        ctx.fillRect(x + 4, y + 8, 24, 2);
-        ctx.fillStyle = '#1DE9B6';
-        ctx.fillRect(x + 5, y + 8, 10, 1);
-
-        // Recessed deep shadow eye sockets
-        ctx.fillStyle = '#241703';
-        ctx.fillRect(x + 5, y + 10, 8, 5);
-        ctx.fillRect(x + 19, y + 10, 8, 5);
-
-        // Glowing jade eye orbs
-        ctx.fillStyle = this.theme.wallAccent;
-        ctx.fillRect(x + 7, y + 11, 4, 3);
-        ctx.fillRect(x + 21, y + 11, 4, 3);
-        ctx.fillStyle = '#1DE9B6';
-        ctx.fillRect(x + 8, y + 11, 2, 1);
-        ctx.fillRect(x + 22, y + 11, 2, 1);
-        ctx.fillStyle = '#00332A'; // Pupil slit
-        ctx.fillRect(x + 9, y + 12, 1, 2);
-        ctx.fillRect(x + 23, y + 12, 1, 2);
-
-        // Protruding 2.5D Nose block
-        ctx.fillStyle = '#FFD700';
-        ctx.fillRect(x + 14, y + 9, 4, 7);
-        ctx.fillStyle = '#FFE082';
-        ctx.fillRect(x + 14, y + 9, 2, 7);
-        ctx.fillStyle = '#B8860B';
-        ctx.fillRect(x + 17, y + 9, 1, 7);
-
-        // Snout / Mouth overhang with drop shadow
-        ctx.fillStyle = this.theme.wallLight; // Overhanging upper lip
-        ctx.fillRect(x + 5, y + 16, 22, 2);
-        ctx.fillStyle = '#241703';            // Deep open mouth cavity
-        ctx.fillRect(x + 5, y + 18, 22, 5);
-
-        // Downward 2.5D fangs
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x + 8, y + 18, 3, 3);
-        ctx.fillRect(x + 14, y + 18, 4, 2);
-        ctx.fillRect(x + 21, y + 18, 3, 3);
-        ctx.fillStyle = this.theme.wallDark;  // Lower jaw
-        ctx.fillRect(x + 7, y + 21, 18, 2);
-
-        // Stepped 2.5D Plinth Base (y=23 to y=30)
-        ctx.fillStyle = this.theme.wallHighlight; // Plinth step 1 top
-        ctx.fillRect(x + 1, y + 23, 30, 2);
-        ctx.fillStyle = this.theme.wallBase;
-        ctx.fillRect(x + 1, y + 25, 30, 3);
-        ctx.fillStyle = this.theme.wallLight;
-        ctx.fillRect(x + 1, y + 25, 3, 3);
-        ctx.fillStyle = this.theme.wallDark;
-        ctx.fillRect(x + 28, y + 25, 3, 3);
-
-        // Glyphs on base
-        ctx.fillStyle = this.theme.wallEdge;
-        ctx.fillRect(x + 5, y + 26, 3, 1);
-        ctx.fillRect(x + 11, y + 26, 3, 1);
-        ctx.fillRect(x + 18, y + 26, 3, 1);
-        ctx.fillRect(x + 24, y + 26, 3, 1);
-
-        ctx.fillStyle = this.theme.wallHighlight; // Bottom plinth step
-        ctx.fillRect(x, y + 28, 32, 2);
-        ctx.fillStyle = this.theme.wallDark;
-        ctx.fillRect(x, y + 30, 32, 2);
+        // Detailed 3D Mayan Stele Deity Totem with Jade Plumes, Snout, Fangs & Relief Plinth
+        const batches = [["#B8860B", [[17, 9, 2, 5], [18, 14, 1, 1], [17, 15, 2, 1]]], ["#FFD700", [[19, 5, 11, 2], [16, 9, 1, 7], [8, 12, 1, 1], [23, 12, 1, 1]]], ["#D6AE58", [[8, 1, 2, 2], [14, 1, 2, 2], [20, 1, 2, 2], [26, 1, 2, 2], [1, 23, 30, 2], [0, 28, 32, 2]]], ["#004D40", [[7, 3, 1, 1], [13, 3, 1, 1], [19, 3, 1, 1], [25, 3, 1, 1], [25, 7, 2, 1], [27, 8, 2, 1]]], ["#241703", [[0, 0, 32, 1], [0, 1, 1, 27], [31, 1, 1, 27], [5, 25, 3, 2], [11, 25, 3, 2], [18, 25, 3, 2], [24, 25, 3, 2]]], ["#5E4413", [[1, 6, 1, 17], [30, 6, 1, 17], [14, 14, 1, 1], [17, 14, 1, 1], [6, 20, 2, 2], [24, 20, 2, 2], [6, 22, 20, 1]]], ["#FFE082", [[2, 5, 11, 2], [13, 9, 3, 1], [13, 10, 1, 1], [15, 10, 1, 1], [13, 11, 3, 3], [13, 14, 1, 1], [15, 14, 1, 1], [13, 15, 3, 1]]], ["#3B2907", [[28, 1, 3, 4], [30, 5, 1, 1], [27, 7, 3, 1], [29, 8, 1, 2], [28, 10, 2, 5], [27, 15, 3, 1], [28, 16, 2, 6], [27, 22, 3, 1], [28, 25, 3, 3], [0, 30, 32, 2]]], ["#B0883C", [[1, 1, 3, 4], [1, 5, 1, 1], [2, 7, 3, 1], [2, 8, 1, 2], [2, 10, 2, 5], [2, 15, 3, 1], [2, 16, 4, 1], [9, 16, 4, 1], [19, 16, 4, 1], [26, 16, 2, 1], [2, 17, 2, 5], [2, 22, 3, 1], [1, 25, 3, 3]]], ["#FFFFFF", [[5, 1, 1, 1], [11, 1, 1, 1], [17, 1, 1, 1], [23, 1, 1, 1], [15, 5, 1, 1], [14, 10, 1, 1], [8, 11, 1, 1], [23, 11, 1, 1], [6, 16, 3, 2], [13, 16, 6, 2], [23, 16, 3, 2], [7, 18, 1, 2], [14, 18, 1, 2], [17, 18, 1, 2], [24, 18, 1, 2]]], ["#1DE9B6", [[6, 1, 1, 1], [12, 1, 1, 1], [18, 1, 1, 1], [24, 1, 1, 1], [5, 2, 2, 2], [11, 2, 2, 2], [17, 2, 2, 2], [23, 2, 2, 2], [14, 5, 1, 1], [16, 5, 2, 1], [14, 6, 4, 1], [5, 8, 12, 1], [7, 11, 1, 2], [9, 11, 1, 2], [22, 11, 1, 2], [24, 11, 1, 2]]], ["#8C6826", [[8, 3, 2, 2], [14, 3, 2, 2], [20, 3, 2, 2], [26, 3, 2, 2], [7, 7, 18, 1], [5, 15, 8, 1], [19, 15, 8, 1], [8, 20, 16, 2], [5, 22, 1, 1], [26, 22, 1, 1], [4, 25, 1, 2], [8, 25, 3, 2], [14, 25, 4, 2], [21, 25, 3, 2], [27, 25, 1, 2], [4, 27, 24, 1]]], ["#180D00", [[4, 10, 9, 1], [19, 10, 9, 1], [4, 11, 2, 3], [11, 11, 2, 3], [19, 11, 2, 3], [26, 11, 2, 3], [4, 14, 9, 1], [19, 14, 9, 1], [4, 17, 2, 1], [9, 17, 4, 1], [19, 17, 4, 1], [26, 17, 2, 1], [4, 18, 3, 2], [8, 18, 6, 2], [15, 18, 2, 2], [18, 18, 6, 2], [25, 18, 3, 2], [4, 20, 2, 2], [26, 20, 2, 2]]], ["#00BFA5", [[4, 1, 1, 3], [7, 1, 1, 2], [10, 1, 1, 3], [13, 1, 1, 2], [16, 1, 1, 3], [19, 1, 1, 2], [22, 1, 1, 3], [25, 1, 1, 2], [4, 4, 4, 1], [10, 4, 4, 1], [16, 4, 4, 1], [22, 4, 4, 1], [13, 5, 1, 2], [18, 5, 1, 2], [5, 7, 2, 1], [3, 8, 2, 1], [17, 8, 10, 1], [3, 9, 10, 1], [19, 9, 10, 1], [6, 11, 1, 2], [10, 11, 1, 2], [21, 11, 1, 2], [25, 11, 1, 2], [6, 13, 5, 1], [21, 13, 5, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     drawAztecCoin(ctx, x, y) {
-        // Detailed 2.5D Round Aztec Stone Coin / Medallion
-        // Ground drop shadow under thick cylindrical coin
-        ctx.fillStyle = '#263830';
-        ctx.fillRect(x + 5, y + 27, 22, 4);
-        ctx.fillStyle = '#1A2820';
-        ctx.fillRect(x + 7, y + 29, 18, 2);
-
-        // 3D Extruded bottom cylinder edge
-        ctx.fillStyle = this.theme.woodDark; // #424242
-        ctx.fillRect(x + 6, y + 23, 20, 5);
-        ctx.fillStyle = this.theme.woodEdge; // #212121
-        ctx.fillRect(x + 8, y + 26, 16, 2);
-
-        // Round Coin Silhouette (smooth circle)
-        ctx.fillStyle = '#303030';
-        ctx.fillRect(x + 11, y + 2, 10, 1);
-        ctx.fillRect(x + 8, y + 3, 16, 1);
-        ctx.fillRect(x + 6, y + 4, 20, 1);
-        ctx.fillRect(x + 4, y + 5, 24, 2);
-        ctx.fillRect(x + 3, y + 7, 26, 2);
-        ctx.fillRect(x + 2, y + 9, 28, 14);
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 3, y + 23, 26, 2);
-        ctx.fillStyle = this.theme.woodEdge;
-        ctx.fillRect(x + 5, y + 25, 22, 2);
-        ctx.fillRect(x + 8, y + 27, 16, 1);
-
-        // Coin Face Base
-        ctx.fillStyle = this.theme.woodLight; // #9E9E9E
-        ctx.fillRect(x + 11, y + 3, 10, 1);
-        ctx.fillStyle = this.theme.woodBase;  // #757575
-        ctx.fillRect(x + 8, y + 4, 16, 1);
-        ctx.fillRect(x + 6, y + 5, 20, 2);
-        ctx.fillRect(x + 4, y + 7, 24, 2);
-        ctx.fillRect(x + 3, y + 9, 26, 13);
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 4, y + 22, 24, 2);
-        ctx.fillRect(x + 6, y + 24, 20, 1);
-
-        // 2.5D Smooth Beveled Rim
-        ctx.fillStyle = this.theme.woodHighlight; // #E0E0E0
-        ctx.fillRect(x + 11, y + 3, 10, 1);
-        ctx.fillRect(x + 8, y + 4, 5, 1);
-        ctx.fillRect(x + 5, y + 5, 3, 2);
-        ctx.fillRect(x + 4, y + 7, 2, 3);
-        ctx.fillRect(x + 3, y + 10, 2, 8);
-
-        ctx.fillStyle = this.theme.woodEdge; // #212121
-        ctx.fillRect(x + 27, y + 13, 2, 8);
-        ctx.fillRect(x + 25, y + 21, 3, 2);
-        ctx.fillRect(x + 22, y + 23, 4, 2);
-        ctx.fillRect(x + 11, y + 24, 11, 1);
-
-        // Inner recessed ceremonial ring (smooth circular disc)
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 10, y + 7, 12, 1);
-        ctx.fillRect(x + 7, y + 8, 18, 1);
-        ctx.fillRect(x + 6, y + 9, 20, 10);
-        ctx.fillRect(x + 7, y + 19, 18, 1);
-        ctx.fillRect(x + 10, y + 20, 12, 1);
-
-        // Raised medallion center core
-        ctx.fillStyle = this.theme.woodBase;
-        ctx.fillRect(x + 9, y + 8, 14, 1);
-        ctx.fillRect(x + 7, y + 9, 18, 10);
-        ctx.fillRect(x + 9, y + 19, 14, 1);
-
-        // Center square hole with 3D interior bevels
-        ctx.fillStyle = '#121212';
-        ctx.fillRect(x + 13, y + 12, 6, 6);
-        ctx.fillStyle = this.theme.woodEdge;
-        ctx.fillRect(x + 13, y + 12, 6, 1);
-        ctx.fillRect(x + 13, y + 12, 1, 6);
-        ctx.fillStyle = this.theme.woodLight;
-        ctx.fillRect(x + 13, y + 17, 6, 1);
-        ctx.fillRect(x + 18, y + 12, 1, 6);
-
-        // Beaded outer notches / sunburst teeth around coin rim
-        ctx.fillStyle = this.theme.woodHighlight;
-        ctx.fillRect(x + 15, y + 5, 2, 2);
-        ctx.fillRect(x + 7, y + 13, 2, 2);
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 15, y + 21, 2, 2);
-        ctx.fillRect(x + 23, y + 13, 2, 2);
-
-        // 4 Corner jade gems
-        ctx.fillStyle = '#00BFA5';
-        ctx.fillRect(x + 9, y + 10, 2, 2);
-        ctx.fillRect(x + 21, y + 10, 2, 2);
-        ctx.fillRect(x + 9, y + 16, 2, 2);
-        ctx.fillRect(x + 21, y + 16, 2, 2);
+        // Detailed 3D Round Aztec Stone Calendar Medallion with Extruded Cylinder & Jade Gems
+        const batches = [["#FFFFFF", [[10, 4, 2, 1]]], ["#121212", [[14, 12, 4, 4]]], ["#1DE9B6", [[14, 7, 1, 1], [8, 12, 1, 1], [20, 12, 1, 1], [14, 17, 1, 1]]], ["#00BFA5", [[15, 8, 1, 1], [9, 13, 1, 1], [21, 13, 1, 1], [15, 18, 1, 1]]], ["#B8860B", [[16, 9, 1, 1], [10, 14, 1, 1], [22, 14, 1, 1], [16, 19, 1, 1]]], ["#101A14", [[9, 27, 1, 1], [22, 27, 1, 1], [5, 28, 7, 1], [20, 28, 7, 1], [5, 29, 22, 1], [9, 30, 14, 1]]], ["#1A2820", [[5, 27, 4, 1], [23, 27, 4, 1], [3, 28, 2, 2], [27, 28, 2, 2], [5, 30, 4, 1], [23, 30, 4, 1], [9, 31, 14, 1]]], ["#E0E0E0", [[13, 3, 6, 1], [12, 4, 1, 1], [19, 4, 3, 1], [9, 5, 1, 1], [22, 5, 1, 1], [7, 6, 2, 1], [6, 7, 1, 2], [5, 9, 1, 2], [4, 11, 1, 6], [5, 17, 1, 2], [6, 19, 1, 2]]], ["#616161", [[4, 17, 1, 1], [27, 17, 1, 1], [5, 19, 1, 1], [26, 19, 1, 1], [8, 22, 1, 1], [23, 22, 1, 1], [9, 23, 1, 1], [22, 23, 1, 1], [10, 24, 3, 1], [19, 24, 3, 1], [13, 25, 6, 1]]], ["#BDBDBD", [[15, 4, 2, 1], [7, 7, 1, 1], [23, 7, 1, 1], [8, 8, 1, 1], [24, 8, 1, 1], [18, 11, 1, 5], [5, 13, 1, 2], [26, 13, 1, 2], [13, 16, 6, 1], [7, 19, 1, 1], [23, 19, 1, 1], [8, 20, 1, 1], [24, 20, 1, 1], [15, 23, 2, 1]]], ["#9E9E9E", [[17, 8, 1, 1], [12, 9, 2, 1], [17, 9, 3, 1], [11, 10, 10, 1], [10, 11, 3, 1], [19, 11, 3, 1], [11, 12, 2, 3], [19, 12, 1, 3], [10, 15, 3, 1], [19, 15, 3, 1], [11, 16, 2, 1], [19, 16, 2, 1], [12, 17, 2, 1], [17, 17, 3, 1], [17, 18, 1, 1]]], ["#FFD700", [[15, 7, 2, 1], [14, 8, 1, 1], [16, 8, 1, 1], [14, 9, 2, 1], [9, 12, 2, 1], [21, 12, 2, 1], [8, 13, 1, 1], [10, 13, 1, 1], [20, 13, 1, 1], [22, 13, 1, 1], [8, 14, 2, 1], [20, 14, 2, 1], [15, 17, 2, 1], [14, 18, 1, 1], [16, 18, 1, 1], [14, 19, 2, 1]]], ["#303030", [[15, 5, 2, 1], [13, 6, 6, 1], [11, 7, 2, 1], [19, 7, 2, 1], [7, 8, 1, 1], [10, 8, 1, 1], [21, 8, 1, 1], [23, 8, 1, 1], [8, 9, 2, 1], [22, 9, 1, 1], [24, 9, 1, 1], [8, 10, 1, 2], [23, 10, 1, 2], [7, 12, 1, 4], [24, 12, 1, 4], [5, 15, 1, 1], [26, 15, 1, 1], [8, 16, 1, 2], [23, 16, 1, 2], [9, 18, 1, 1], [22, 18, 1, 1], [10, 19, 1, 1], [21, 19, 1, 1], [7, 20, 1, 1], [11, 20, 2, 1], [19, 20, 2, 1], [23, 20, 1, 1], [8, 21, 1, 1], [13, 21, 6, 1], [24, 21, 1, 1], [15, 24, 2, 1]]], ["#212121", [[23, 6, 2, 1], [25, 7, 1, 2], [26, 9, 1, 2], [13, 11, 5, 1], [27, 11, 1, 6], [13, 12, 1, 4], [26, 17, 1, 2], [3, 19, 1, 2], [25, 19, 1, 2], [28, 19, 1, 2], [4, 21, 1, 1], [7, 21, 1, 1], [23, 21, 1, 1], [27, 21, 1, 1], [4, 22, 2, 1], [9, 22, 1, 1], [22, 22, 1, 1], [26, 22, 2, 1], [5, 23, 2, 1], [10, 23, 3, 1], [19, 23, 3, 1], [25, 23, 2, 1], [6, 24, 2, 1], [13, 24, 2, 1], [17, 24, 2, 1], [24, 24, 2, 1], [7, 25, 3, 1], [22, 25, 3, 1], [8, 26, 4, 1], [20, 26, 4, 1], [10, 27, 12, 1], [12, 28, 8, 1]]], ["#424242", [[13, 7, 1, 1], [17, 7, 2, 1], [11, 8, 2, 1], [19, 8, 2, 1], [10, 9, 2, 1], [20, 9, 2, 1], [4, 10, 1, 1], [9, 10, 2, 1], [21, 10, 2, 1], [27, 10, 1, 1], [9, 11, 1, 1], [22, 11, 1, 1], [3, 12, 1, 6], [23, 12, 1, 4], [28, 12, 1, 6], [8, 15, 1, 1], [9, 16, 1, 1], [22, 16, 1, 1], [9, 17, 2, 1], [21, 17, 2, 1], [3, 18, 2, 1], [10, 18, 2, 1], [20, 18, 2, 1], [27, 18, 2, 1], [4, 19, 1, 1], [11, 19, 2, 1], [19, 19, 2, 1], [27, 19, 1, 1], [4, 20, 2, 1], [13, 20, 6, 1], [26, 20, 2, 1], [5, 21, 2, 1], [25, 21, 2, 1], [6, 22, 2, 1], [24, 22, 2, 1], [7, 23, 2, 1], [23, 23, 2, 1], [8, 24, 2, 1], [22, 24, 2, 1], [10, 25, 3, 1], [19, 25, 3, 1], [12, 26, 8, 1]]], ["#757575", [[13, 4, 2, 1], [17, 4, 2, 1], [10, 5, 5, 1], [17, 5, 5, 1], [9, 6, 4, 1], [19, 6, 4, 1], [8, 7, 3, 1], [21, 7, 2, 1], [24, 7, 1, 1], [9, 8, 1, 1], [13, 8, 1, 1], [18, 8, 1, 1], [22, 8, 1, 1], [6, 9, 2, 2], [23, 9, 1, 1], [25, 9, 1, 1], [24, 10, 2, 1], [5, 11, 3, 1], [24, 11, 3, 1], [5, 12, 2, 1], [25, 12, 2, 1], [6, 13, 1, 3], [25, 13, 1, 3], [9, 15, 1, 1], [22, 15, 1, 1], [5, 16, 3, 1], [10, 16, 1, 1], [21, 16, 1, 1], [24, 16, 3, 1], [6, 17, 2, 1], [11, 17, 1, 1], [20, 17, 1, 1], [24, 17, 2, 1], [6, 18, 3, 1], [12, 18, 2, 1], [18, 18, 2, 1], [23, 18, 3, 1], [8, 19, 2, 1], [13, 19, 1, 1], [17, 19, 2, 1], [22, 19, 1, 1], [24, 19, 1, 1], [9, 20, 2, 1], [21, 20, 2, 1], [9, 21, 4, 1], [19, 21, 4, 1], [10, 22, 12, 1], [13, 23, 2, 1], [17, 23, 2, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================
@@ -1583,28 +1254,56 @@ class GameMap {
     }
 
     drawHazardCrate(ctx, x, y) {
-        ctx.fillStyle = this.theme.woodEdge;
+        // High-Visibility Industrial Hazard Cargo Container with Stenciled HAZARD Label
+        ctx.fillStyle = '#111827';
         ctx.fillRect(x + 2, y + 2, 28, 28);
-        ctx.fillStyle = this.theme.woodBase;
+        ctx.fillStyle = '#FFB300';
         ctx.fillRect(x + 3, y + 3, 26, 26);
-        ctx.fillStyle = this.theme.woodAccent;
-        for (let i = -10; i < 30; i += 8) {
-            for (let d = 0; d < 6; d++) {
+
+        // 1. Diagonal Safety Hazard Warning Stripes (Top section: y+4..16)
+        ctx.fillStyle = '#111827';
+        for (let i = -8; i < 30; i += 6) {
+            for (let d = 0; d < 8; d++) {
                 const px = x + 3 + i + d;
-                const py = y + 3 + d * 2;
-                if (px >= x + 4 && px <= x + 27 && py >= y + 4 && py <= y + 27) {
-                    ctx.fillRect(px, py, 3, 3);
+                const py = y + 4 + d;
+                if (px >= x + 4 && px <= x + 27 && py >= y + 4 && py <= y + 16) {
+                    ctx.fillRect(px, py, 2, 2);
                 }
             }
         }
-        ctx.fillStyle = this.theme.woodHighlight;
-        ctx.fillRect(x + 3, y + 3, 26, 2);
-        ctx.fillRect(x + 3, y + 3, 2, 26);
-        ctx.fillStyle = '#9E9E9E';
-        ctx.fillRect(x + 4, y + 4, 2, 2);
-        ctx.fillRect(x + 26, y + 4, 2, 2);
-        ctx.fillRect(x + 4, y + 26, 2, 2);
-        ctx.fillRect(x + 26, y + 26, 2, 2);
+
+        // 2. High-Contrast Black Identification Badge Plate Underneath Stripes (y+18..25)
+        ctx.fillStyle = '#111827';
+        ctx.fillRect(x + 3, y + 18, 26, 8);
+        ctx.fillStyle = '#374151'; // Top and bottom plate trim
+        ctx.fillRect(x + 3, y + 18, 26, 1);
+        ctx.fillRect(x + 3, y + 25, 26, 1);
+
+        // 3. Crisp Pixel-Art Stenciled Word "HAZARD" (3x5 font at y+19..23)
+        ctx.fillStyle = '#FBBF24'; // Vivid safety yellow text
+        const letters = {
+            'H': [0,0, 0,1, 0,2, 0,3, 0,4, 1,2, 2,0, 2,1, 2,2, 2,3, 2,4],
+            'A': [0,1, 0,2, 0,3, 0,4, 1,0, 1,2, 2,1, 2,2, 2,3, 2,4],
+            'Z': [0,0, 1,0, 2,0, 2,1, 1,2, 0,3, 0,4, 1,4, 2,4],
+            'R': [0,0, 0,1, 0,2, 0,3, 0,4, 1,0, 1,2, 2,0, 2,1, 2,3, 2,4],
+            'D': [0,0, 0,1, 0,2, 0,3, 0,4, 1,0, 1,4, 2,1, 2,2, 2,3]
+        };
+        const word = [['H', 4], ['A', 8], ['Z', 12], ['A', 16], ['R', 20], ['D', 24]];
+        for (let w = 0; w < word.length; w++) {
+            const char = word[w][0];
+            const lx = word[w][1];
+            const pts = letters[char];
+            for (let p = 0; p < pts.length; p += 2) {
+                ctx.fillRect(x + lx + pts[p], y + 19 + pts[p + 1], 1, 1);
+            }
+        }
+
+        // 4. Corner Reinforcement Rivets
+        ctx.fillStyle = '#CBD5E1';
+        ctx.fillRect(x + 4, y + 4, 1, 1);
+        ctx.fillRect(x + 27, y + 4, 1, 1);
+        ctx.fillRect(x + 4, y + 27, 1, 1);
+        ctx.fillRect(x + 27, y + 27, 1, 1);
     }
 
     // ==========================================
@@ -1706,33 +1405,16 @@ class GameMap {
     }
 
     drawBiohazardBarrel(ctx, x, y) {
-        ctx.fillStyle = this.theme.woodShadow;
-        ctx.fillRect(x + 5, y + 27, 22, 4);
-        ctx.fillStyle = this.theme.woodEdge;
-        ctx.fillRect(x + 5, y + 2, 22, 27);
-        ctx.fillStyle = this.theme.woodBase;
-        ctx.fillRect(x + 6, y + 3, 20, 25);
-
-        ctx.fillStyle = this.theme.woodLight;
-        ctx.fillRect(x + 8, y + 3, 6, 25);
-        ctx.fillStyle = '#43A047';
-        ctx.fillRect(x + 9, y + 3, 2, 25);
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 21, y + 3, 4, 25);
-
-        ctx.fillStyle = '#0D3811';
-        ctx.fillRect(x + 5, y + 8, 22, 2);
-        ctx.fillRect(x + 5, y + 17, 22, 2);
-
-        ctx.fillStyle = this.theme.woodAccent;
-        ctx.fillRect(x + 14, y + 12, 4, 4);
-        ctx.fillRect(x + 12, y + 10, 3, 3);
-        ctx.fillRect(x + 17, y + 10, 3, 3);
-        ctx.fillRect(x + 14, y + 16, 4, 2);
-
-        ctx.fillStyle = '#76FF03';
-        ctx.fillRect(x + 6, y + 19, 3, 8);
-        ctx.fillRect(x + 4, y + 27, 8, 2);
+        // Detailed 3D Biohazard Chemical Barrel with Chime Lid, Corrugated Hoops & Acid Drips
+        const batches = [["#001202", [[14, 29, 11, 1]]], ["#4CAF50", [[11, 4, 1, 1], [19, 4, 1, 1]]], ["#050811", [[25, 29, 1, 1], [12, 30, 11, 1]]], ["#CCFF90", [[7, 6, 1, 1], [7, 14, 1, 1], [5, 28, 5, 2]]], ["#66BB6A", [[10, 10, 1, 4], [10, 18, 1, 3], [10, 25, 1, 2]]], ["#A5D6A7", [[11, 10, 1, 4], [11, 18, 1, 3], [11, 25, 1, 2]]], ["#000000", [[26, 29, 2, 1], [23, 30, 4, 1], [9, 31, 14, 1]]], ["#FFFFFF", [[10, 2, 2, 1], [10, 14, 2, 1], [10, 21, 2, 1], [5, 27, 1, 1]]], ["#002204", [[10, 4, 1, 1], [12, 4, 1, 1], [20, 4, 1, 1], [10, 5, 3, 1], [19, 5, 2, 1]]], ["#001A03", [[5, 17, 2, 1], [8, 17, 19, 1], [5, 24, 3, 1], [9, 24, 18, 1], [14, 28, 12, 1]]], ["#FFEE58", [[14, 9, 4, 1], [15, 10, 2, 2], [13, 11, 1, 1], [18, 11, 1, 1], [13, 12, 6, 1], [13, 13, 2, 1], [17, 13, 2, 1]]], ["#0D3811", [[5, 6, 1, 1], [26, 6, 1, 1], [24, 7, 1, 1], [19, 8, 3, 1], [22, 9, 2, 1], [19, 10, 5, 5], [19, 18, 5, 4], [19, 25, 5, 3]]], ["#00E676", [[8, 10, 1, 1], [9, 21, 1, 1], [6, 27, 6, 1], [3, 28, 2, 1], [10, 28, 4, 1], [3, 29, 1, 1], [12, 29, 2, 1], [5, 30, 1, 1], [10, 30, 2, 1]]], ["#81C784", [[12, 2, 10, 1], [7, 3, 3, 1], [22, 3, 3, 1], [6, 4, 1, 1], [25, 4, 1, 1], [5, 5, 1, 1], [26, 5, 1, 1], [9, 14, 1, 1], [12, 14, 2, 1], [12, 21, 2, 1]]], ["#76FF03", [[6, 5, 3, 1], [6, 6, 1, 1], [8, 6, 1, 1], [6, 7, 3, 1], [7, 8, 1, 6], [7, 15, 1, 4], [8, 19, 1, 7], [4, 29, 1, 1], [10, 29, 2, 1], [6, 30, 4, 1]]], ["#388E3C", [[10, 8, 4, 1], [9, 9, 1, 5], [12, 10, 2, 1], [12, 11, 1, 3], [6, 14, 1, 1], [8, 14, 1, 1], [9, 18, 1, 3], [12, 18, 2, 3], [6, 21, 2, 1], [9, 25, 1, 2], [12, 25, 2, 3]]], ["#2E7D32", [[10, 3, 1, 1], [21, 3, 1, 1], [7, 4, 1, 1], [24, 4, 1, 1], [6, 8, 1, 6], [8, 9, 1, 1], [8, 11, 1, 3], [14, 14, 5, 1], [6, 18, 1, 1], [8, 18, 1, 1], [6, 19, 2, 2], [14, 21, 5, 1], [6, 25, 2, 1], [6, 26, 3, 1]]], ["#061D09", [[25, 5, 1, 1], [24, 6, 2, 1], [5, 7, 1, 7], [9, 7, 2, 1], [21, 7, 3, 1], [25, 7, 2, 1], [8, 8, 2, 1], [22, 8, 5, 1], [10, 9, 4, 1], [18, 9, 4, 1], [24, 9, 3, 5], [24, 14, 2, 1], [5, 18, 1, 3], [24, 18, 3, 3], [24, 21, 2, 1], [5, 25, 1, 2], [24, 25, 3, 3], [26, 28, 1, 1]]], ["#1B5E20", [[11, 3, 10, 1], [8, 4, 2, 1], [13, 4, 6, 2], [21, 4, 3, 1], [9, 5, 1, 1], [21, 5, 4, 1], [9, 6, 15, 1], [11, 7, 10, 1], [14, 8, 5, 1], [14, 10, 1, 2], [17, 10, 2, 1], [17, 11, 1, 1], [15, 13, 2, 1], [5, 14, 1, 1], [26, 14, 1, 1], [5, 15, 2, 2], [8, 15, 19, 2], [14, 18, 5, 3], [5, 21, 1, 1], [26, 21, 1, 1], [5, 22, 3, 2], [9, 22, 18, 2], [14, 25, 5, 3]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================
@@ -1789,109 +1471,110 @@ class GameMap {
     }
 
     // ==========================================
-    // 10. DEEP GEM MINE (Lighter Cavern Gravel Ground + Bedrock Support Wall)
+    // 10. DEEP GEM MINE (Authentic Dirt Floor + Bedrock Wall with Crystal Veins)
     // ==========================================
     drawMineGround(ctx, x, y) {
-        // Lighter warm cavern gravel
-        ctx.fillStyle = this.theme.groundDarker; // #5D4037
+        // Authentic Earthy Dirt Cavern Floor matching reference
+        ctx.fillStyle = '#6A5137';
         ctx.fillRect(x, y, this.tileSize, this.tileSize);
-        ctx.fillStyle = this.theme.groundBase; // #795548
-        ctx.fillRect(x + 1, y + 1, 30, 30);
-        ctx.fillStyle = this.theme.groundDark; // #6D4C41
-        ctx.fillRect(x + 4, y + 6, 8, 4);
-        ctx.fillRect(x + 18, y + 16, 8, 5);
-        ctx.fillStyle = '#A1887F';
-        ctx.fillRect(x + 8, y + 10, 2, 2);
-        ctx.fillRect(x + 22, y + 8, 2, 2);
+        const drawRects = (color, rects) => {
+            ctx.fillStyle = color;
+            for (let i = 0; i < rects.length; i += 4) {
+                ctx.fillRect(x + rects[i], y + rects[i + 1], rects[i + 2], rects[i + 3]);
+            }
+        };
+        drawRects('#503A26', [12, 0, 4, 2, 26, 0, 6, 2, 28, 2, 2, 2, 4, 6, 2, 2, 30, 6, 2, 2, 6, 8, 2, 2, 6, 10, 4, 2, 6, 12, 6, 2, 6, 14, 2, 2, 12, 14, 4, 2, 12, 16, 4, 2, 12, 18, 4, 2, 20, 22, 2, 2, 10, 24, 4, 2, 18, 24, 6, 2, 10, 26, 4, 2, 22, 26, 4, 2, 12, 28, 4, 2, 22, 28, 4, 2, 10, 30, 4, 2, 16, 30, 6, 2]);
+        drawRects('#5E452E', [0, 0, 4, 2, 10, 0, 2, 2, 26, 2, 2, 2, 30, 2, 2, 2, 30, 4, 2, 2, 18, 6, 2, 2, 0, 8, 4, 2, 8, 8, 2, 2, 0, 10, 4, 2, 10, 10, 2, 2, 12, 12, 2, 2, 4, 14, 2, 2, 8, 14, 2, 2, 4, 16, 4, 2, 12, 20, 4, 2, 20, 20, 2, 2, 10, 22, 4, 2, 18, 22, 2, 2, 22, 22, 4, 2, 24, 24, 4, 2, 18, 26, 4, 2, 26, 26, 4, 2, 10, 28, 2, 2, 16, 28, 2, 2, 26, 28, 2, 2, 4, 30, 6, 2, 14, 30, 2, 2, 22, 30, 2, 2, 28, 30, 4, 2]);
+        drawRects('#765C3E', [4, 0, 2, 2, 8, 0, 2, 2, 4, 2, 2, 2, 10, 2, 2, 2, 16, 2, 2, 2, 22, 2, 2, 2, 6, 4, 2, 2, 10, 4, 2, 2, 16, 4, 2, 2, 22, 4, 2, 2, 10, 6, 4, 2, 20, 6, 4, 2, 28, 8, 4, 2, 12, 10, 2, 2, 22, 10, 6, 2, 14, 12, 2, 2, 22, 12, 4, 2, 0, 14, 2, 2, 16, 14, 2, 2, 22, 14, 2, 2, 24, 16, 2, 2, 30, 16, 2, 2, 0, 18, 4, 2, 10, 18, 2, 2, 24, 18, 2, 2, 30, 18, 2, 2, 0, 20, 2, 2, 24, 20, 4, 2, 8, 22, 2, 2, 14, 22, 2, 2, 4, 26, 4, 2, 14, 26, 2, 2, 0, 28, 2, 2, 2, 30, 2, 2, 24, 30, 4, 2]);
+        drawRects('#826645', [18, 0, 6, 2, 6, 2, 2, 2, 14, 2, 2, 2, 18, 2, 2, 2, 0, 4, 4, 2, 20, 4, 2, 2, 2, 6, 2, 2, 14, 6, 2, 2, 24, 6, 6, 2, 14, 8, 4, 2, 22, 8, 6, 2, 14, 10, 4, 2, 28, 10, 4, 2, 16, 12, 2, 2, 20, 12, 2, 2, 26, 12, 2, 2, 18, 14, 2, 2, 24, 14, 2, 2, 30, 14, 2, 2, 16, 16, 4, 2, 26, 16, 4, 2, 4, 18, 2, 2, 8, 18, 2, 2, 16, 18, 4, 2, 26, 18, 4, 2, 2, 20, 2, 2, 6, 20, 2, 2, 16, 20, 4, 2, 30, 20, 2, 2, 0, 22, 2, 2, 30, 22, 2, 2, 4, 24, 4, 2, 0, 26, 2, 2, 2, 28, 2, 2, 0, 30, 2, 2]);
+        drawRects('#8F714E', [6, 0, 2, 2, 12, 2, 2, 2, 20, 2, 2, 2, 12, 4, 4, 2, 0, 6, 2, 2, 12, 8, 2, 2, 18, 8, 4, 2, 18, 10, 4, 2, 18, 12, 2, 2, 28, 12, 4, 2, 26, 14, 4, 2, 8, 16, 4, 2, 4, 20, 2, 2, 28, 20, 2, 2, 2, 22, 6, 2, 28, 22, 2, 2, 0, 24, 4, 2, 14, 24, 2, 2, 2, 26, 2, 2]);
     }
 
     drawMineSupport(ctx, x, y) {
-        // Cavern Bedrock Enclosed with Sleek, Thinner Structural Steel Support Frame
+        // Deep Gem Mine Cavern Bedrock Wall with Grey/Light-Black Dirt Texture inside Steel Girder
         ctx.fillStyle = '#111827';
         ctx.fillRect(x, y, this.tileSize, this.tileSize);
 
-        // Matching deep cavern bedrock stone in center (Large 26x26 visible rock area)
-        ctx.fillStyle = this.theme.wallBase; // #263238
-        ctx.fillRect(x + 1, y + 1, 30, 30);
-        ctx.fillStyle = this.theme.wallDark; // #1E293B
+        // Base fill in center (26x26: x+3..28, y+3..28)
+        ctx.fillStyle = '#2A2E35';
         ctx.fillRect(x + 3, y + 3, 26, 26);
 
-        // Natural cavern bedrock fissures & mineral veins inside
-        ctx.fillStyle = '#0F172A'; // Deep mineral crack
-        ctx.fillRect(x + 6, y + 9, 14, 2);
-        ctx.fillRect(x + 16, y + 11, 2, 9);
-        ctx.fillRect(x + 8, y + 17, 16, 2);
-        ctx.fillRect(x + 11, y + 19, 2, 6);
+        // Exact floor dirt texture rects mapped to grey / light black palette
+        const paletteGrey = {
+            '#503A26': '#111418',
+            '#5E452E': '#1C2026',
+            '#765C3E': '#383E48',
+            '#826645': '#464E5A',
+            '#8F714E': '#5A6473'
+        };
+        const rectData = {
+            '#503A26': [12, 0, 4, 2, 26, 0, 6, 2, 28, 2, 2, 2, 4, 6, 2, 2, 30, 6, 2, 2, 6, 8, 2, 2, 6, 10, 4, 2, 6, 12, 6, 2, 6, 14, 2, 2, 12, 14, 4, 2, 12, 16, 4, 2, 12, 18, 4, 2, 20, 22, 2, 2, 10, 24, 4, 2, 18, 24, 6, 2, 10, 26, 4, 2, 22, 26, 4, 2, 12, 28, 4, 2, 22, 28, 4, 2, 10, 30, 4, 2, 16, 30, 6, 2],
+            '#5E452E': [0, 0, 4, 2, 10, 0, 2, 2, 26, 2, 2, 2, 30, 2, 2, 2, 30, 4, 2, 2, 18, 6, 2, 2, 0, 8, 4, 2, 8, 8, 2, 2, 0, 10, 4, 2, 10, 10, 2, 2, 12, 12, 2, 2, 4, 14, 2, 2, 8, 14, 2, 2, 4, 16, 4, 2, 12, 20, 4, 2, 20, 20, 2, 2, 10, 22, 4, 2, 18, 22, 2, 2, 22, 22, 4, 2, 24, 24, 4, 2, 18, 26, 4, 2, 26, 26, 4, 2, 10, 28, 2, 2, 16, 28, 2, 2, 26, 28, 2, 2, 4, 30, 6, 2, 14, 30, 2, 2, 22, 30, 2, 2, 28, 30, 4, 2],
+            '#765C3E': [4, 0, 2, 2, 8, 0, 2, 2, 4, 2, 2, 2, 10, 2, 2, 2, 16, 2, 2, 2, 22, 2, 2, 2, 6, 4, 2, 2, 10, 4, 2, 2, 16, 4, 2, 2, 22, 4, 2, 2, 10, 6, 4, 2, 20, 6, 4, 2, 28, 8, 4, 2, 12, 10, 2, 2, 22, 10, 6, 2, 14, 12, 2, 2, 22, 12, 4, 2, 0, 14, 2, 2, 16, 14, 2, 2, 22, 14, 2, 2, 24, 16, 2, 2, 30, 16, 2, 2, 0, 18, 4, 2, 10, 18, 2, 2, 24, 18, 2, 2, 30, 18, 2, 2, 0, 20, 2, 2, 24, 20, 4, 2, 8, 22, 2, 2, 14, 22, 2, 2, 4, 26, 4, 2, 14, 26, 2, 2, 0, 28, 2, 2, 2, 30, 2, 2, 24, 30, 4, 2],
+            '#826645': [18, 0, 6, 2, 6, 2, 2, 2, 14, 2, 2, 2, 18, 2, 2, 2, 0, 4, 4, 2, 20, 4, 2, 2, 2, 6, 2, 2, 14, 6, 2, 2, 24, 6, 6, 2, 14, 8, 4, 2, 22, 8, 6, 2, 14, 10, 4, 2, 28, 10, 4, 2, 16, 12, 2, 2, 20, 12, 2, 2, 26, 12, 2, 2, 18, 14, 2, 2, 24, 14, 2, 2, 30, 14, 2, 2, 16, 16, 4, 2, 26, 16, 4, 2, 4, 18, 2, 2, 8, 18, 2, 2, 16, 18, 4, 2, 26, 18, 4, 2, 2, 20, 2, 2, 6, 20, 2, 2, 16, 20, 4, 2, 30, 20, 2, 2, 0, 22, 2, 2, 30, 22, 2, 2, 4, 24, 4, 2, 0, 26, 2, 2, 2, 28, 2, 2, 0, 30, 2, 2],
+            '#8F714E': [6, 0, 2, 2, 12, 2, 2, 2, 20, 2, 2, 2, 12, 4, 4, 2, 0, 6, 2, 2, 12, 8, 2, 2, 18, 8, 4, 2, 18, 10, 4, 2, 18, 12, 2, 2, 28, 12, 4, 2, 26, 14, 4, 2, 8, 16, 4, 2, 4, 20, 2, 2, 28, 20, 2, 2, 2, 22, 6, 2, 28, 22, 2, 2, 0, 24, 4, 2, 14, 24, 2, 2, 2, 26, 2, 2]
+        };
 
-        // Fissure rock bevels
-        ctx.fillStyle = this.theme.wallLight; // #37474F
-        ctx.fillRect(x + 7, y + 8, 8, 1);
-        ctx.fillRect(x + 9, y + 16, 12, 1);
+        for (const [origCol, greyCol] of Object.entries(paletteGrey)) {
+            ctx.fillStyle = greyCol;
+            const rects = rectData[origCol];
+            for (let i = 0; i < rects.length; i += 4) {
+                const rx = rects[i], ry = rects[i + 1], rw = rects[i + 2], rh = rects[i + 3];
+                const cx1 = Math.max(3, rx);
+                const cy1 = Math.max(3, ry);
+                const cx2 = Math.min(28, rx + rw);
+                const cy2 = Math.min(28, ry + rh);
+                if (cx2 > cx1 && cy2 > cy1) {
+                    ctx.fillRect(x + cx1, y + cy1, cx2 - cx1 + 1, cy2 - cy1 + 1);
+                }
+            }
+        }
 
-        // Loose mineral specks embedded in the bedrock
-        ctx.fillStyle = this.theme.wallHighlight; // #78909C
-        ctx.fillRect(x + 7, y + 13, 2, 2);
-        ctx.fillRect(x + 22, y + 10, 2, 2);
-        ctx.fillRect(x + 13, y + 23, 2, 2);
-        ctx.fillRect(x + 21, y + 21, 2, 2);
-
-        // Sleek Thinner Structural Steel Support Frame (Only 3px thick beams):
-        // Top horizontal girder beam (y+1..3, h=3)
+        // Sleek Structural Steel Girder Frame (3px Beams)
+        // Top girder beam (y+1..3)
         ctx.fillStyle = '#37474F';
         ctx.fillRect(x + 1, y + 1, 30, 3);
-        ctx.fillStyle = '#78909C'; // Top light bevel
+        ctx.fillStyle = '#78909C'; // Top bevel
         ctx.fillRect(x + 1, y + 1, 30, 1);
         ctx.fillStyle = '#1B2327'; // Underside shadow
         ctx.fillRect(x + 1, y + 3, 30, 1);
 
-        // Bottom horizontal girder beam (y+28..30, h=3)
+        // Bottom girder beam (y+28..30)
         ctx.fillStyle = '#37474F';
         ctx.fillRect(x + 1, y + 28, 30, 3);
-        ctx.fillStyle = '#546E7A'; // Inward light lip
+        ctx.fillStyle = '#546E7A'; // Inward lip
         ctx.fillRect(x + 1, y + 28, 30, 1);
-        ctx.fillStyle = '#1B2327'; // Ground contact shadow
+        ctx.fillStyle = '#1B2327'; // Shadow
         ctx.fillRect(x + 1, y + 30, 30, 1);
 
-        // Left vertical girder column (x+1..3, w=3)
+        // Left vertical column (x+1..3)
         ctx.fillStyle = '#37474F';
         ctx.fillRect(x + 1, y + 1, 3, 30);
-        ctx.fillStyle = '#78909C'; // Leftmost highlight bevel
+        ctx.fillStyle = '#78909C'; // Highlight
         ctx.fillRect(x + 1, y + 1, 1, 30);
-        ctx.fillStyle = '#1B2327'; // Inward shadow line
+        ctx.fillStyle = '#1B2327';
         ctx.fillRect(x + 3, y + 1, 1, 30);
 
-        // Right vertical girder column (x+28..30, w=3)
+        // Right vertical column (x+28..30)
         ctx.fillStyle = '#37474F';
         ctx.fillRect(x + 28, y + 1, 3, 30);
-        ctx.fillStyle = '#546E7A'; // Inward reflection
+        ctx.fillStyle = '#546E7A';
         ctx.fillRect(x + 28, y + 1, 1, 30);
-        ctx.fillStyle = '#1B2327'; // Outer shadow line
+        ctx.fillStyle = '#1B2327';
         ctx.fillRect(x + 30, y + 1, 1, 30);
 
-        // Sleek 4x4 Corner Gusset Reinforcement Plates with Rivets:
-        // Top-left
-        ctx.fillStyle = '#546E7A';
-        ctx.fillRect(x + 1, y + 1, 4, 4);
+        // 4x4 Corner Gusset Reinforcement Plates with Rivets
+        const gussets = [[1, 1], [27, 1], [1, 27], [27, 27]];
+        ctx.fillStyle = '#455A64';
+        for (let g = 0; g < gussets.length; g++) {
+            ctx.fillRect(x + gussets[g][0], y + gussets[g][1], 4, 4);
+        }
         ctx.fillStyle = '#CFD8DC';
-        ctx.fillRect(x + 2, y + 2, 1, 1);
-        // Top-right
-        ctx.fillStyle = '#37474F';
-        ctx.fillRect(x + 27, y + 1, 4, 4);
-        ctx.fillStyle = '#CFD8DC';
-        ctx.fillRect(x + 29, y + 2, 1, 1);
-        // Bottom-left
-        ctx.fillStyle = '#37474F';
-        ctx.fillRect(x + 1, y + 27, 4, 4);
-        ctx.fillStyle = '#CFD8DC';
-        ctx.fillRect(x + 2, y + 29, 1, 1);
-        // Bottom-right
-        ctx.fillStyle = '#1E293B';
-        ctx.fillRect(x + 27, y + 27, 4, 4);
-        ctx.fillStyle = '#CFD8DC';
-        ctx.fillRect(x + 29, y + 29, 1, 1);
+        for (let g = 0; g < gussets.length; g++) {
+            ctx.fillRect(x + gussets[g][0] + 1, y + gussets[g][1] + 1, 1, 1);
+        }
 
-        // Intermediate girder rivets on the thin frame
-        ctx.fillStyle = '#CFD8DC';
+        // Mid-girder rivets
         ctx.fillRect(x + 15, y + 2, 2, 1);  // Top mid
         ctx.fillRect(x + 15, y + 29, 2, 1); // Bottom mid
         ctx.fillRect(x + 2, y + 15, 1, 2);  // Left mid
@@ -2193,26 +1876,20 @@ class GameMap {
     // 13. CITY STREETS (Asphalt Road + Reinforced Bollard Wall + Metal Manhole)
     // ==========================================
     drawCityGround(ctx, x, y) {
-        // Lightened realistic asphalt road texture
-        ctx.fillStyle = this.theme.groundDarker; // #25292D
+        // Authentic Aggregate Asphalt Road Texture matching reference
+        ctx.fillStyle = '#888A8E';
         ctx.fillRect(x, y, this.tileSize, this.tileSize);
-        ctx.fillStyle = this.theme.groundBase; // Lightened charcoal asphalt #474D54
-        ctx.fillRect(x + 1, y + 1, 30, 30);
-
-        // Asphalt texture specks
-        ctx.fillStyle = this.theme.groundDark; // #353A40
-        ctx.fillRect(x + 3, y + 5, 2, 2);
-        ctx.fillRect(x + 19, y + 8, 2, 2);
-        ctx.fillRect(x + 8, y + 20, 2, 2);
-        ctx.fillRect(x + 24, y + 24, 2, 2);
-        ctx.fillStyle = '#5A616B'; // Aggregate gravel glints
-        ctx.fillRect(x + 11, y + 12, 1, 1);
-        ctx.fillRect(x + 27, y + 4, 1, 1);
-        ctx.fillRect(x + 5, y + 27, 1, 1);
-
-        // Road expansion seam
-        ctx.fillStyle = '#353A40';
-        ctx.fillRect(x + 15, y, 1, 32);
+        const drawRects = (color, rects) => {
+            ctx.fillStyle = color;
+            for (let i = 0; i < rects.length; i += 4) {
+                ctx.fillRect(x + rects[i], y + rects[i + 1], rects[i + 2], rects[i + 3]);
+            }
+        };
+        drawRects('#585A5E', [14, 2, 6, 2, 4, 4, 2, 2, 14, 4, 2, 2, 24, 4, 2, 2, 28, 4, 2, 2, 8, 6, 2, 2, 24, 6, 2, 2, 30, 8, 2, 2, 8, 12, 4, 2, 22, 12, 2, 2, 6, 14, 4, 2, 22, 14, 4, 2, 28, 14, 2, 2, 14, 16, 2, 2, 26, 16, 2, 2, 0, 18, 4, 2, 18, 18, 4, 2, 2, 24, 2, 2, 10, 24, 2, 2, 28, 24, 4, 2, 16, 26, 2, 2, 10, 28, 8, 2, 8, 30, 2, 2, 16, 30, 2, 2, 24, 30, 2, 2]);
+        drawRects('#696B6F', [2, 0, 2, 2, 18, 0, 2, 2, 2, 2, 4, 2, 28, 2, 4, 2, 2, 4, 2, 2, 22, 4, 2, 2, 22, 6, 2, 2, 2, 8, 2, 2, 0, 10, 4, 2, 30, 10, 2, 2, 6, 12, 2, 2, 30, 12, 2, 2, 26, 14, 2, 2, 30, 14, 2, 2, 2, 16, 2, 2, 16, 16, 6, 2, 28, 16, 2, 2, 26, 20, 6, 2, 10, 22, 2, 2, 28, 22, 4, 2, 0, 24, 2, 2, 8, 28, 2, 2, 24, 28, 2, 2, 18, 30, 2, 2, 22, 30, 2, 2, 26, 30, 4, 2]);
+        drawRects('#7A7C80', [0, 0, 2, 2, 12, 2, 2, 2, 0, 4, 2, 2, 20, 4, 2, 2, 2, 6, 6, 2, 10, 6, 2, 2, 20, 6, 2, 2, 26, 6, 6, 2, 6, 8, 2, 2, 12, 8, 2, 2, 4, 10, 2, 2, 2, 12, 4, 2, 16, 12, 2, 2, 24, 12, 2, 2, 2, 14, 2, 2, 12, 14, 6, 2, 12, 16, 2, 2, 8, 18, 2, 2, 28, 18, 4, 2, 8, 20, 4, 2, 20, 20, 4, 2, 4, 22, 2, 2, 8, 22, 2, 2, 12, 22, 4, 2, 20, 22, 4, 2, 26, 22, 2, 2, 8, 24, 2, 2, 12, 24, 4, 2, 20, 24, 4, 2, 14, 26, 2, 2, 18, 26, 10, 2, 22, 28, 2, 2, 26, 28, 2, 2, 20, 30, 2, 2, 30, 30, 2, 2]);
+        drawRects('#9C9EA2', [16, 0, 2, 2, 22, 0, 2, 2, 28, 0, 2, 2, 6, 2, 2, 2, 10, 2, 2, 2, 20, 2, 2, 2, 26, 2, 2, 2, 8, 4, 2, 2, 12, 4, 2, 2, 30, 4, 2, 2, 0, 6, 2, 2, 12, 6, 4, 2, 0, 8, 2, 2, 4, 8, 2, 2, 20, 8, 2, 2, 28, 8, 2, 2, 18, 10, 2, 2, 0, 12, 2, 2, 12, 12, 2, 2, 18, 12, 2, 2, 26, 12, 2, 2, 0, 14, 2, 2, 10, 14, 2, 2, 10, 16, 2, 2, 30, 16, 2, 2, 12, 18, 2, 2, 22, 18, 2, 2, 6, 20, 2, 2, 24, 20, 2, 2, 18, 22, 2, 2, 24, 22, 2, 2, 16, 24, 2, 2, 26, 24, 2, 2, 8, 26, 2, 2, 18, 28, 4, 2, 28, 28, 2, 2, 10, 30, 2, 2, 14, 30, 2, 2]);
+        drawRects('#B8BABC', [4, 0, 2, 2, 10, 0, 2, 2, 20, 0, 2, 2, 24, 0, 4, 2, 0, 2, 2, 2, 6, 4, 2, 2, 16, 4, 4, 2, 8, 8, 2, 2, 16, 8, 2, 2, 26, 8, 2, 2, 4, 16, 6, 2, 22, 16, 4, 2, 24, 18, 4, 2, 0, 20, 4, 2, 0, 22, 2, 2, 30, 26, 2, 2, 0, 28, 2, 2, 2, 30, 6, 2, 12, 30, 2, 2]);
     }
 
     drawSpeedCamera(ctx, x, y) {
@@ -2989,33 +2666,16 @@ class GameMap {
     }
 
     drawHalloweenHead(ctx, x, y) {
-        // Carved Halloween Pumpkin / Cabbage Head Pillar
-        ctx.fillStyle = this.theme.wallEdge;
-        ctx.fillRect(x, y, this.tileSize, this.tileSize);
-
-        // Green stem at top
-        ctx.fillStyle = this.theme.wallAccent; // #388E3C
-        ctx.fillRect(x + 14, y + 2, 4, 4);
-
-        // Orange carved pumpkin/cabbage head
-        ctx.fillStyle = this.theme.wallBase; // Orange #E65100
-        ctx.fillRect(x + 4, y + 5, 24, 24);
-        ctx.fillRect(x + 6, y + 4, 20, 26);
-        ctx.fillStyle = this.theme.wallLight; // #F57C00
-        ctx.fillRect(x + 6, y + 6, 7, 22);
-
-        // Carved glowing eyes & jagged tooth mouth
-        ctx.fillStyle = this.theme.wallHighlight; // Yellow glow #FFEE58
-        ctx.fillRect(x + 8, y + 11, 4, 4);  // Left eye
-        ctx.fillRect(x + 20, y + 11, 4, 4); // Right eye
-        ctx.fillRect(x + 15, y + 15, 2, 3); // Nose
-
-        // Jagged mouth
-        ctx.fillRect(x + 8, y + 21, 16, 4);
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(x + 11, y + 21, 2, 2); // Top tooth
-        ctx.fillRect(x + 19, y + 21, 2, 2);
-        ctx.fillRect(x + 15, y + 23, 2, 2); // Bottom tooth
+        // Detailed 3D Sculpted Jack-o'-Lantern Pumpkin Head with Glowing Eye Sockets & Maw
+        const batches = [["#2E7D32", [[17, 4, 1, 1]]], ["#FFE0B2", [[14, 8, 1, 10]]], ["#FFA726", [[9, 7, 1, 3], [9, 14, 1, 4]]], ["#81C784", [[15, 1, 1, 1], [16, 2, 2, 1], [13, 5, 1, 1]]], ["#4CAF50", [[15, 2, 1, 1], [15, 3, 3, 1], [14, 4, 3, 2]]], ["#1B5E20", [[18, 2, 1, 2], [17, 5, 1, 1], [14, 6, 4, 1]]], ["#B71C1C", [[12, 6, 1, 4], [12, 11, 1, 7], [12, 25, 1, 2]]], ["#5D1005", [[23, 6, 1, 4], [23, 11, 1, 7], [23, 25, 1, 1]]], ["#FFD54F", [[9, 19, 2, 2], [13, 19, 6, 1], [21, 19, 2, 2]]], ["#FFB74D", [[13, 7, 1, 11], [7, 18, 4, 1], [13, 18, 6, 1], [21, 18, 4, 1]]], ["#0D0400", [[9, 28, 3, 1], [20, 28, 3, 1], [5, 29, 22, 1], [9, 30, 14, 1]]], ["#FFFFFF", [[10, 12, 1, 1], [21, 12, 1, 1], [16, 14, 1, 1], [13, 20, 6, 1], [13, 21, 2, 1], [17, 21, 2, 1]]], ["#3E0A00", [[7, 19, 2, 2], [23, 19, 2, 2], [8, 21, 1, 3], [23, 21, 1, 3], [11, 23, 4, 1], [17, 23, 4, 1]]], ["#F57C00", [[12, 5, 1, 1], [11, 6, 1, 1], [13, 6, 1, 1], [10, 7, 2, 3], [10, 15, 1, 3], [10, 25, 2, 1], [11, 26, 1, 1], [12, 27, 2, 1]]], ["#FFEE58", [[9, 11, 3, 1], [20, 11, 3, 1], [10, 13, 1, 1], [21, 13, 1, 1], [15, 15, 1, 1], [11, 21, 2, 1], [19, 21, 2, 1], [11, 22, 4, 1], [17, 22, 4, 1]]], ["#1A0800", [[8, 27, 2, 1], [22, 27, 2, 1], [4, 28, 5, 1], [23, 28, 5, 1], [3, 29, 2, 1], [27, 29, 2, 1], [4, 30, 5, 1], [23, 30, 5, 1], [8, 31, 16, 1]]], ["#7F1D1D", [[8, 6, 1, 4], [19, 6, 1, 4], [8, 10, 5, 1], [19, 10, 5, 1], [8, 12, 1, 6], [19, 12, 1, 6], [15, 14, 1, 1], [15, 16, 1, 1], [8, 25, 1, 1], [19, 25, 1, 2]]], ["#BF360C", [[23, 5, 2, 1], [10, 6, 1, 1], [22, 6, 1, 1], [24, 6, 2, 2], [24, 8, 3, 3], [24, 11, 4, 1], [25, 12, 3, 9], [24, 21, 3, 3], [24, 24, 2, 2], [10, 26, 1, 1], [23, 26, 2, 1]]], ["#FFE082", [[8, 11, 1, 1], [19, 11, 1, 1], [9, 12, 1, 2], [11, 12, 1, 1], [20, 12, 1, 2], [22, 12, 1, 1], [10, 14, 1, 1], [21, 14, 1, 1], [11, 19, 1, 1], [19, 19, 1, 1], [15, 22, 1, 1]]], ["#3E1500", [[12, 4, 2, 1], [18, 4, 2, 1], [10, 5, 2, 1], [21, 5, 1, 1], [3, 13, 1, 7], [28, 13, 1, 7], [4, 21, 1, 1], [27, 21, 1, 1], [9, 26, 1, 1], [22, 26, 1, 1], [10, 27, 2, 1], [21, 27, 1, 1], [12, 28, 3, 1], [18, 28, 2, 1]]], ["#FF9800", [[18, 6, 1, 1], [14, 7, 5, 1], [15, 8, 4, 6], [20, 9, 1, 1], [11, 13, 1, 5], [17, 14, 2, 1], [20, 14, 1, 1], [16, 15, 3, 2], [20, 15, 2, 3], [15, 17, 4, 1], [11, 18, 2, 1], [12, 19, 1, 1], [11, 20, 2, 1], [9, 21, 2, 3], [15, 21, 2, 1], [16, 22, 1, 1], [15, 23, 2, 1], [13, 25, 6, 2], [14, 27, 5, 1], [15, 28, 3, 1]]], ["#E65100", [[7, 5, 2, 1], [18, 5, 3, 1], [6, 6, 2, 2], [9, 6, 1, 1], [20, 6, 2, 1], [20, 7, 3, 2], [5, 8, 3, 3], [21, 9, 2, 1], [4, 11, 4, 7], [24, 12, 1, 6], [22, 13, 1, 5], [4, 18, 3, 3], [19, 18, 2, 1], [20, 19, 1, 1], [19, 20, 2, 1], [5, 21, 3, 3], [21, 21, 2, 3], [6, 24, 18, 1], [6, 25, 2, 1], [9, 25, 1, 1], [20, 25, 3, 1], [7, 26, 2, 1], [20, 26, 2, 1], [19, 27, 2, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     drawFramedCrossTile(ctx, x, y) {
@@ -3178,65 +2838,90 @@ class GameMap {
     }
 
     drawNuclearBlastShield(ctx, x, y) {
-        // Reinforced Yellow & Black Safety Hazard Blast Wall
-        ctx.fillStyle = this.theme.wallEdge;
+        // Reinforced Yellow & Black Safety Hazard Blast Wall with Hazard Stripes & Warning Sign
+        ctx.fillStyle = '#1E293B';
         ctx.fillRect(x, y, this.tileSize, this.tileSize);
-        ctx.fillStyle = this.theme.wallBase; // Yellow #FBC02D
+        ctx.fillStyle = '#FACC15';
         ctx.fillRect(x + 2, y + 2, 28, 28);
 
-        // Black diagonal hazard warning stripes
-        ctx.fillStyle = this.theme.wallAccent; // Black #212121
-        for (let i = -10; i < 30; i += 8) {
-            for (let d = 0; d < 6; d++) {
-                const px = x + 2 + i + d;
-                const py = y + 2 + d * 2;
-                if (px >= x + 3 && px <= x + 28 && py >= y + 3 && py <= y + 28) {
+        // 1. Black diagonal hazard warning stripes on UPPER section (y+4..14)
+        ctx.fillStyle = '#111827';
+        for (let i = -8; i < 30; i += 6) {
+            for (let step = 0; step < 8; step++) {
+                const px = x + 3 + i + step;
+                const py = y + 4 + step;
+                if (px >= x + 3 && px <= x + 28 && py >= y + 4 && py <= y + 14) {
                     ctx.fillRect(px, py, 3, 3);
                 }
             }
         }
 
-        // Heavy steel outer frame & corner bolts
+        // 2. Steel Divider bar between lines and warning sign (y+15..16)
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(x + 2, y + 15, 28, 1);
+        ctx.fillStyle = '#FDD835';
+        ctx.fillRect(x + 2, y + 16, 28, 1);
+
+        // 3. Stamped Warning Triangle directly on the continuous yellow blast wall (No black paint around it!)
+        const triangleArt = [
+            [18, [['B', 15, 2]]],
+            [19, [['B', 14, 1], ['Y', 15, 2], ['B', 17, 1]]],
+            [20, [['B', 13, 1], ['Y', 14, 1], ['B', 15, 2], ['Y', 17, 1], ['B', 18, 1]]],
+            [21, [['B', 12, 1], ['Y', 13, 2], ['B', 15, 2], ['Y', 17, 2], ['B', 19, 1]]],
+            [22, [['B', 11, 1], ['Y', 12, 3], ['B', 15, 2], ['Y', 17, 3], ['B', 20, 1]]],
+            [23, [['B', 10, 1], ['Y', 11, 4], ['Y', 15, 2], ['Y', 17, 4], ['B', 21, 1]]],
+            [24, [['B', 9, 1], ['Y', 10, 5], ['B', 15, 2], ['Y', 17, 5], ['B', 22, 1]]],
+            [25, [['B', 8, 16]]]
+        ];
+        for (let r = 0; r < triangleArt.length; r++) {
+            const rowY = triangleArt[r][0];
+            const spans = triangleArt[r][1];
+            for (let s = 0; s < spans.length; s++) {
+                ctx.fillStyle = spans[s][0] === 'B' ? '#111827' : '#FFEB3B';
+                ctx.fillRect(x + spans[s][1], y + rowY, spans[s][2], 1);
+            }
+        }
+
+        // 5. Heavy Outer Steel Perimeter Armor Frame (3px) with corner bolts
         ctx.fillStyle = '#37474F';
-        ctx.fillRect(x + 2, y + 2, 28, 3);
-        ctx.fillRect(x + 2, y + 27, 28, 3);
-        ctx.fillRect(x + 2, y + 2, 3, 28);
-        ctx.fillRect(x + 27, y + 2, 3, 28);
-        ctx.fillStyle = '#ECEFF1';
-        ctx.fillRect(x + 4, y + 4, 1, 1);
-        ctx.fillRect(x + 27, y + 4, 1, 1);
-        ctx.fillRect(x + 4, y + 27, 1, 1);
-        ctx.fillRect(x + 27, y + 27, 1, 1);
+        ctx.fillRect(x + 1, y + 1, 30, 3);
+        ctx.fillStyle = '#78909C';
+        ctx.fillRect(x + 1, y + 1, 30, 1);
+
+        ctx.fillStyle = '#37474F';
+        ctx.fillRect(x + 1, y + 28, 30, 3);
+        ctx.fillStyle = '#0F172A';
+        ctx.fillRect(x + 1, y + 30, 30, 1);
+
+        ctx.fillStyle = '#37474F';
+        ctx.fillRect(x + 1, y + 1, 3, 30);
+        ctx.fillStyle = '#78909C';
+        ctx.fillRect(x + 1, y + 1, 1, 30);
+
+        ctx.fillStyle = '#37474F';
+        ctx.fillRect(x + 28, y + 1, 3, 30);
+        ctx.fillStyle = '#0F172A';
+        ctx.fillRect(x + 30, y + 1, 1, 30);
+
+        // Corner hex bolts
+        ctx.fillStyle = '#CFD8DC';
+        const bolts = [[2, 2], [28, 2], [2, 28], [28, 28]];
+        for (let b = 0; b < bolts.length; b++) {
+            ctx.fillRect(x + bolts[b][0], y + bolts[b][1], 2, 2);
+        }
     }
 
     drawNuclearDrum(ctx, x, y) {
-        ctx.fillStyle = this.theme.woodShadow;
-        ctx.fillRect(x + 5, y + 27, 22, 4);
-        ctx.fillStyle = this.theme.woodEdge;
-        ctx.fillRect(x + 5, y + 2, 22, 27);
-        ctx.fillStyle = this.theme.woodBase;
-        ctx.fillRect(x + 6, y + 3, 20, 25);
-
-        ctx.fillStyle = this.theme.woodLight;
-        ctx.fillRect(x + 8, y + 3, 6, 25);
-        ctx.fillStyle = '#FFB74D';
-        ctx.fillRect(x + 9, y + 3, 2, 25);
-        ctx.fillStyle = this.theme.woodDark;
-        ctx.fillRect(x + 21, y + 3, 4, 25);
-
-        ctx.fillStyle = '#4E1600';
-        ctx.fillRect(x + 5, y + 8, 22, 2);
-        ctx.fillRect(x + 5, y + 17, 22, 2);
-
-        ctx.fillStyle = '#212121';
-        ctx.fillRect(x + 14, y + 12, 4, 4);
-        ctx.fillRect(x + 12, y + 10, 3, 3);
-        ctx.fillRect(x + 17, y + 10, 3, 3);
-        ctx.fillRect(x + 14, y + 16, 4, 2);
-
-        ctx.fillStyle = this.theme.woodAccent;
-        ctx.fillRect(x + 6, y + 18, 3, 9);
-        ctx.fillRect(x + 3, y + 27, 9, 3);
+        // Detailed 2.5D Radioactive Corrugated Drum with Correct Perspective Chime Lid
+        const batches = [["#94A3B8", [[11, 4, 1, 1], [19, 4, 1, 1]]], ["#00E676", [[8, 10, 1, 1], [9, 21, 1, 1]]], ["#050811", [[25, 29, 1, 1], [12, 30, 11, 1]]], ["#37474F", [[5, 6, 1, 1], [26, 6, 1, 1], [24, 7, 1, 1]]], ["#FFE0B2", [[11, 10, 1, 4], [11, 18, 1, 3], [11, 25, 1, 2]]], ["#0F172A", [[26, 29, 2, 1], [23, 30, 4, 1], [9, 31, 14, 1]]], ["#FFFFFF", [[10, 2, 2, 1], [10, 14, 2, 1], [10, 21, 2, 1], [5, 27, 1, 1]]], ["#78909C", [[10, 3, 1, 1], [21, 3, 1, 1], [7, 4, 1, 1], [24, 4, 1, 1]]], ["#263238", [[25, 5, 1, 1], [24, 6, 2, 1], [9, 7, 2, 1], [21, 7, 3, 1]]], ["#BF360C", [[25, 8, 1, 1], [24, 9, 2, 6], [24, 18, 2, 4], [24, 25, 2, 3]]], ["#CCFF90", [[7, 6, 1, 1], [7, 14, 1, 1], [8, 22, 1, 1], [5, 28, 6, 1], [5, 29, 5, 1]]], ["#E65100", [[19, 8, 3, 1], [22, 9, 2, 1], [19, 10, 5, 4], [19, 18, 5, 3], [19, 25, 5, 3]]], ["#3E1500", [[5, 17, 2, 1], [8, 17, 19, 1], [5, 24, 3, 1], [9, 24, 18, 1], [14, 28, 12, 1]]], ["#1E293B", [[10, 4, 1, 1], [12, 4, 1, 1], [20, 4, 1, 1], [10, 5, 3, 1], [19, 5, 2, 1], [14, 29, 11, 1]]], ["#76FF03", [[6, 5, 3, 1], [6, 6, 1, 1], [8, 6, 1, 1], [6, 7, 3, 1], [7, 15, 1, 1], [8, 26, 1, 1]]], ["#FFCC80", [[10, 10, 1, 4], [9, 14, 1, 1], [12, 14, 2, 1], [10, 18, 1, 3], [12, 21, 2, 1], [10, 25, 1, 2]]], ["#ECEFF1", [[12, 2, 10, 1], [7, 3, 3, 1], [22, 3, 3, 1], [6, 4, 1, 1], [25, 4, 1, 1], [5, 5, 1, 1], [26, 5, 1, 1]]], ["#39FF14", [[7, 8, 1, 6], [7, 16, 1, 3], [8, 19, 1, 3], [8, 23, 1, 3], [4, 29, 1, 1], [10, 29, 2, 1], [6, 30, 4, 1]]], ["#F57C00", [[14, 8, 5, 1], [14, 10, 1, 2], [17, 10, 2, 1], [17, 11, 1, 1], [15, 13, 2, 1], [14, 18, 5, 3], [14, 25, 5, 3]]], ["#111827", [[14, 9, 4, 1], [15, 10, 2, 2], [13, 11, 1, 1], [18, 11, 1, 1], [13, 12, 6, 1], [13, 13, 2, 1], [17, 13, 2, 1]]], ["#00C853", [[6, 27, 6, 1], [3, 28, 2, 1], [11, 28, 3, 1], [3, 29, 1, 1], [12, 29, 2, 1], [5, 30, 1, 1], [10, 30, 2, 1]]], ["#455A64", [[11, 3, 10, 1], [8, 4, 2, 1], [13, 4, 6, 2], [21, 4, 3, 1], [9, 5, 1, 1], [21, 5, 4, 1], [9, 6, 15, 1], [11, 7, 10, 1]]], ["#FF9800", [[6, 8, 1, 6], [8, 9, 1, 1], [8, 11, 1, 3], [14, 14, 5, 1], [6, 18, 1, 1], [8, 18, 1, 1], [6, 19, 2, 2], [14, 21, 5, 1], [6, 25, 2, 2]]], ["#D84315", [[5, 14, 1, 1], [19, 14, 5, 1], [26, 14, 1, 1], [5, 15, 2, 2], [8, 15, 19, 2], [5, 21, 1, 1], [19, 21, 5, 1], [26, 21, 1, 1], [5, 22, 3, 2], [9, 22, 18, 2]]], ["#2E1000", [[5, 7, 1, 7], [25, 7, 2, 1], [8, 8, 2, 1], [22, 8, 3, 1], [26, 8, 1, 6], [10, 9, 4, 1], [18, 9, 4, 1], [5, 18, 1, 3], [26, 18, 1, 3], [5, 25, 1, 2], [26, 25, 1, 4]]], ["#FFA726", [[10, 8, 4, 1], [9, 9, 1, 5], [12, 10, 2, 1], [12, 11, 1, 3], [6, 14, 1, 1], [8, 14, 1, 1], [9, 18, 1, 3], [12, 18, 2, 3], [6, 21, 2, 1], [9, 25, 1, 2], [12, 25, 2, 3]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================
@@ -3434,50 +3119,70 @@ class GameMap {
         ctx.fillRect(x + 25, y + 20, 1, 1);
     }
 
-    drawZenWaterWall(ctx, x, y) {
-        // Normal Pixel Simple Water (No pool, no pond, just classic 90s pixel water)
-        ctx.fillStyle = '#0288D1'; // Deep vibrant azure water base
+    drawZenBrickWall(ctx, x, y) {
+        // Authentic Terracotta Brick Wall matching reference image
+        ctx.fillStyle = '#2A0502'; // Dark mortar joints
         ctx.fillRect(x, y, this.tileSize, this.tileSize);
 
-        // Flowing horizontal current streaks
-        ctx.fillStyle = '#039BE5';
-        ctx.fillRect(x, y, 32, 2);
-        ctx.fillRect(x, y + 8, 32, 2);
-        ctx.fillRect(x, y + 16, 32, 2);
-        ctx.fillRect(x, y + 24, 32, 2);
+        // 4 Running-Bond Brick Courses (y: 1..7, 9..15, 17..23, 25..31)
+        const courses = [
+            [1, 7, [[1, 14], [17, 14]]],
+            [9, 15, [[0, 7], [9, 14], [25, 7]]],
+            [17, 23, [[1, 14], [17, 14]]],
+            [25, 31, [[0, 7], [9, 14], [25, 7]]]
+        ];
 
-        // Helper to draw gentle retro wavelets
-        const drawWavelet = (wx, wy) => {
-            // Crest highlight (curved arch)
-            ctx.fillStyle = '#4FC3F7';
-            ctx.fillRect(x + wx, y + wy + 1, 3, 1);
-            ctx.fillRect(x + wx + 3, y + wy, 6, 1);
-            ctx.fillRect(x + wx + 9, y + wy + 1, 3, 1);
+        for (let c = 0; c < courses.length; c++) {
+            const y1 = courses[c][0];
+            const y2 = courses[c][1];
+            const bricks = courses[c][2];
+            for (let b = 0; b < bricks.length; b++) {
+                const bx = bricks[b][0];
+                const bw = bricks[b][1];
 
-            // Specular sun sparkle on wave crest
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(x + wx + 5, y + wy, 2, 1);
+                // Brick face body
+                ctx.fillStyle = '#8F310E';
+                ctx.fillRect(x + bx, y + y1, bw, y2 - y1 + 1);
 
-            // Wave shadow trough underneath
-            ctx.fillStyle = '#01579B';
-            ctx.fillRect(x + wx + 1, y + wy + 2, 2, 1);
-            ctx.fillRect(x + wx + 3, y + wy + 1, 6, 1);
-            ctx.fillRect(x + wx + 9, y + wy + 2, 2, 1);
-        };
+                // Golden amber top highlight bevel
+                ctx.fillStyle = '#C05915';
+                ctx.fillRect(x + bx, y + y1, bw, 1);
 
-        // Staggered wavelets across the tile
-        drawWavelet(2, 3);
-        drawWavelet(18, 3);
-        drawWavelet(10, 11);
-        drawWavelet(26, 11);
-        drawWavelet(2, 19);
-        drawWavelet(18, 19);
-        drawWavelet(10, 27);
-        drawWavelet(26, 27);
+                // Warm terracotta left highlight bevel
+                if (bx !== 0 || bw === 14) {
+                    ctx.fillStyle = '#B8531A';
+                    ctx.fillRect(x + bx, y + y1, 1, y2 - y1 + 1);
+                }
+
+                // Deep maroon shadow on bottom and right edges
+                ctx.fillStyle = '#5A0D05';
+                ctx.fillRect(x + bx + bw - 1, y + y1, 1, y2 - y1 + 1); // Right
+                ctx.fillRect(x + bx, y + y2, bw, 1); // Bottom
+
+                // Subtle ceramic brick grain flecks
+                if (bw === 14) {
+                    ctx.fillStyle = '#A84518';
+                    ctx.fillRect(x + bx + 4, y + y1 + 3, 1, 1);
+                    ctx.fillRect(x + bx + 11, y + y1 + 2, 1, 1);
+                    ctx.fillStyle = '#75220A';
+                    ctx.fillRect(x + bx + 9, y + y1 + 4, 1, 1);
+                } else if (bw === 7 && bx === 0) {
+                    ctx.fillStyle = '#A84518';
+                    ctx.fillRect(x + bx + 3, y + y1 + 3, 1, 1);
+                } else if (bw === 7 && bx === 25) {
+                    ctx.fillStyle = '#75220A';
+                    ctx.fillRect(x + bx + 3, y + y1 + 4, 1, 1);
+                }
+            }
+        }
+    }
+
+    drawZenWaterWall(ctx, x, y) {
+        this.drawZenBrickWall(ctx, x, y);
     }
 
     drawLotusLeafWall(ctx, x, y) {
-        this.drawZenWaterWall(ctx, x, y);
+        this.drawZenBrickWall(ctx, x, y);
     }
 
     drawZenLantern(ctx, x, y) {
@@ -3731,31 +3436,16 @@ class GameMap {
     }
 
     drawDiamondJewel(ctx, x, y) {
-        // Brilliant Multifaceted Diamond Jewel Block
-        ctx.fillStyle = this.theme.woodShadow;
-        ctx.fillRect(x + 5, y + 26, 22, 3);
-
-        ctx.fillStyle = this.theme.woodEdge; // #00838F
-        ctx.fillRect(x + 4, y + 4, 24, 22);
-
-        // Translucent diamond body
-        ctx.fillStyle = this.theme.woodBase; // Aquamarine #80DEEA
-        ctx.fillRect(x + 5, y + 5, 22, 20);
-
-        // Specular facets
-        ctx.fillStyle = this.theme.woodLight; // White-blue #E0F7FA
-        ctx.fillRect(x + 6, y + 6, 12, 10);
-
-        ctx.fillStyle = this.theme.woodDark; // Deep refraction #26C6DA
-        ctx.fillRect(x + 17, y + 13, 9, 11);
-
-        // Brilliant diamond sparkle rays
-        ctx.fillStyle = this.theme.woodHighlight; // Pure white #FFFFFF
-        ctx.fillRect(x + 8, y + 8, 4, 4);
-        ctx.fillRect(x + 7, y + 9, 6, 2);
-        ctx.fillRect(x + 9, y + 7, 2, 6);
-
-        ctx.fillRect(x + 21, y + 19, 2, 2);
+        // Fragile Celestial Diamond Crystal Block with Crystalline Fissures
+        const batches = [["#64748B", [[4, 28, 6, 1], [23, 28, 6, 1]]], ["#334155", [[3, 29, 27, 1], [6, 30, 21, 1]]], ["#38BDF8", [[8, 19, 2, 1], [7, 20, 5, 1], [6, 21, 6, 2], [7, 23, 5, 1], [8, 24, 3, 2], [9, 26, 1, 1]]], ["#F0F9FF", [[9, 5, 2, 1], [8, 6, 3, 1], [7, 7, 1, 1], [9, 7, 3, 1], [6, 8, 3, 1], [10, 8, 2, 1], [8, 9, 2, 1]]], ["#7DD3FC", [[20, 10, 1, 1], [19, 11, 2, 3], [12, 13, 1, 1], [12, 14, 2, 1], [11, 15, 2, 1], [14, 15, 1, 1], [16, 15, 4, 1], [11, 16, 1, 1], [19, 16, 1, 1], [11, 18, 1, 2]]], ["#0369A1", [[27, 9, 1, 1], [24, 10, 4, 4], [25, 14, 3, 1], [24, 15, 4, 6], [18, 17, 2, 1], [16, 18, 2, 1], [19, 18, 1, 1], [17, 19, 1, 2], [19, 19, 2, 1], [19, 20, 1, 1], [18, 21, 2, 1], [18, 22, 1, 1]]], ["#BAE6FD", [[22, 5, 2, 1], [21, 6, 4, 1], [21, 7, 5, 1], [19, 8, 8, 1], [20, 9, 7, 1], [10, 11, 1, 1], [9, 12, 2, 3], [23, 14, 2, 1], [9, 15, 1, 2], [21, 15, 2, 1], [8, 17, 2, 1], [16, 17, 2, 1], [7, 19, 1, 1], [13, 21, 1, 1], [12, 22, 1, 2], [11, 24, 1, 2]]], ["#E0F2FE", [[13, 8, 1, 1], [15, 8, 4, 1], [16, 9, 4, 1], [6, 10, 2, 1], [18, 10, 2, 1], [6, 11, 4, 1], [12, 11, 1, 2], [18, 11, 1, 3], [6, 12, 3, 5], [13, 13, 1, 1], [19, 14, 2, 1], [6, 17, 2, 1], [11, 17, 1, 1], [15, 17, 1, 1], [6, 18, 4, 1], [14, 18, 1, 2], [6, 19, 1, 2], [13, 20, 1, 1]]], ["#FFFFFF", [[10, 4, 13, 1], [11, 5, 11, 1], [11, 6, 10, 1], [8, 7, 1, 1], [12, 7, 9, 1], [9, 8, 1, 1], [12, 8, 1, 1], [14, 8, 1, 1], [5, 9, 3, 1], [10, 9, 6, 1], [5, 10, 1, 12], [8, 10, 10, 1], [11, 11, 1, 4], [13, 11, 5, 2], [14, 13, 4, 1], [14, 14, 5, 1], [10, 15, 1, 5], [13, 15, 1, 1], [15, 15, 1, 2], [12, 16, 1, 1]]], ["#0284C7", [[21, 10, 3, 4], [21, 14, 2, 1], [20, 15, 1, 1], [23, 15, 1, 1], [13, 16, 2, 1], [16, 16, 3, 1], [20, 16, 4, 3], [12, 17, 3, 1], [12, 18, 2, 2], [15, 18, 1, 1], [18, 18, 1, 3], [15, 19, 2, 1], [21, 19, 3, 1], [12, 20, 1, 2], [14, 20, 3, 1], [14, 21, 4, 1], [13, 22, 5, 1], [13, 23, 6, 1], [12, 24, 7, 1], [12, 25, 8, 1], [10, 26, 10, 1], [10, 27, 11, 1]]], ["#075985", [[10, 3, 13, 1], [9, 4, 1, 1], [23, 4, 1, 1], [8, 5, 1, 1], [24, 5, 1, 1], [7, 6, 1, 1], [25, 6, 1, 1], [6, 7, 1, 1], [26, 7, 1, 1], [5, 8, 1, 1], [27, 8, 1, 1], [4, 9, 1, 13], [28, 9, 1, 12], [20, 20, 4, 1], [20, 21, 9, 1], [4, 22, 2, 1], [19, 22, 10, 1], [5, 23, 2, 1], [19, 23, 9, 1], [6, 24, 2, 1], [19, 24, 8, 1], [7, 25, 1, 1], [20, 25, 6, 1], [8, 26, 1, 1], [20, 26, 5, 1], [9, 27, 1, 1], [21, 27, 3, 1], [10, 28, 13, 1]]]];
+        for (let b = 0; b < batches.length; b++) {
+            ctx.fillStyle = batches[b][0];
+            const rects = batches[b][1];
+            for (let i = 0; i < rects.length; i++) {
+                const r = rects[i];
+                ctx.fillRect(x + r[0], y + r[1], r[2], r[3]);
+            }
+        }
     }
 
     // ==========================================

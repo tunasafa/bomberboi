@@ -3,6 +3,20 @@ class SoundManager {
         this.muted = false;
         // Web Audio API for instant, retro synthesized sounds
         this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        this._initNoiseBuffer();
+    }
+
+    _initNoiseBuffer() {
+        if (SoundManager._cachedNoiseBuffer || !this.audioCtx) return;
+        const duration = 0.4;
+        const sampleRate = this.audioCtx.sampleRate || 44100;
+        const bufferSize = Math.floor(sampleRate * duration);
+        const buffer = this.audioCtx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+        SoundManager._cachedNoiseBuffer = buffer;
     }
 
     loadSound(name, path) {
@@ -44,17 +58,12 @@ class SoundManager {
     }
     
     playExplosionSound() {
-        // Create 0.4 seconds of white noise
-        const duration = 0.4;
-        const bufferSize = this.audioCtx.sampleRate * duration; 
-        const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
+        if (!SoundManager._cachedNoiseBuffer) {
+            this._initNoiseBuffer();
         }
-        
+        const duration = 0.4;
         const noise = this.audioCtx.createBufferSource();
-        noise.buffer = buffer;
+        noise.buffer = SoundManager._cachedNoiseBuffer;
         
         // Filter the noise to sound like a low, rumbling explosion
         const biquadFilter = this.audioCtx.createBiquadFilter();
@@ -94,3 +103,5 @@ class SoundManager {
         this.muted = !this.muted;
     }
 }
+
+SoundManager._cachedNoiseBuffer = null;

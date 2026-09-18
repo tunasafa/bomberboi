@@ -263,6 +263,8 @@ class GameMap {
         grid[11][1] = 0; grid[11][2] = 0; grid[10][1] = 0;
         grid[1][11] = 0; grid[1][10] = 0; grid[2][11] = 0;
 
+        this.grid = grid;
+        this.invalidate();
         return grid;
     }
 

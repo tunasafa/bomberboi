@@ -17,6 +17,7 @@ class Game {
         this.paused = false;
         this.score = 0;
         this.lastTime = 0;
+        this._stopped = false;
         
         if (window.updateLevelDisplay) {
             window.updateLevelDisplay(this.level);
@@ -29,7 +30,7 @@ class Game {
         this.loadSounds();
         
         this.lastTime = performance.now();
-        requestAnimationFrame(this.loop.bind(this));
+        requestAnimationFrame(this.loop);
     }
 
     loadSounds() {
@@ -44,7 +45,7 @@ class Game {
         
         this.width = this.canvas.width = 416;
         this.height = this.canvas.height = 416;
-        this.ctx.imageSmoothingEnabled = true;
+        this.ctx.imageSmoothingEnabled = false;
     }
     
     createEnemies(count) {
@@ -68,13 +69,20 @@ class Game {
     }
     
     loop = (timestamp) => {
+        if (this._stopped) return;
+
         let deltaTime = timestamp - this.lastTime;
-        if (deltaTime > 1000) deltaTime = 16.67; 
+        if (deltaTime > 250) deltaTime = 250; // Clamp against background tab stall
         this.lastTime = timestamp;
-        
-        
-        if (!this.paused && !this.isGameOver && !this.gameWon) {
-            this.update(16.67); 
+
+        this._accumulator = (this._accumulator || 0) + deltaTime;
+        const FIXED_TIMESTEP = 1000 / 60; // 16.667ms per standard 60Hz tick
+
+        while (this._accumulator >= FIXED_TIMESTEP) {
+            if (!this.paused && !this.isGameOver && !this.gameWon) {
+                this.update(FIXED_TIMESTEP);
+            }
+            this._accumulator -= FIXED_TIMESTEP;
         }
         
         this.draw();
@@ -277,6 +285,20 @@ class Game {
         
         this.createEnemies(3 + Math.floor(this.level * 1.5));
         
-        this.lastTime = performance.now();
+        if (this._stopped) {
+            this._stopped = false;
+            this.lastTime = performance.now();
+            requestAnimationFrame(this.loop);
+        } else {
+            this.lastTime = performance.now();
+        }
+    }
+
+    stop() {
+        this._stopped = true;
+    }
+
+    destroy() {
+        this._stopped = true;
     }
 }

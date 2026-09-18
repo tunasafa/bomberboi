@@ -117,19 +117,6 @@ class NetworkManager {
                 playerCount: this.playerCount
             });
 
-            // Resend WELCOME shortly after to ensure arrival over unreliable channel
-            setTimeout(() => {
-                if (conn.open) {
-                    try {
-                        conn.send({
-                            type: 'WELCOME',
-                            playerId: newPlayerId,
-                            playerCount: this.playerCount
-                        });
-                    } catch (e) { /* ignore */ }
-                }
-            }, 80);
-
             // Tell ALL clients about the updated player count
             this._broadcastToClients({
                 type: 'PLAYER_COUNT',
@@ -205,19 +192,13 @@ class NetworkManager {
             seed: seed,
             playerCount: this.playerCount
         };
-        const sendStart = () => {
-            for (const conn of this.connections) {
-                if (conn.open) {
-                    try {
-                        conn.send({ ...msg, yourSlot: conn.metadata.playerId });
-                    } catch (e) { /* ignore */ }
-                }
+        for (const conn of this.connections) {
+            if (conn.open) {
+                try {
+                    conn.send({ ...msg, yourSlot: conn.metadata.playerId });
+                } catch (e) { /* ignore */ }
             }
-        };
-        sendStart();
-        // Redundantly broadcast START to ensure delivery over unreliable channel
-        setTimeout(sendStart, 50);
-        setTimeout(sendStart, 120);
+        }
 
         // Also notify local host
         if (this.onGameStart) {
@@ -228,12 +209,7 @@ class NetworkManager {
     // ── HOST: Announce game over ────────────────
     announceGameOver(winnerId) {
         if (!this.isHost) return;
-        const sendGameOver = () => {
-            this._broadcastToClients({ type: 'GAME_OVER', winnerId });
-        };
-        sendGameOver();
-        setTimeout(sendGameOver, 60);
-        setTimeout(sendGameOver, 140);
+        this._broadcastToClients({ type: 'GAME_OVER', winnerId });
         if (this.onGameOver) this.onGameOver(winnerId);
     }
 
@@ -241,7 +217,6 @@ class NetworkManager {
     announcePlayerDeath(playerId) {
         if (!this.isHost) return;
         this._broadcastToClients({ type: 'PLAYER_DIED', playerId });
-        setTimeout(() => this._broadcastToClients({ type: 'PLAYER_DIED', playerId }), 60);
     }
 
     // ── CLIENT: Join a room ─────────────────────
@@ -268,7 +243,7 @@ class NetworkManager {
             this.peer.on('open', (myId) => {
                 console.log('[NET] Client peer open, ID:', myId);
                 const hostPeerId = this._peerPrefix + this.roomCode;
-                const conn = this.peer.connect(hostPeerId, { reliable: false });
+                const conn = this.peer.connect(hostPeerId, { reliable: true });
 
                 const onConnOpen = () => {
                     this.hostConnection = conn;

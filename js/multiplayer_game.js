@@ -27,20 +27,15 @@ class MultiplayerGame {
 
         // Map generation (deterministic via seed)
         this.map = new GameMap(1);
-        this.map.generateMultiplayerMap(this.seed);
+        this.map.grid = this.map.generateMultiplayerMap(this.seed);
+        this.map.invalidate();
         
         // Broadcast block updates immediately to avoid JSON array caching bugs
         this._recentBlockChanges = [];
         this.map.onBlockChanged = (x, y, val) => {
             if (this.isHost) {
                 this._recentBlockChanges.push({ x, y, val, time: performance.now() });
-                // Broadcast immediately and repeat once over unreliable channel
                 this.network.broadcastState({ updateType: 'BLOCK_UPDATE', x, y, val });
-                setTimeout(() => {
-                    if (this.network && this.network.isHost) {
-                        this.network.broadcastState({ updateType: 'BLOCK_UPDATE', x, y, val });
-                    }
-                }, 40);
             }
         };
 
@@ -93,10 +88,18 @@ class MultiplayerGame {
             };
         }
 
-        // Client: listen for state updates
+        // Client: listen for state updates and buffer them synchronously
         if (!this.isHost) {
+            this._pendingState = null;
             this.network.onStateUpdate = (state) => {
-                this._applyStateFromHost(state);
+                if (state.updateType === 'BLOCK_UPDATE') {
+                    if (this.map.grid[state.y]) {
+                        this.map.grid[state.y][state.x] = state.val;
+                        this.map.invalidateTile(state.x, state.y);
+                    }
+                    return;
+                }
+                this._pendingState = state;
             };
         }
 
@@ -126,10 +129,13 @@ class MultiplayerGame {
         // Update HUD
         if (window.updateLevelDisplay) window.updateLevelDisplay('PVP');
 
-        // Start game loop
+        // Start game loop with fixed 60Hz timestep accumulator
         this.lastTime = performance.now();
         this.lastStateSentTime = 0;
-        this.STATE_SEND_INTERVAL = 1000 / 30; // 30Hz tick rate
+        this.STATE_SEND_INTERVAL = 1000 / 30; // 30Hz network tick rate
+        this._accumulator = 0;
+        this._lastInputMask = -1;
+        this._lastInputTime = 0;
         this._stopped = false;
         
         this._boundLoop = this.loop.bind(this);
@@ -147,39 +153,49 @@ class MultiplayerGame {
         this.canvas.style.height = '100%';
         this.width = this.canvas.width = 416;
         this.height = this.canvas.height = 416;
-        this.ctx.imageSmoothingEnabled = true;
+        this.ctx.imageSmoothingEnabled = false;
     }
 
     loop(timestamp) {
         if (this._stopped) return;
 
         let deltaTime = timestamp - this.lastTime;
-        if (deltaTime > 1000) deltaTime = 16.67;
+        if (deltaTime > 250) deltaTime = 250; // Clamp against background tab stalls
         this.lastTime = timestamp;
 
+        this._accumulator += deltaTime;
+        const FIXED_TIMESTEP = 1000 / 60; // 16.667ms per standard 60Hz tick
+
         if (!this.paused && !this.isGameOver) {
-            if (this.isHost) {
-                this.updateHost(timestamp);
-            } else {
-                this.updateClient(timestamp, deltaTime);
-
-                // Client: send local input to host with high responsiveness
-                const inputState = this.input.getState();
-                const inputStr = JSON.stringify(inputState);
-                const hasAnyKey = Object.values(inputState).some(Boolean);
-                const timeSinceLast = timestamp - (this._lastInputTime || 0);
-
-                // Send immediately on change, or every 40ms if holding a key, or heartbeat every 100ms
-                if (inputStr !== this._lastInputStr || (hasAnyKey && timeSinceLast > 40) || timeSinceLast > 100) {
-                    this.network.sendInput(inputState);
-                    this._lastInputStr = inputStr;
-                    this._lastInputTime = timestamp;
+            while (this._accumulator >= FIXED_TIMESTEP) {
+                if (this.isHost) {
+                    this.updateHost(timestamp);
+                } else {
+                    this.updateClient(timestamp, FIXED_TIMESTEP);
                 }
+                this._accumulator -= FIXED_TIMESTEP;
+            }
+
+            if (!this.isHost) {
+                this._sendClientInput(timestamp);
             }
         }
 
         this.draw();
         requestAnimationFrame(this._boundLoop);
+    }
+
+    // Client: zero-allocation bitmask input transmission
+    _sendClientInput(timestamp) {
+        const mask = this.input.getBitmask();
+        const hasAnyKey = (mask & 31) !== 0;
+        const timeSinceLast = timestamp - this._lastInputTime;
+
+        if (mask !== this._lastInputMask || (hasAnyKey && timeSinceLast > 33) || timeSinceLast > 100) {
+            this.network.sendInput(mask);
+            this._lastInputMask = mask;
+            this._lastInputTime = timestamp;
+        }
     }
 
     // ── HOST: Run authoritative game logic ──────
@@ -238,43 +254,54 @@ class MultiplayerGame {
         }
     }
 
-    // ── CLIENT: 60fps interpolation and local animation ──
+    // ── CLIENT: 60fps local prediction and remote interpolation ──
     updateClient(timestamp, deltaTime) {
-        // Smoothly interpolate all alive players towards their target grid positions
+        // 1. Consume and apply pending authoritative state from host
+        if (this._pendingState) {
+            const state = this._pendingState;
+            this._pendingState = null;
+            this._applyStateFromHost(state);
+        }
+
+        // 2. Update players: local prediction for mySlot, interpolation for remote players
         for (let i = 0; i < this.playerCount; i++) {
             const p = this.players[i];
             if (!p.alive) continue;
 
-            if (p.invincible > 0) p.invincible--;
+            if (i === this.mySlot) {
+                this._updateLocalPlayerPrediction(p);
+            } else {
+                if (p.invincible > 0) p.invincible--;
 
-            const dx = p.targetX - p.x;
-            const dy = p.targetY - p.y;
-            const distSq = dx * dx + dy * dy;
+                const dx = p.targetX - p.x;
+                const dy = p.targetY - p.y;
+                const distSq = dx * dx + dy * dy;
 
-            if (distSq > 0.01) {
-                p.moving = true;
-                p.animationTimer = (p.animationTimer || 0) + 1;
-                if (p.animationTimer % 15 === 0) {
-                    p.animationFrame = (p.animationFrame + 1) % 2;
-                }
+                if (distSq > 0.01) {
+                    p.moving = true;
+                    p.animationTimer = (p.animationTimer || 0) + 1;
+                    if (p.animationTimer % 15 === 0) {
+                        p.animationFrame = (p.animationFrame + 1) % 2;
+                    }
 
-                const speed = p.baseSpeed || 2;
-                if (p.x < p.targetX) p.x = Math.min(p.x + speed, p.targetX);
-                else if (p.x > p.targetX) p.x = Math.max(p.x - speed, p.targetX);
-                if (p.y < p.targetY) p.y = Math.min(p.y + speed, p.targetY);
-                else if (p.y > p.targetY) p.y = Math.max(p.y - speed, p.targetY);
+                    const speed = p.baseSpeed || 2;
+                    if (p.x < p.targetX) p.x = Math.min(p.x + speed, p.targetX);
+                    else if (p.x > p.targetX) p.x = Math.max(p.x - speed, p.targetX);
+                    if (p.y < p.targetY) p.y = Math.min(p.y + speed, p.targetY);
+                    else if (p.y > p.targetY) p.y = Math.max(p.y - speed, p.targetY);
 
-                if (p.x === p.targetX && p.y === p.targetY) {
+                    if (p.x === p.targetX && p.y === p.targetY) {
+                        p.moving = false;
+                        p.animationFrame = 0;
+                    }
+                } else {
                     p.moving = false;
                     p.animationFrame = 0;
                 }
-            } else {
-                p.moving = false;
-                p.animationFrame = 0;
             }
         }
 
-        // Animate bombs locally at 60 FPS
+        // 3. Animate bombs locally at 60 FPS
         for (let i = 0; i < this.playerCount; i++) {
             const p = this.players[i];
             for (let j = 0; j < p.bombs.length; j++) {
@@ -284,7 +311,7 @@ class MultiplayerGame {
             }
         }
 
-        // Animate explosions locally at 60 FPS
+        // 4. Animate explosions locally at 60 FPS
         for (let i = this.explosions.length - 1; i >= 0; i--) {
             const exp = this.explosions[i];
             exp.timer--;
@@ -294,9 +321,68 @@ class MultiplayerGame {
             }
         }
 
-        // Animate powerups bobbing locally
+        // 5. Animate powerups bobbing locally
         for (let i = 0; i < this.powerups.length; i++) {
             this.powerups[i].animationTimer = (this.powerups[i].animationTimer || 0) + 1;
+        }
+    }
+
+    // Client: local player prediction for 0-latency responsive movement
+    _updateLocalPlayerPrediction(player) {
+        player.animationTimer++;
+        if (player.invincible > 0) player.invincible--;
+
+        if (player.moving) {
+            if (player.animationTimer % 15 === 0) {
+                player.animationFrame = (player.animationFrame + 1) % 2;
+            }
+        } else {
+            player.animationFrame = 0;
+        }
+
+        if (player.x === player.targetX && player.y === player.targetY) {
+            const currentGridX = Math.floor(player.x / 32);
+            const currentGridY = Math.floor(player.y / 32);
+            let newTargetX = player.targetX;
+            let newTargetY = player.targetY;
+            let newDirection = player.direction;
+
+            if (this.input.getKey('ArrowUp') && !player.moving) {
+                newTargetY = (currentGridY - 1) * 32;
+                newDirection = 'up';
+            } else if (this.input.getKey('ArrowDown') && !player.moving) {
+                newTargetY = (currentGridY + 1) * 32;
+                newDirection = 'down';
+            } else if (this.input.getKey('ArrowLeft') && !player.moving) {
+                newTargetX = (currentGridX - 1) * 32;
+                newDirection = 'left';
+            } else if (this.input.getKey('ArrowRight') && !player.moving) {
+                newTargetX = (currentGridX + 1) * 32;
+                newDirection = 'right';
+            }
+
+            player.direction = newDirection;
+
+            if ((newTargetX !== player.targetX || newTargetY !== player.targetY) &&
+                canMove(newTargetX, newTargetY, player.width, player.height, this.map.grid)) {
+                player.targetX = newTargetX;
+                player.targetY = newTargetY;
+                player.moving = true;
+                player.animationFrame = 0;
+            } else {
+                player.moving = false;
+            }
+        } else {
+            const speed = player.baseSpeed || 2;
+            if (player.x < player.targetX) player.x = Math.min(player.x + speed, player.targetX);
+            else if (player.x > player.targetX) player.x = Math.max(player.x - speed, player.targetX);
+            if (player.y < player.targetY) player.y = Math.min(player.y + speed, player.targetY);
+            else if (player.y > player.targetY) player.y = Math.max(player.y - speed, player.targetY);
+
+            if (player.x === player.targetX && player.y === player.targetY) {
+                player.moving = false;
+                player.animationFrame = 0;
+            }
         }
     }
 
@@ -526,70 +612,93 @@ class MultiplayerGame {
                 }
 
                 p.alive = isAlive;
-                p.targetX = hostTx;
-                p.targetY = hostTy;
-                p.direction = sp.d !== undefined ? sp.d : (sp.dir || p.direction);
                 p.invincible = sp.iv !== undefined ? sp.iv : (sp.invincible !== undefined ? sp.invincible : p.invincible);
                 p.lives = sp.l !== undefined ? sp.l : (sp.lives !== undefined ? sp.lives : p.lives);
                 p.maxBombs = sp.mb !== undefined ? sp.mb : (sp.maxBombs !== undefined ? sp.maxBombs : p.maxBombs);
                 p.bombRange = sp.br !== undefined ? sp.br : (sp.bombRange !== undefined ? sp.bombRange : p.bombRange);
                 p.baseSpeed = sp.bs !== undefined ? sp.bs : (sp.baseSpeed !== undefined ? sp.baseSpeed : p.baseSpeed);
 
-                // Smooth position reconciliation
                 const diffX = hostX - p.x;
                 const diffY = hostY - p.y;
                 const dist = Math.sqrt(diffX * diffX + diffY * diffY);
 
-                if (dist > 16 || !isMoving) {
-                    // Large discrepancy, teleport, or player stopped: snap
-                    if (!isMoving && dist < 2) {
+                if (i === this.mySlot) {
+                    // Local player reconciliation:
+                    // Client predicted local movement. Reconcile if divergence detected.
+                    if (dist > 16) {
                         p.x = hostX;
                         p.y = hostY;
-                        p.moving = false;
-                    } else if (dist > 16) {
-                        p.x = hostX;
-                        p.y = hostY;
-                    } else {
-                        // Smooth blend
-                        p.x += diffX * 0.4;
-                        p.y += diffY * 0.4;
+                        p.targetX = hostTx;
+                        p.targetY = hostTy;
+                        p.moving = isMoving;
+                    } else if (dist > 1) {
+                        p.x += diffX * 0.15;
+                        p.y += diffY * 0.15;
                     }
                 } else {
-                    // Player is moving: smooth out drift without hard snapping
-                    p.x += diffX * 0.35;
-                    p.y += diffY * 0.35;
-                    p.moving = true;
+                    // Remote player interpolation to host target
+                    p.targetX = hostTx;
+                    p.targetY = hostTy;
+                    p.direction = sp.d !== undefined ? sp.d : (sp.dir || p.direction);
+
+                    if (dist > 24 || !isMoving) {
+                        if (!isMoving && dist < 2) {
+                            p.x = hostX;
+                            p.y = hostY;
+                            p.moving = false;
+                        } else if (dist > 24) {
+                            p.x = hostX;
+                            p.y = hostY;
+                        } else {
+                            p.x += diffX * 0.4;
+                            p.y += diffY * 0.4;
+                        }
+                    } else {
+                        p.x += diffX * 0.35;
+                        p.y += diffY * 0.35;
+                        p.moving = true;
+                    }
                 }
 
-                // Update bombs
+                // Update bombs (Zero-allocation in-place matching)
                 const rawBombs = sp.b || sp.bombs;
                 if (rawBombs && rawBombs.length > 0) {
-                    const incomingKeys = new Set();
-                    for (const b of rawBombs) {
-                        incomingKeys.add(b.x + ',' + b.y);
-                    }
-
-                    const existingMap = new Map();
-                    for (const bomb of p.bombs) {
-                        existingMap.set(bomb.x + ',' + bomb.y, bomb);
-                    }
-
                     let writeIdx = 0;
                     for (let j = 0; j < p.bombs.length; j++) {
-                        const key = p.bombs[j].x + ',' + p.bombs[j].y;
-                        if (incomingKeys.has(key)) {
-                            p.bombs[writeIdx++] = p.bombs[j];
+                        const existingBomb = p.bombs[j];
+                        let foundInIncoming = false;
+                        for (let k = 0; k < rawBombs.length; k++) {
+                            if (rawBombs[k].x === existingBomb.x && rawBombs[k].y === existingBomb.y) {
+                                foundInIncoming = true;
+                                break;
+                            }
+                        }
+                        if (foundInIncoming) {
+                            p.bombs[writeIdx++] = existingBomb;
+                        } else {
+                            const btx = Math.floor(existingBomb.x / 32);
+                            const bty = Math.floor(existingBomb.y / 32);
+                            if (this.map.grid[bty] && this.map.grid[bty][btx] === 3) {
+                                this.map.grid[bty][btx] = 0;
+                            }
                         }
                     }
                     p.bombs.length = writeIdx;
 
-                    for (const b of rawBombs) {
-                        const key = b.x + ',' + b.y;
-                        const existing = existingMap.get(key);
+                    for (let k = 0; k < rawBombs.length; k++) {
+                        const b = rawBombs[k];
                         const bTimer = b.t !== undefined ? b.t : b.timer;
                         const bExp = b.e !== undefined ? (b.e === 1) : b.exploded;
                         const bFrame = b.f !== undefined ? b.f : b.animationFrame;
                         const bRange = b.r !== undefined ? b.r : b.range;
+
+                        let existing = null;
+                        for (let j = 0; j < p.bombs.length; j++) {
+                            if (p.bombs[j].x === b.x && p.bombs[j].y === b.y) {
+                                existing = p.bombs[j];
+                                break;
+                            }
+                        }
 
                         if (existing) {
                             existing.timer = bTimer;
@@ -604,43 +713,64 @@ class MultiplayerGame {
                             p.bombs.push(bomb);
                             this.sound.playSound('bomb');
                         }
+
+                        const btx = Math.floor(b.x / 32);
+                        const bty = Math.floor(b.y / 32);
+                        if (this.map.grid[bty] && this.map.grid[bty][btx] === 0) {
+                            this.map.grid[bty][btx] = 3;
+                        }
                     }
                 } else {
+                    for (let j = 0; j < p.bombs.length; j++) {
+                        const btx = Math.floor(p.bombs[j].x / 32);
+                        const bty = Math.floor(p.bombs[j].y / 32);
+                        if (this.map.grid[bty] && this.map.grid[bty][btx] === 3) {
+                            this.map.grid[bty][btx] = 0;
+                        }
+                    }
                     p.bombs.length = 0;
                 }
             }
         }
 
-        // Update explosions
+        // Update explosions (Zero-allocation in-place matching)
         const rawExplosions = state.e || state.explosions;
         if (rawExplosions) {
             const hadExplosions = this.explosions.length > 0;
-            const incomingExpKeys = new Set();
-            for (const e of rawExplosions) {
-                const eDir = e.d !== undefined ? e.d : (e.dir || e.direction);
-                incomingExpKeys.add(e.x + ',' + e.y + ',' + eDir);
-            }
-
-            const existingExpMap = new Map();
-            for (const exp of this.explosions) {
-                existingExpMap.set(exp.x + ',' + exp.y + ',' + exp.direction, exp);
-            }
 
             let writeIdx = 0;
             for (let j = 0; j < this.explosions.length; j++) {
-                const key = this.explosions[j].x + ',' + this.explosions[j].y + ',' + this.explosions[j].direction;
-                if (incomingExpKeys.has(key)) {
-                    this.explosions[writeIdx++] = this.explosions[j];
+                const exp = this.explosions[j];
+                let found = false;
+                for (let k = 0; k < rawExplosions.length; k++) {
+                    const e = rawExplosions[k];
+                    const eDir = e.d !== undefined ? e.d : (e.dir || e.direction);
+                    if (e.x === exp.x && e.y === exp.y && eDir === exp.direction) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    this.explosions[writeIdx++] = exp;
                 }
             }
             this.explosions.length = writeIdx;
 
-            for (const e of rawExplosions) {
+            for (let k = 0; k < rawExplosions.length; k++) {
+                const e = rawExplosions[k];
                 const eDir = e.d !== undefined ? e.d : (e.dir || e.direction);
                 const eTimer = e.t !== undefined ? e.t : e.timer;
                 const eFrame = e.f !== undefined ? e.f : (e.frame !== undefined ? e.frame : e.animationFrame);
-                const key = e.x + ',' + e.y + ',' + eDir;
-                const existing = existingExpMap.get(key);
+
+                let existing = null;
+                for (let j = 0; j < this.explosions.length; j++) {
+                    const exp = this.explosions[j];
+                    if (exp.x === e.x && exp.y === e.y && exp.direction === eDir) {
+                        existing = exp;
+                        break;
+                    }
+                }
+
                 if (existing) {
                     existing.timer = eTimer;
                     existing.animationFrame = eFrame;
@@ -657,33 +787,37 @@ class MultiplayerGame {
             }
         }
 
-        // Update powerups
+        // Update powerups (Zero-allocation in-place matching)
         const rawPowerups = state.pw || state.powerups;
         if (rawPowerups) {
-            const incomingPwKeys = new Set();
-            for (const pw of rawPowerups) {
-                incomingPwKeys.add(pw.x + ',' + pw.y);
-            }
-
-            const existingPwMap = new Map();
-            for (const pw of this.powerups) {
-                existingPwMap.set(pw.x + ',' + pw.y, pw);
-            }
-
             let writeIdx = 0;
             for (let j = 0; j < this.powerups.length; j++) {
-                const key = this.powerups[j].x + ',' + this.powerups[j].y;
-                if (incomingPwKeys.has(key)) {
-                    this.powerups[writeIdx++] = this.powerups[j];
+                const pw = this.powerups[j];
+                let found = false;
+                for (let k = 0; k < rawPowerups.length; k++) {
+                    if (rawPowerups[k].x === pw.x && rawPowerups[k].y === pw.y) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    this.powerups[writeIdx++] = pw;
                 }
             }
             this.powerups.length = writeIdx;
 
-            for (const pw of rawPowerups) {
-                const key = pw.x + ',' + pw.y;
-                const existing = existingPwMap.get(key);
+            for (let k = 0; k < rawPowerups.length; k++) {
+                const pw = rawPowerups[k];
                 const pwType = pw.tp !== undefined ? pw.tp : pw.type;
                 const pwTimer = pw.t !== undefined ? pw.t : (pw.timer || 0);
+
+                let existing = null;
+                for (let j = 0; j < this.powerups.length; j++) {
+                    if (this.powerups[j].x === pw.x && this.powerups[j].y === pw.y) {
+                        existing = this.powerups[j];
+                        break;
+                    }
+                }
 
                 if (existing) {
                     existing.animationTimer = pwTimer;
@@ -725,7 +859,7 @@ class MultiplayerGame {
             p.draw(this.ctx);
         }
 
-        // Draw player name labels
+        // Draw player name labels with rounded integer coordinates for crisp rendering
         this.ctx.save();
         this.ctx.font = '7px "Press Start 2P", monospace';
         this.ctx.textAlign = 'center';
@@ -733,10 +867,12 @@ class MultiplayerGame {
             const p = this.players[i];
             if (!p.alive) continue;
             const name = (i === this.mySlot) ? 'YOU' : 'P' + (i + 1);
+            const px = Math.round(p.x);
+            const py = Math.round(p.y);
             this.ctx.fillStyle = '#000';
-            this.ctx.fillText(name, p.x + 16, p.y - 3);
+            this.ctx.fillText(name, px + 16, py - 3);
             this.ctx.fillStyle = MP_PLAYER_COLORS[i];
-            this.ctx.fillText(name, p.x + 16, p.y - 4);
+            this.ctx.fillText(name, px + 16, py - 4);
         }
         this.ctx.restore();
     }

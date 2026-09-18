@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ── SOLO GAME ───────────────────────────────
     function startGame() {
+        if (mpGame) mpGame.stop();
         document.getElementById('start-screen').classList.add('hidden');
         if (!game) {
             game = new Game(canvas);
@@ -187,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Open multiplayer lobby
     if (multiplayerButton) {
         multiplayerButton.addEventListener('click', () => {
+            if (game) game.stop();
             hideAllScreens();
             mpLobbyScreen.classList.remove('hidden');
             showLobbyMenu();
@@ -259,7 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const seed = Math.floor(Math.random() * 2147483647);
 
             network.onGameStart = (config) => {
-                // Safety: stop any lingering old game loop
+                // Safety: stop any lingering old game loops
+                if (game) game.stop();
                 if (mpGame) mpGame.stop();
                 hideAllScreens();
                 mpGame = new MultiplayerGame(canvas, network, config);
@@ -304,7 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper: set up client onGameStart callback (reused for join + rematch)
     function setClientGameStartCallback() {
         network.onGameStart = (config) => {
-            // Safety: stop any lingering old game loop
+            // Safety: stop any lingering old game loops
+            if (game) game.stop();
             if (mpGame) mpGame.stop();
             hideAllScreens();
             mpGame = new MultiplayerGame(canvas, network, config);

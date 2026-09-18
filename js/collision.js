@@ -19,32 +19,20 @@ function checkTileCollision(x, y, map) {
 }
 
 function canMove(x, y, width, height, map) {
-    
-    const corners = [
-        { x: x, y: y },                    
-        { x: x + width - 1, y: y },        
-        { x: x, y: y + height - 1 },       
-        { x: x + width - 1, y: y + height - 1 } 
-    ];
-    
-    
-    const centerPoints = [
-        { x: x + width/2, y: y },          
-        { x: x + width/2, y: y + height - 1 }, 
-        { x: x, y: y + height/2 },         
-        { x: x + width - 1, y: y + height/2 }  
-    ];
-    
-    const allPoints = [...corners, ...centerPoints];
-    
-    return allPoints.every(point => {
-        const tileX = Math.floor(point.x / 32);
-        const tileY = Math.floor(point.y / 32);
-        
-        if (tileX < 0 || tileX >= map[0].length || tileY < 0 || tileY >= map.length) {
-            return false;
+    const minTileX = Math.floor(x / 32);
+    const maxTileX = Math.floor((x + width - 1) / 32);
+    const minTileY = Math.floor(y / 32);
+    const maxTileY = Math.floor((y + height - 1) / 32);
+
+    if (minTileX < 0 || maxTileX >= map[0].length || minTileY < 0 || maxTileY >= map.length) {
+        return false;
+    }
+
+    for (let ty = minTileY; ty <= maxTileY; ty++) {
+        const row = map[ty];
+        for (let tx = minTileX; tx <= maxTileX; tx++) {
+            if (row[tx] !== 0) return false;
         }
-        const tileValue = map[tileY][tileX];
-        return tileValue === 0;
-    });
+    }
+    return true;
 }

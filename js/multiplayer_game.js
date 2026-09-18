@@ -115,16 +115,18 @@ class MultiplayerGame {
             this._showWinner(winnerId);
         };
 
-        // Handle remote player disconnects
-        if (this.isHost) {
-            this.network.onPlayerLeft = (playerId) => {
-                if (playerId >= 0 && playerId < this.playerCount) {
-                    const p = this.players[playerId];
+        // Handle player disconnect during match (host & clients)
+        this.network.onPlayerLeft = (playerId) => {
+            if (playerId >= 0 && playerId < this.players.length) {
+                const p = this.players[playerId];
+                if (p && p.alive) {
                     p.alive = false;
+                    p.moving = false;
+                    this.sound.playSound('death');
                     console.log(`[GAME] Player ${playerId} disconnected.`);
                 }
-            };
-        }
+            }
+        };
 
         // Update HUD
         if (window.updateLevelDisplay) window.updateLevelDisplay('PVP');

@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function cleanupNetwork() {
         if (network) {
-            network.destroy();
+            network.leaveRoom();
             network = null;
         }
     }
@@ -213,25 +213,32 @@ document.addEventListener('DOMContentLoaded', () => {
             hostLobby.style.display = '';
             lobbyStatus.textContent = 'CREATING ROOM...';
             lobbyStatus.classList.remove('lobby-error');
-            mpStartBtn.disabled = false;
+            mpStartBtn.disabled = true;
 
             try {
                 const code = await network.createRoom();
                 roomCodeDisplay.textContent = code;
-                lobbyStatus.textContent = 'WAITING FOR PLAYERS...';
+                lobbyStatus.textContent = 'WAITING FOR PLAYERS (1/4)...';
                 updatePlayerSlots('player-slots', 1);
                 drawPlayerSlotHeads('player-slots');
+                mpStartBtn.disabled = true;
 
                 network.onPlayerJoined = (playerId, totalPlayers) => {
                     updatePlayerSlots('player-slots', totalPlayers);
-                    lobbyStatus.textContent = totalPlayers + '/4 PLAYERS';
-                    mpStartBtn.disabled = false;
+                    lobbyStatus.textContent = totalPlayers + '/4 PLAYERS - READY!';
+                    mpStartBtn.disabled = (totalPlayers < 2);
                 };
 
-                network.onPlayerLeft = (playerId) => {
-                    updatePlayerSlots('player-slots', network.playerCount);
-                    lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
-                    mpStartBtn.disabled = false;
+                network.onPlayerLeft = (playerId, totalPlayers) => {
+                    const count = totalPlayers !== undefined ? totalPlayers : network.playerCount;
+                    updatePlayerSlots('player-slots', count);
+                    if (count < 2) {
+                        lobbyStatus.textContent = 'WAITING FOR PLAYERS (' + count + '/4)...';
+                        mpStartBtn.disabled = true;
+                    } else {
+                        lobbyStatus.textContent = count + '/4 PLAYERS - READY!';
+                        mpStartBtn.disabled = false;
+                    }
                 };
 
                 network.onError = (msg) => {
@@ -258,6 +265,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mpStartBtn) {
         mpStartBtn.addEventListener('click', () => {
             if (!network || !network.isHost) return;
+            if (network.playerCount < 2) {
+                lobbyStatus.textContent = 'NEED AT LEAST 2 PLAYERS TO START!';
+                lobbyStatus.classList.add('lobby-error');
+                return;
+            }
             const seed = Math.floor(Math.random() * 2147483647);
 
             network.onGameStart = (config) => {
@@ -347,16 +359,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     clientStatus.textContent = totalPlayers + '/4 PLAYERS - WAITING...';
                 };
 
-                network.onPlayerLeft = (playerId) => {
-                    updatePlayerSlots('client-player-slots', network.playerCount);
-                    clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
+                network.onPlayerLeft = (playerId, totalPlayers) => {
+                    const count = totalPlayers !== undefined ? totalPlayers : network.playerCount;
+                    updatePlayerSlots('client-player-slots', count);
+                    clientStatus.textContent = count + '/4 PLAYERS - WAITING...';
+                };
+
+                network.onSlotUpdate = (yourSlot, totalPlayers) => {
+                    updatePlayerSlots('client-player-slots', totalPlayers);
+                    clientStatus.textContent = `YOU ARE P${yourSlot + 1} (${totalPlayers}/4 PLAYERS) - WAITING...`;
                 };
 
                 setClientGameStartCallback();
 
                 network.onError = (msg) => {
-                    clientStatus.textContent = msg;
-                    clientStatus.classList.add('lobby-error');
+                    if (mpGame) {
+                        mpGame.stop();
+                        mpGame = null;
+                    }
+                    cleanupNetwork();
+                    hideAllScreens();
+                    mpLobbyScreen.classList.remove('hidden');
+                    showLobbyMenu();
+                    joinStatus.textContent = msg || 'CONNECTION LOST';
+                    joinStatus.classList.add('lobby-error');
                 };
 
             } catch (err) {
@@ -400,19 +426,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     clientWaiting.style.display = 'none';
                     roomCodeDisplay.textContent = network.roomCode;
                     updatePlayerSlots('player-slots', network.playerCount);
-                    lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
+                    if (network.playerCount < 2) {
+                        lobbyStatus.textContent = 'WAITING FOR PLAYERS (' + network.playerCount + '/4)...';
+                        mpStartBtn.disabled = true;
+                    } else {
+                        lobbyStatus.textContent = network.playerCount + '/4 PLAYERS - READY!';
+                        mpStartBtn.disabled = false;
+                    }
                     lobbyStatus.classList.remove('lobby-error');
-                    mpStartBtn.disabled = false;
 
                     // Re-register lobby callbacks
                     network.onPlayerJoined = (playerId, totalPlayers) => {
                         updatePlayerSlots('player-slots', totalPlayers);
-                        lobbyStatus.textContent = totalPlayers + '/4 PLAYERS';
-                        mpStartBtn.disabled = false;
+                        lobbyStatus.textContent = totalPlayers + '/4 PLAYERS - READY!';
+                        mpStartBtn.disabled = (totalPlayers < 2);
                     };
-                    network.onPlayerLeft = (playerId) => {
-                        updatePlayerSlots('player-slots', network.playerCount);
-                        lobbyStatus.textContent = network.playerCount + '/4 PLAYERS';
+                    network.onPlayerLeft = (playerId, totalPlayers) => {
+                        const count = totalPlayers !== undefined ? totalPlayers : network.playerCount;
+                        updatePlayerSlots('player-slots', count);
+                        if (count < 2) {
+                            lobbyStatus.textContent = 'WAITING FOR PLAYERS (' + count + '/4)...';
+                            mpStartBtn.disabled = true;
+                        } else {
+                            lobbyStatus.textContent = count + '/4 PLAYERS - READY!';
+                            mpStartBtn.disabled = false;
+                        }
                     };
                     network.onError = (msg) => {
                         lobbyStatus.textContent = msg;
@@ -434,14 +472,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         updatePlayerSlots('client-player-slots', totalPlayers);
                         clientStatus.textContent = totalPlayers + '/4 PLAYERS - WAITING...';
                     };
-                    network.onPlayerLeft = (playerId) => {
-                        updatePlayerSlots('client-player-slots', network.playerCount);
-                        clientStatus.textContent = network.playerCount + '/4 PLAYERS - WAITING...';
+                    network.onPlayerLeft = (playerId, totalPlayers) => {
+                        const count = totalPlayers !== undefined ? totalPlayers : network.playerCount;
+                        updatePlayerSlots('client-player-slots', count);
+                        clientStatus.textContent = count + '/4 PLAYERS - WAITING...';
+                    };
+                    network.onSlotUpdate = (yourSlot, totalPlayers) => {
+                        updatePlayerSlots('client-player-slots', totalPlayers);
+                        clientStatus.textContent = `YOU ARE P${yourSlot + 1} (${totalPlayers}/4 PLAYERS) - WAITING...`;
                     };
                     setClientGameStartCallback();
                     network.onError = (msg) => {
-                        clientStatus.textContent = msg;
-                        clientStatus.classList.add('lobby-error');
+                        if (mpGame) {
+                            mpGame.stop();
+                            mpGame = null;
+                        }
+                        cleanupNetwork();
+                        hideAllScreens();
+                        mpLobbyScreen.classList.remove('hidden');
+                        showLobbyMenu();
                     };
                 }
             } else {
@@ -463,6 +512,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showStartScreen();
         });
     }
+
+    // Clean up network session if user navigates away or closes tab
+    window.addEventListener('beforeunload', () => {
+        cleanupNetwork();
+    });
 
     // ── Draw lobby heads on first paint ─────────
     // (Delayed slightly to ensure player.js sprites are loaded)

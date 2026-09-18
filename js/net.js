@@ -11,7 +11,8 @@ class NetworkManager {
         this.playerId = -1;      // 0 = host, 1-3 = clients
         this.playerCount = 1;
         this.onPlayerJoined = null;   // callback(playerId, totalPlayers)
-        this.onPlayerLeft = null;     // callback(playerId)
+        this.onPlayerLeft = null;     // callback(playerId, totalPlayers)
+        this.onSlotUpdate = null;     // callback(yourSlot, totalPlayers)
         this.onGameStart = null;      // callback({ seed, playerCount, yourSlot })
         this.onStateUpdate = null;    // callback(stateObj) — clients only
         this.onInputReceived = null;  // callback(playerId, inputState) — host only
@@ -136,8 +137,11 @@ class NetworkManager {
         }
 
         conn.on('data', (data) => {
-            if (data.type === 'INPUT' && this.onInputReceived) {
-                this.onInputReceived(conn.metadata.playerId, data.keys);
+            if (data.type === 'LEAVE') {
+                this._removeConnection(conn);
+                try { conn.close(); } catch (e) {}
+            } else if (data.type === 'INPUT' && this.onInputReceived) {
+                this.onInputReceived(conn.metadata ? conn.metadata.playerId : 1, data.keys);
             }
         });
 
@@ -154,10 +158,31 @@ class NetworkManager {
     _removeConnection(conn) {
         const idx = this.connections.indexOf(conn);
         if (idx !== -1) {
-            const playerId = conn.metadata.playerId;
+            const playerId = conn.metadata ? conn.metadata.playerId : -1;
             this.connections.splice(idx, 1);
             this.playerCount = this.connections.length + 1;
 
+            // CRITICAL: Re-index remaining connections so player slots are strictly sequential (1, 2, 3...)
+            for (let i = 0; i < this.connections.length; i++) {
+                const newSlot = i + 1;
+                this.connections[i].metadata = { playerId: newSlot };
+            }
+
+            // Tell each remaining client their new slot and the updated total count
+            for (let i = 0; i < this.connections.length; i++) {
+                const c = this.connections[i];
+                if (c.open) {
+                    try {
+                        c.send({
+                            type: 'SLOT_UPDATE',
+                            yourSlot: c.metadata.playerId,
+                            playerCount: this.playerCount
+                        });
+                    } catch (e) {}
+                }
+            }
+
+            // Tell all clients that this player left
             this._broadcastToClients({
                 type: 'PLAYER_LEFT',
                 playerId: playerId,
@@ -165,7 +190,7 @@ class NetworkManager {
             });
 
             console.log('[NET] Player', playerId, 'left. Total:', this.playerCount);
-            if (this.onPlayerLeft) this.onPlayerLeft(playerId);
+            if (this.onPlayerLeft) this.onPlayerLeft(playerId, this.playerCount);
         }
     }
 
@@ -337,7 +362,18 @@ class NetworkManager {
 
             case 'PLAYER_LEFT':
                 this.playerCount = data.playerCount;
-                if (this.onPlayerLeft) this.onPlayerLeft(data.playerId);
+                if (this.onPlayerLeft) this.onPlayerLeft(data.playerId, data.playerCount);
+                break;
+
+            case 'SLOT_UPDATE':
+                this.playerId = data.yourSlot;
+                this.playerCount = data.playerCount;
+                if (this.onSlotUpdate) this.onSlotUpdate(data.yourSlot, data.playerCount);
+                break;
+
+            case 'HOST_DISCONNECTED':
+                this.connected = false;
+                if (this.onError) this.onError('Host closed the room');
                 break;
 
             case 'START':
@@ -379,10 +415,32 @@ class NetworkManager {
         } catch (e) { /* ignore */ }
     }
 
+    // ── Gracefully leave a room ─────────────────
+    leaveRoom() {
+        if (!this.isHost && this.hostConnection && this.hostConnection.open) {
+            try {
+                this.hostConnection.send({ type: 'LEAVE' });
+            } catch (e) {}
+        } else if (this.isHost) {
+            try {
+                this._broadcastToClients({ type: 'HOST_DISCONNECTED' });
+            } catch (e) {}
+        }
+        this.destroy();
+    }
+
     // ── Cleanup ─────────────────────────────────
     destroy() {
+        if (this.isHost) {
+            for (const conn of this.connections) {
+                try { conn.close(); } catch (e) {}
+            }
+        } else if (this.hostConnection) {
+            try { this.hostConnection.close(); } catch (e) {}
+        }
+
         if (this.peer) {
-            this.peer.destroy();
+            try { this.peer.destroy(); } catch (e) {}
             this.peer = null;
         }
         this.connections = [];
@@ -392,6 +450,15 @@ class NetworkManager {
         this.roomCode = '';
         this.playerId = -1;
         this.playerCount = 1;
+        this.onPlayerJoined = null;
+        this.onPlayerLeft = null;
+        this.onSlotUpdate = null;
+        this.onGameStart = null;
+        this.onStateUpdate = null;
+        this.onInputReceived = null;
+        this.onGameOver = null;
+        this.onPlayerDied = null;
+        this.onError = null;
         this._lastStartSeed = null;
         this._lastGameOverWinner = null;
     }

@@ -185,13 +185,6 @@
             flex-wrap: wrap;
         }
 
-        #score-display {
-            color: #0f0;
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(0.7rem, 2.5vw, 1rem);
-            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0px 2px 0 #000, 2px 0px 0 #000, 0px -2px 0 #000, -2px 0px 0 #000;
-        }
-
         #level-display {
             color: #ff0;
             font-family: 'Press Start 2P', monospace;
@@ -257,81 +250,7 @@
             text-transform: uppercase;
         }
 
-        .pixel-panel {
-            background: #000;
-            border: 4px solid #0e5baf;
-            box-shadow: inset 0 0 0 2px #eab187, 4px 4px 0 #000;
-            padding: 20px;
-            margin: 10px 0 25px 0;
-            width: 85%;
-            max-width: 320px;
-            position: relative;
-        }
 
-        .retro-win .pixel-panel {
-            border-color: #0eaf3c;
-            box-shadow: inset 0 0 0 2px #b9ea87, 4px 4px 0 #000;
-        }
-
-        .pixel-panel h2 {
-            color: #fff;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            text-align: center;
-        }
-
-        .pixel-panel ol {
-            text-align: left;
-            padding-left: 0;
-            margin: 0;
-            list-style: none;
-            counter-reset: item;
-        }
-
-        .pixel-panel li {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            font-size: clamp(0.6rem, 2vw, 0.9rem);
-            counter-increment: item;
-            color: #ccc;
-            padding: 0;
-        }
-
-        .pixel-panel li::before {
-            content: counter(item) ".";
-            color: #fff;
-            width: 25px;
-            text-align: right;
-            margin-right: 15px;
-            position: static;
-        }
-        
-        .retro-win .pixel-panel li::before {
-            color: #fff;
-        }
-        
-        .pixel-panel .score-name {
-            flex-grow: 1;
-            text-align: left;
-            color: #fff;
-        }
-
-        .pixel-panel .score-val {
-            color: #ff0;
-            text-align: right;
-        }
-
-        .pixel-panel .current-score .score-name,
-        .pixel-panel .current-score .score-val {
-            color: #f4821a !important;
-        }
-
-        .retro-win .pixel-panel .current-score .score-name,
-        .retro-win .pixel-panel .current-score .score-val {
-            color: #1af472 !important;
-        }
 
         /* --- RETRO START SCREEN STYLES --- */
         .retro-start {
@@ -577,11 +496,7 @@
                 margin: 10px;
             }
             
-            .leaderboard {
-                padding: 15px;
-                margin: 15px 0;
-                width: 90%;
-            }
+
         }
 
         @media (max-width: 480px) {
@@ -606,7 +521,6 @@
             
             <div id="hud">
                 <div id="hud-left">
-                    <div id="score-display">SCORE: 00000</div>
                     <div id="powerups-display"></div>
                 </div>
                 <div id="level-display">LEVEL: 1</div>
@@ -694,33 +608,11 @@
             
             <div id="game-over-screen" class="screen retro-end hidden">
                 <img src="img/game_over_logo.png" class="logo-img" alt="GAME OVER">
-                <p>FINAL SCORE: <span id="final-score">0</span></p>
-                <div class="pixel-panel">
-                    <h2>HIGH SCORES</h2>
-                    <ol id="leaderboard-list">
-                        <li><span class="score-name">AAA</span> <span class="score-val">10000</span></li>
-                        <li><span class="score-name">BBB</span> <span class="score-val">7500</span></li>
-                        <li><span class="score-name">CCC</span> <span class="score-val">5000</span></li>
-                        <li class="current-score"><span class="score-name">YOU</span> <span class="score-val">0</span></li>
-                        <li><span class="score-name">DDD</span> <span class="score-val">2500</span></li>
-                    </ol>
-                </div>
                 <button id="restart-button" class="arcade-button">RETRY</button>
             </div>
             
             <div id="win-screen" class="screen retro-end retro-win hidden">
                 <img src="img/you_win_logo.png" class="logo-img" alt="YOU WIN!">
-                <p>FINAL SCORE: <span id="final-score-win">0</span></p>
-                <div class="pixel-panel">
-                    <h2>HIGH SCORES</h2>
-                    <ol id="leaderboard-list-win">
-                        <li><span class="score-name">AAA</span> <span class="score-val">10000</span></li>
-                        <li><span class="score-name">BBB</span> <span class="score-val">7500</span></li>
-                        <li class="current-score"><span class="score-name">YOU</span> <span class="score-val">0</span></li>
-                        <li><span class="score-name">CCC</span> <span class="score-val">5000</span></li>
-                        <li><span class="score-name">DDD</span> <span class="score-val">2500</span></li>
-                    </ol>
-                </div>
                 <button id="win-restart-button" class="arcade-button">RETRY</button>
             </div>
         </div>
@@ -736,9 +628,9 @@
     <script src="js/powerup.js?v=27"></script>
     <script src="js/bomb.js?v=27"></script>
     <script src="js/enemy.js?v=27"></script>
-    <script src="js/game.js?v=27"></script>
+    <script src="js/game.js?v=28"></script>
     <script src="js/net.js?v=28"></script>
-    <script src="js/multiplayer_game.js?v=28"></script>
+    <script src="js/multiplayer_game.js?v=29"></script>
     <script src="js/main.js?v=28"></script>
     
     <script>
@@ -790,12 +682,7 @@
             }
         });
         
-        window.updateScore = function(score) {
-            const scoreDisplay = document.getElementById('score-display');
-            if (scoreDisplay) {
-                scoreDisplay.textContent = 'SCORE: ' + String(score).padStart(5, '0');
-            }
-        };
+        window.updateScore = function(score) {};
         
         window.updateLevelDisplay = function(level) {
             const levelDisplay = document.getElementById('level-display');
@@ -879,7 +766,8 @@
         };
         
         window.showGameOver = function(score) {
-            document.getElementById('final-score').textContent = score;
+            const finalScore = document.getElementById('final-score');
+            if (finalScore) finalScore.textContent = score;
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.add('hidden');
             });
@@ -887,7 +775,8 @@
         };
         
         window.showWinScreen = function(score) {
-            document.getElementById('final-score-win').textContent = score;
+            const finalScoreWin = document.getElementById('final-score-win');
+            if (finalScoreWin) finalScoreWin.textContent = score;
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.add('hidden');
             });

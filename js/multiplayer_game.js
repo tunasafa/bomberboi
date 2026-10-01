@@ -49,7 +49,6 @@ class MultiplayerGame {
         this.paused = false;
         this.stateTickCounter = 0;
         this._lastReceivedSeq = -1;
-        this.score = 0;
         this.enemies = null; // null signals multiplayer mode to bomb.js
 
         // Create players

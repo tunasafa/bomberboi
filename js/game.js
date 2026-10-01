@@ -15,7 +15,6 @@ class Game {
         this.isGameOver = false;
         this.gameWon = false;
         this.paused = false;
-        this.score = 0;
         this.lastTime = 0;
         this._stopped = false;
         
@@ -126,12 +125,6 @@ class Game {
         
     }
     
-    drawScore() {
-        this.ctx.fillStyle = '#00ff00';
-        this.ctx.font = '16px "Courier New", monospace';
-        this.ctx.fillText(`SCORE: ${this.score}`, 10, 25);
-    }
-    
     pause() {
         this.paused = true;
         document.getElementById('pause-screen').classList.remove('hidden');
@@ -157,8 +150,6 @@ class Game {
         
         this.isGameOver = true;
         this.sound.playSound('death');
-        this.updateLeaderboard();
-        document.getElementById('final-score').textContent = this.score;
         setTimeout(() => {
             document.getElementById('game-over-screen').classList.remove('hidden');
         }, 1500);
@@ -175,9 +166,6 @@ class Game {
             }, 1000);
         } else {
             this.gameWon = true;
-            this.score += 5000; 
-            this.updateLeaderboard();
-            document.getElementById('final-score-win').textContent = this.score;
             setTimeout(() => {
                 document.getElementById('win-screen').classList.remove('hidden');
             }, 1500);
@@ -186,8 +174,6 @@ class Game {
     
     levelComplete() {
         this.paused = true;
-        this.score += this.level * 100;
-        if (window.updateScore) window.updateScore(this.score);
         if (window.showLevelComplete) window.showLevelComplete(this.level + 1);
     }
     
@@ -219,47 +205,7 @@ class Game {
         this.lastTime = performance.now();
     }
     
-    updateLeaderboard() {
-        let scores = JSON.parse(localStorage.getItem('bombermanScores')) || [];
-        
-        scores.push({
-            score: this.score,
-            date: new Date().toLocaleDateString()
-        });
-        scores.sort((a, b) => b.score - a.score);
-        scores = scores.slice(0, 5);
-        localStorage.setItem('bombermanScores', JSON.stringify(scores));
-        const updateLeaderboardList = (listId) => {
-            const leaderboardList = document.getElementById(listId);
-            if (leaderboardList) {
-                leaderboardList.innerHTML = '';
-                
-                scores.forEach((entry, index) => {
-                    const li = document.createElement('li');
-                    
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = 'score-name';
-                    nameSpan.textContent = (entry.score === this.score) ? 'YOU' : 'PLY';
-                    
-                    const valSpan = document.createElement('span');
-                    valSpan.className = 'score-val';
-                    valSpan.textContent = entry.score;
 
-                    li.appendChild(nameSpan);
-                    li.appendChild(valSpan);
-
-                    if (entry.score === this.score) {
-                        li.classList.add('current-score');
-                    }
-                    leaderboardList.appendChild(li);
-                });
-            }
-        };
-        
-        updateLeaderboardList('leaderboard-list');
-        updateLeaderboardList('leaderboard-list-win');
-    }
-    
     restart() {
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('game-over-screen').classList.add('hidden');
@@ -279,8 +225,6 @@ class Game {
         this.isGameOver = false;
         this.gameWon = false;
         this.paused = false;
-        this.score = 0;
-        if (window.updateScore) window.updateScore(this.score);
         if (window.updatePowerupsDisplay) window.updatePowerupsDisplay(this.player);
         
         this.createEnemies(3 + Math.floor(this.level * 1.5));

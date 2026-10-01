@@ -134,7 +134,7 @@ class MultiplayerGame {
         // Start game loop with fixed 60Hz timestep accumulator
         this.lastTime = performance.now();
         this.lastStateSentTime = 0;
-        this.STATE_SEND_INTERVAL = 1000 / 30; // 30Hz network tick rate
+        this.STATE_SEND_INTERVAL = 1000 / 60; // 60Hz network tick — match simulation rate for minimal prediction error
         this._accumulator = 0;
         this._lastInputMask = -1;
         this._lastInputTime = 0;
@@ -187,13 +187,23 @@ class MultiplayerGame {
         requestAnimationFrame(this._boundLoop);
     }
 
-    // Client: zero-allocation bitmask input transmission
+    // Client: high-frequency input transmission — immediate on change, 60Hz steady state
     _sendClientInput(timestamp) {
         const mask = this.input.getBitmask();
-        const hasAnyKey = (mask & 31) !== 0;
+        const dirMask = mask & 15; // direction bits only
+        const lastDirMask = this._lastInputMask & 15;
         const timeSinceLast = timestamp - this._lastInputTime;
 
-        if (mask !== this._lastInputMask || (hasAnyKey && timeSinceLast > 33) || timeSinceLast > 100) {
+        // Send immediately when direction changes (critical for responsive turns),
+        // or at 60Hz while any key is held, or heartbeat every 100ms.
+        const directionChanged = dirMask !== lastDirMask;
+        const hasAnyKey = (mask & 31) !== 0;
+        const shouldSend = directionChanged
+            || (mask !== this._lastInputMask)
+            || (hasAnyKey && timeSinceLast > 16)
+            || timeSinceLast > 100;
+
+        if (shouldSend) {
             this.network.sendInput(mask);
             this._lastInputMask = mask;
             this._lastInputTime = timestamp;
@@ -256,136 +266,16 @@ class MultiplayerGame {
         }
     }
 
-    // ── CLIENT: 60fps local prediction and remote interpolation ──
+    // ── CLIENT: Pure authoritative — no prediction, just render host state ──
     updateClient(timestamp, deltaTime) {
-        // 1. Consume and apply pending authoritative state from host
+        // Apply pending authoritative state from host directly
         if (this._pendingState) {
             const state = this._pendingState;
             this._pendingState = null;
             this._applyStateFromHost(state);
         }
-
-        // 2. Update players: local prediction for mySlot, interpolation for remote players
-        for (let i = 0; i < this.playerCount; i++) {
-            const p = this.players[i];
-            if (!p.alive) continue;
-
-            if (i === this.mySlot) {
-                this._updateLocalPlayerPrediction(p);
-            } else {
-                if (p.invincible > 0) p.invincible--;
-
-                const dx = p.targetX - p.x;
-                const dy = p.targetY - p.y;
-                const distSq = dx * dx + dy * dy;
-
-                if (distSq > 0.01) {
-                    p.moving = true;
-                    p.animationTimer = (p.animationTimer || 0) + 1;
-                    if (p.animationTimer % 15 === 0) {
-                        p.animationFrame = (p.animationFrame + 1) % 2;
-                    }
-
-                    const speed = p.baseSpeed || 2;
-                    if (p.x < p.targetX) p.x = Math.min(p.x + speed, p.targetX);
-                    else if (p.x > p.targetX) p.x = Math.max(p.x - speed, p.targetX);
-                    if (p.y < p.targetY) p.y = Math.min(p.y + speed, p.targetY);
-                    else if (p.y > p.targetY) p.y = Math.max(p.y - speed, p.targetY);
-
-                    if (p.x === p.targetX && p.y === p.targetY) {
-                        p.moving = false;
-                        p.animationFrame = 0;
-                    }
-                } else {
-                    p.moving = false;
-                    p.animationFrame = 0;
-                }
-            }
-        }
-
-        // 3. Animate bombs locally at 60 FPS
-        for (let i = 0; i < this.playerCount; i++) {
-            const p = this.players[i];
-            for (let j = 0; j < p.bombs.length; j++) {
-                const b = p.bombs[j];
-                b.animationFrame++;
-                b.timer = Math.max(0, b.timer - 1);
-            }
-        }
-
-        // 4. Animate explosions locally at 60 FPS
-        for (let i = this.explosions.length - 1; i >= 0; i--) {
-            const exp = this.explosions[i];
-            exp.timer--;
-            exp.animationFrame = 30 - exp.timer;
-            if (exp.timer <= 0) {
-                this.explosions.splice(i, 1);
-            }
-        }
-
-        // 5. Animate powerups bobbing locally
-        for (let i = 0; i < this.powerups.length; i++) {
-            this.powerups[i].animationTimer = (this.powerups[i].animationTimer || 0) + 1;
-        }
-    }
-
-    // Client: local player prediction for 0-latency responsive movement
-    _updateLocalPlayerPrediction(player) {
-        player.animationTimer++;
-        if (player.invincible > 0) player.invincible--;
-
-        if (player.moving) {
-            if (player.animationTimer % 15 === 0) {
-                player.animationFrame = (player.animationFrame + 1) % 2;
-            }
-        } else {
-            player.animationFrame = 0;
-        }
-
-        if (player.x === player.targetX && player.y === player.targetY) {
-            const currentGridX = Math.floor(player.x / 32);
-            const currentGridY = Math.floor(player.y / 32);
-            let newTargetX = player.targetX;
-            let newTargetY = player.targetY;
-            let newDirection = player.direction;
-
-            if (this.input.getKey('ArrowUp') && !player.moving) {
-                newTargetY = (currentGridY - 1) * 32;
-                newDirection = 'up';
-            } else if (this.input.getKey('ArrowDown') && !player.moving) {
-                newTargetY = (currentGridY + 1) * 32;
-                newDirection = 'down';
-            } else if (this.input.getKey('ArrowLeft') && !player.moving) {
-                newTargetX = (currentGridX - 1) * 32;
-                newDirection = 'left';
-            } else if (this.input.getKey('ArrowRight') && !player.moving) {
-                newTargetX = (currentGridX + 1) * 32;
-                newDirection = 'right';
-            }
-
-            player.direction = newDirection;
-
-            if ((newTargetX !== player.targetX || newTargetY !== player.targetY) &&
-                canMove(newTargetX, newTargetY, player.width, player.height, this.map.grid)) {
-                player.targetX = newTargetX;
-                player.targetY = newTargetY;
-                player.moving = true;
-                player.animationFrame = 0;
-            } else {
-                player.moving = false;
-            }
-        } else {
-            const speed = player.baseSpeed || 2;
-            if (player.x < player.targetX) player.x = Math.min(player.x + speed, player.targetX);
-            else if (player.x > player.targetX) player.x = Math.max(player.x - speed, player.targetX);
-            if (player.y < player.targetY) player.y = Math.min(player.y + speed, player.targetY);
-            else if (player.y > player.targetY) player.y = Math.max(player.y - speed, player.targetY);
-
-            if (player.x === player.targetX && player.y === player.targetY) {
-                player.moving = false;
-                player.animationFrame = 0;
-            }
-        }
+        // Client does NO movement logic, NO prediction.
+        // Everything is rendered exactly as the host dictates.
     }
 
     _getRecentBlockChanges() {
@@ -395,6 +285,10 @@ class MultiplayerGame {
     }
 
     // ── Update a single player (host only) ──────
+    // For remote players, uses the queued direction system to prevent missed
+    // turns caused by network latency. The queue persists the player's intended
+    // direction until the host simulation reaches the tile boundary where it
+    // can actually be applied — even if the input packet arrived frames earlier.
     _updatePlayer(player, slotIndex) {
         player.animationTimer++;
         if (player.invincible > 0) player.invincible--;
@@ -407,26 +301,50 @@ class MultiplayerGame {
             player.animationFrame = 0;
         }
 
+        const inp = this.playerInputs[slotIndex];
+        const isRemote = inp._isRemote;
+
         if (player.x === player.targetX && player.y === player.targetY) {
+            // ── TILE BOUNDARY: decide next direction ──
             const currentGridX = Math.floor(player.x / 32);
             const currentGridY = Math.floor(player.y / 32);
             let newTargetX = player.targetX;
             let newTargetY = player.targetY;
             let newDirection = player.direction;
 
-            const inp = this.playerInputs[slotIndex];
-            if (inp.getKey('ArrowUp') && !player.moving) {
-                newTargetY = (currentGridY - 1) * 32;
-                newDirection = 'up';
-            } else if (inp.getKey('ArrowDown') && !player.moving) {
-                newTargetY = (currentGridY + 1) * 32;
-                newDirection = 'down';
-            } else if (inp.getKey('ArrowLeft') && !player.moving) {
-                newTargetX = (currentGridX - 1) * 32;
-                newDirection = 'left';
-            } else if (inp.getKey('ArrowRight') && !player.moving) {
-                newTargetX = (currentGridX + 1) * 32;
-                newDirection = 'right';
+            if (isRemote) {
+                // Remote player: consume the queued direction intent.
+                // This direction has been buffered since the last network packet,
+                // so it doesn't matter if it arrived 1 frame or 5 frames ago.
+                const qDir = inp.consumeQueuedDirection();
+                if (qDir === 'up') {
+                    newTargetY = (currentGridY - 1) * 32;
+                    newDirection = 'up';
+                } else if (qDir === 'down') {
+                    newTargetY = (currentGridY + 1) * 32;
+                    newDirection = 'down';
+                } else if (qDir === 'left') {
+                    newTargetX = (currentGridX - 1) * 32;
+                    newDirection = 'left';
+                } else if (qDir === 'right') {
+                    newTargetX = (currentGridX + 1) * 32;
+                    newDirection = 'right';
+                }
+            } else {
+                // Local (host) player: direct key reads, no latency to worry about
+                if (inp.getKey('ArrowUp') && !player.moving) {
+                    newTargetY = (currentGridY - 1) * 32;
+                    newDirection = 'up';
+                } else if (inp.getKey('ArrowDown') && !player.moving) {
+                    newTargetY = (currentGridY + 1) * 32;
+                    newDirection = 'down';
+                } else if (inp.getKey('ArrowLeft') && !player.moving) {
+                    newTargetX = (currentGridX - 1) * 32;
+                    newDirection = 'left';
+                } else if (inp.getKey('ArrowRight') && !player.moving) {
+                    newTargetX = (currentGridX + 1) * 32;
+                    newDirection = 'right';
+                }
             }
 
             player.direction = newDirection;
@@ -453,9 +371,13 @@ class MultiplayerGame {
             }
         }
 
-        // Bomb placement
-        const inp = this.playerInputs[slotIndex];
-        const isSpaceDown = inp.getKey(' ');
+        // Bomb placement — remote uses queued bomb, local uses direct key read
+        let isSpaceDown;
+        if (isRemote) {
+            isSpaceDown = inp.getKey(' ') || inp.consumeQueuedBomb();
+        } else {
+            isSpaceDown = inp.getKey(' ');
+        }
         if (isSpaceDown && !player.bombKeyWasDown && player.bombs.length < player.maxBombs) {
             const bombX = Math.floor((player.x + player.width / 2) / 32) * 32;
             const bombY = Math.floor((player.y + player.height / 2) / 32) * 32;
@@ -567,7 +489,8 @@ class MultiplayerGame {
         };
     }
 
-    // ── CLIENT: Apply state received from host ──
+    // ── CLIENT: Apply state received from host — DIRECT, no prediction ──
+    // Every value is set exactly as the host says. Zero interpolation.
     _applyStateFromHost(state) {
         if (state.updateType === 'BLOCK_UPDATE') {
             this.map.grid[state.y][state.x] = state.val;
@@ -575,7 +498,7 @@ class MultiplayerGame {
             return;
         }
 
-        // Discard out-of-order stale packets over UDP
+        // Discard out-of-order stale packets
         if (state.seq !== undefined) {
             if (this._lastReceivedSeq !== undefined && state.seq < this._lastReceivedSeq) {
                 return;
@@ -583,7 +506,7 @@ class MultiplayerGame {
             this._lastReceivedSeq = state.seq;
         }
 
-        // Apply any recent block updates to ensure 100% grid consistency
+        // Apply block updates for grid consistency
         if (state.bks && Array.isArray(state.bks)) {
             for (let k = 0; k < state.bks.length; k++) {
                 const [bx, by, bval] = state.bks[k];
@@ -594,73 +517,34 @@ class MultiplayerGame {
             }
         }
 
-        // Update players
+        // ── Update ALL players directly from host — no prediction, no interpolation ──
         const rawPlayers = state.p || state.players;
         if (rawPlayers) {
             for (let i = 0; i < rawPlayers.length && i < this.players.length; i++) {
                 const sp = rawPlayers[i];
                 const p = this.players[i];
 
-                const hostX = sp.x;
-                const hostY = sp.y;
-                const hostTx = sp.tx !== undefined ? sp.tx : (sp.targetX !== undefined ? sp.targetX : hostX);
-                const hostTy = sp.ty !== undefined ? sp.ty : (sp.targetY !== undefined ? sp.targetY : hostY);
                 const isAlive = sp.a !== undefined ? (sp.a === 1) : (sp.alive !== undefined ? sp.alive : p.alive);
-                const isMoving = sp.m !== undefined ? (sp.m === 1) : (sp.moving !== undefined ? sp.moving : false);
 
                 // Play death sound if player just died
                 if (p.alive && !isAlive) {
                     this.sound.playSound('death');
                 }
 
+                // Direct set — host is absolute authority
+                p.x = sp.x;
+                p.y = sp.y;
+                p.targetX = sp.tx !== undefined ? sp.tx : (sp.targetX !== undefined ? sp.targetX : sp.x);
+                p.targetY = sp.ty !== undefined ? sp.ty : (sp.targetY !== undefined ? sp.targetY : sp.y);
+                p.direction = sp.d !== undefined ? sp.d : (sp.dir || p.direction);
+                p.animationFrame = sp.f !== undefined ? sp.f : p.animationFrame;
                 p.alive = isAlive;
+                p.moving = sp.m !== undefined ? (sp.m === 1) : (sp.moving !== undefined ? sp.moving : false);
                 p.invincible = sp.iv !== undefined ? sp.iv : (sp.invincible !== undefined ? sp.invincible : p.invincible);
                 p.lives = sp.l !== undefined ? sp.l : (sp.lives !== undefined ? sp.lives : p.lives);
                 p.maxBombs = sp.mb !== undefined ? sp.mb : (sp.maxBombs !== undefined ? sp.maxBombs : p.maxBombs);
                 p.bombRange = sp.br !== undefined ? sp.br : (sp.bombRange !== undefined ? sp.bombRange : p.bombRange);
                 p.baseSpeed = sp.bs !== undefined ? sp.bs : (sp.baseSpeed !== undefined ? sp.baseSpeed : p.baseSpeed);
-
-                const diffX = hostX - p.x;
-                const diffY = hostY - p.y;
-                const dist = Math.sqrt(diffX * diffX + diffY * diffY);
-
-                if (i === this.mySlot) {
-                    // Local player reconciliation:
-                    // Client predicted local movement. Reconcile if divergence detected.
-                    if (dist > 16) {
-                        p.x = hostX;
-                        p.y = hostY;
-                        p.targetX = hostTx;
-                        p.targetY = hostTy;
-                        p.moving = isMoving;
-                    } else if (dist > 1) {
-                        p.x += diffX * 0.15;
-                        p.y += diffY * 0.15;
-                    }
-                } else {
-                    // Remote player interpolation to host target
-                    p.targetX = hostTx;
-                    p.targetY = hostTy;
-                    p.direction = sp.d !== undefined ? sp.d : (sp.dir || p.direction);
-
-                    if (dist > 24 || !isMoving) {
-                        if (!isMoving && dist < 2) {
-                            p.x = hostX;
-                            p.y = hostY;
-                            p.moving = false;
-                        } else if (dist > 24) {
-                            p.x = hostX;
-                            p.y = hostY;
-                        } else {
-                            p.x += diffX * 0.4;
-                            p.y += diffY * 0.4;
-                        }
-                    } else {
-                        p.x += diffX * 0.35;
-                        p.y += diffY * 0.35;
-                        p.moving = true;
-                    }
-                }
 
                 // Update bombs (Zero-allocation in-place matching)
                 const rawBombs = sp.b || sp.bombs;

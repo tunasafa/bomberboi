@@ -2,6 +2,10 @@ class InputHandler {
     constructor(listenToWindow = true) {
         this.keys = {};
         this.lastKey = '';
+        // Queued direction for remote players — persists until consumed at tile boundary
+        this._queuedDirection = null;  // 'up'|'down'|'left'|'right'|null
+        this._queuedBomb = false;
+        this._isRemote = !listenToWindow;
         
         if (listenToWindow) {
             window.addEventListener('keydown', (e) => {
@@ -59,19 +63,62 @@ class InputHandler {
     }
 
     // Apply remote input state received from network (supports object or bitmask)
+    // Extracts the directional intent and queues it for consumption at tile boundary
     setRemoteState(state) {
+        let up = false, down = false, left = false, right = false, bomb = false;
+
         if (typeof state === 'number') {
-            this.keys['ArrowUp'] = (state & 1) !== 0;
-            this.keys['ArrowDown'] = (state & 2) !== 0;
-            this.keys['ArrowLeft'] = (state & 4) !== 0;
-            this.keys['ArrowRight'] = (state & 8) !== 0;
-            this.keys[' '] = (state & 16) !== 0;
+            up    = (state & 1) !== 0;
+            down  = (state & 2) !== 0;
+            left  = (state & 4) !== 0;
+            right = (state & 8) !== 0;
+            bomb  = (state & 16) !== 0;
         } else if (state) {
-            this.keys['ArrowUp'] = !!state.up;
-            this.keys['ArrowDown'] = !!state.down;
-            this.keys['ArrowLeft'] = !!state.left;
-            this.keys['ArrowRight'] = !!state.right;
-            this.keys[' '] = !!state.bomb;
+            up    = !!state.up;
+            down  = !!state.down;
+            left  = !!state.left;
+            right = !!state.right;
+            bomb  = !!state.bomb;
         }
+
+        // Update raw key state (used for current-frame reads)
+        this.keys['ArrowUp']    = up;
+        this.keys['ArrowDown']  = down;
+        this.keys['ArrowLeft']  = left;
+        this.keys['ArrowRight'] = right;
+        this.keys[' ']          = bomb;
+
+        // Queue the directional intent — this persists until the host consumes
+        // it at the next tile boundary, preventing missed turns from latency.
+        // Most recent direction wins (last-write-wins for rapid key switches).
+        if (up)         this._queuedDirection = 'up';
+        else if (down)  this._queuedDirection = 'down';
+        else if (left)  this._queuedDirection = 'left';
+        else if (right) this._queuedDirection = 'right';
+        // Don't clear _queuedDirection when no keys are pressed — it persists
+        // until consumed. Only clear if explicitly no direction is intended
+        // (all directions released).
+        if (!up && !down && !left && !right) {
+            this._queuedDirection = null;
+        }
+
+        if (bomb) this._queuedBomb = true;
+    }
+
+    // Called by host at tile-boundary to consume the queued direction.
+    // Returns the queued direction and clears it.
+    consumeQueuedDirection() {
+        const dir = this._queuedDirection;
+        // Don't clear here — let it persist so the player keeps moving in the
+        // same direction if the key is still held. It will be cleared when
+        // the remote releases all direction keys.
+        return dir;
+    }
+
+    // Called by host to check & consume queued bomb press
+    consumeQueuedBomb() {
+        const b = this._queuedBomb;
+        this._queuedBomb = false;
+        return b;
     }
 }
